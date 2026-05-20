@@ -3,6 +3,12 @@ import { NextResponse } from 'next/server'
 import { connectDB } from '@/lib/mongodb'
 import Snapshot from '@/models/Snapshot'
 
+export async function DELETE() {
+  await connectDB()
+  const result = await Snapshot.deleteMany({})
+  return NextResponse.json({ deleted: result.deletedCount })
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const branchId = searchParams.get('branchId')

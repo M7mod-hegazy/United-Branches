@@ -66,6 +66,13 @@ export function BranchManager() {
     loadBranches()
   }
 
+  async function clearAllSnapshots() {
+    if (!window.confirm('سيتم حذف جميع بيانات المخزون من كل الفروع. هل أنت متأكد؟')) return
+    const response = await fetch('/api/snapshots', { method: 'DELETE' })
+    const data = await response.json()
+    setMessage(`تم مسح ${data.deleted} سجل من قاعدة البيانات`)
+  }
+
   async function logout() {
     await fetch('/api/auth/logout', { method: 'POST' })
     window.location.href = '/admin/login'
@@ -73,7 +80,13 @@ export function BranchManager() {
 
   return (
     <div className="space-y-5">
-      <div className="flex justify-end">
+      <div className="flex justify-between items-center">
+        <button
+          onClick={clearAllSnapshots}
+          className="rounded-md border border-red-200 bg-white px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-50"
+        >
+          مسح قاعدة البيانات
+        </button>
         <button onClick={logout} className="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold">
           خروج
         </button>

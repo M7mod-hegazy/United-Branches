@@ -33,7 +33,7 @@ export function BranchSelector({ branches, value, onChange }: BranchSelectorProp
             <button
               key={branch._id}
               type="button"
-              onClick={() => onChange(branch._id)}
+              onClick={() => onChange(selected ? '' : branch._id)}
               className={`rounded-full border-2 px-5 py-2 text-sm font-medium transition-all duration-150 ${
                 selected
                   ? 'border-emerald-600 bg-emerald-600 text-white shadow-sm'
@@ -45,6 +45,7 @@ export function BranchSelector({ branches, value, onChange }: BranchSelectorProp
           )
         })}
       </div>
+      {!value && <p className="text-xs text-amber-600">اختر الفرع لتفعيل زر الحفظ</p>}
     </div>
   )
 }
