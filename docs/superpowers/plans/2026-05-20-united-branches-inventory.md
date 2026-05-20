@@ -68,7 +68,7 @@ __tests__/
 **Files:**
 - Create: `package.json`, `next.config.ts`, `tailwind.config.ts`, `.env.local`, `.env.local.example`, `.gitignore`
 
-- [ ] **Step 1: Initialize Next.js project**
+- [x] **Step 1: Initialize Next.js project**
 
 ```bash
 cd "D:\code\United-branches"
@@ -77,14 +77,14 @@ npx create-next-app@latest . --typescript --tailwind --app --no-src-dir --import
 
 Expected output: `Success! Created Next.js app`
 
-- [ ] **Step 2: Install dependencies**
+- [x] **Step 2: Install dependencies**
 
 ```bash
 npm install mongoose xlsx iron-session react-dropzone
 npm install -D jest @types/jest ts-jest jest-environment-node
 ```
 
-- [ ] **Step 3: Configure Jest**
+- [x] **Step 3: Configure Jest**
 
 Create `jest.config.ts`:
 ```ts
@@ -105,7 +105,7 @@ Add to `package.json` scripts:
 "test": "jest"
 ```
 
-- [ ] **Step 4: Create `.env.local`**
+- [x] **Step 4: Create `.env.local`**
 
 ```env
 MONGODB_URI=mongodb+srv://m7mod:275757@united-branches.duzabq5.mongodb.net/?appName=united-branches
@@ -114,7 +114,7 @@ ADMIN_PASSWORD=admin123
 SESSION_SECRET=change-this-to-a-random-32-char-string-minimum
 ```
 
-- [ ] **Step 5: Create `.env.local.example`**
+- [x] **Step 5: Create `.env.local.example`**
 
 ```env
 MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=<app>
@@ -123,9 +123,9 @@ ADMIN_PASSWORD=your-secure-password
 SESSION_SECRET=at-least-32-random-characters-here
 ```
 
-- [ ] **Step 6: Update `.gitignore`** — ensure `.env.local` is listed (create-next-app adds it by default, verify it's there)
+- [x] **Step 6: Update `.gitignore`** — ensure `.env.local` is listed (create-next-app adds it by default, verify it's there)
 
-- [ ] **Step 7: Connect GitHub remote and push bootstrap**
+- [x] **Step 7: Connect GitHub remote and push bootstrap**
 
 ```bash
 git init
@@ -143,7 +143,7 @@ git push -u origin main
 **Files:**
 - Create: `lib/mongodb.ts`, `models/Branch.ts`, `models/Snapshot.ts`
 
-- [ ] **Step 1: Write `lib/mongodb.ts`**
+- [x] **Step 1: Write `lib/mongodb.ts`**
 
 ```ts
 import mongoose from 'mongoose'
@@ -174,7 +174,7 @@ export async function connectDB(): Promise<typeof mongoose> {
 }
 ```
 
-- [ ] **Step 2: Write `models/Branch.ts`**
+- [x] **Step 2: Write `models/Branch.ts`**
 
 ```ts
 import mongoose, { Schema, Document } from 'mongoose'
@@ -194,7 +194,7 @@ export default mongoose.models.Branch ||
   mongoose.model<IBranch>('Branch', BranchSchema)
 ```
 
-- [ ] **Step 3: Write `models/Snapshot.ts`**
+- [x] **Step 3: Write `models/Snapshot.ts`**
 
 ```ts
 import mongoose, { Schema, Document } from 'mongoose'
@@ -232,7 +232,7 @@ export default mongoose.models.Snapshot ||
   mongoose.model<ISnapshot>('Snapshot', SnapshotSchema)
 ```
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add lib/mongodb.ts models/Branch.ts models/Snapshot.ts
@@ -246,7 +246,7 @@ git commit -m "feat: add MongoDB connection and Mongoose models"
 **Files:**
 - Create: `app/api/branches/route.ts`, `app/api/branches/[id]/route.ts`
 
-- [ ] **Step 1: Write `app/api/branches/route.ts`**
+- [x] **Step 1: Write `app/api/branches/route.ts`**
 
 ```ts
 import { NextResponse } from 'next/server'
@@ -274,7 +274,7 @@ export async function POST(request: Request) {
 }
 ```
 
-- [ ] **Step 2: Write `app/api/branches/[id]/route.ts`**
+- [x] **Step 2: Write `app/api/branches/[id]/route.ts`**
 
 ```ts
 import { NextResponse } from 'next/server'
@@ -317,7 +317,7 @@ export async function DELETE(
 }
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add app/api/branches/
@@ -331,7 +331,7 @@ git commit -m "feat: add branches CRUD API"
 **Files:**
 - Create: `lib/excel-parser.ts`, `__tests__/excel-parser.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/excel-parser.test.ts`:
 ```ts
@@ -395,7 +395,7 @@ describe('parseExcelBuffer', () => {
 })
 ```
 
-- [ ] **Step 2: Run test — verify it fails**
+- [x] **Step 2: Run test — verify it fails**
 
 ```bash
 npx jest __tests__/excel-parser.test.ts
@@ -403,7 +403,7 @@ npx jest __tests__/excel-parser.test.ts
 
 Expected: `Cannot find module '@/lib/excel-parser'`
 
-- [ ] **Step 3: Write `lib/excel-parser.ts`**
+- [x] **Step 3: Write `lib/excel-parser.ts`**
 
 ```ts
 import * as XLSX from 'xlsx'
@@ -503,7 +503,7 @@ function parseQuantity(raw: string): number {
 }
 ```
 
-- [ ] **Step 4: Run tests — verify they pass**
+- [x] **Step 4: Run tests — verify they pass**
 
 ```bash
 npx jest __tests__/excel-parser.test.ts
@@ -511,7 +511,7 @@ npx jest __tests__/excel-parser.test.ts
 
 Expected: `4 passed`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/excel-parser.ts __tests__/excel-parser.test.ts jest.config.ts
@@ -525,7 +525,7 @@ git commit -m "feat: add smart Excel parser with tests"
 **Files:**
 - Create: `lib/inventory-merger.ts`, `__tests__/inventory-merger.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `__tests__/inventory-merger.test.ts`:
 ```ts
@@ -588,7 +588,7 @@ describe('mergeSnapshots', () => {
 })
 ```
 
-- [ ] **Step 2: Run test — verify it fails**
+- [x] **Step 2: Run test — verify it fails**
 
 ```bash
 npx jest __tests__/inventory-merger.test.ts
@@ -596,7 +596,7 @@ npx jest __tests__/inventory-merger.test.ts
 
 Expected: `Cannot find module '@/lib/inventory-merger'`
 
-- [ ] **Step 3: Write `lib/inventory-merger.ts`**
+- [x] **Step 3: Write `lib/inventory-merger.ts`**
 
 ```ts
 import type { ISnapshot } from '@/models/Snapshot'
@@ -660,7 +660,7 @@ export function mergeSnapshots(
 }
 ```
 
-- [ ] **Step 4: Run tests — verify all pass**
+- [x] **Step 4: Run tests — verify all pass**
 
 ```bash
 npx jest __tests__/inventory-merger.test.ts
@@ -668,7 +668,7 @@ npx jest __tests__/inventory-merger.test.ts
 
 Expected: `5 passed`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/inventory-merger.ts __tests__/inventory-merger.test.ts
@@ -682,7 +682,7 @@ git commit -m "feat: add inventory merger with tests"
 **Files:**
 - Create: `app/api/upload/route.ts`, `app/api/snapshots/route.ts`, `app/api/inventory/route.ts`
 
-- [ ] **Step 1: Write `app/api/upload/route.ts`**
+- [x] **Step 1: Write `app/api/upload/route.ts`**
 
 ```ts
 import { NextResponse } from 'next/server'
@@ -745,7 +745,7 @@ export async function POST(request: Request) {
 }
 ```
 
-- [ ] **Step 2: Write `app/api/snapshots/route.ts`**
+- [x] **Step 2: Write `app/api/snapshots/route.ts`**
 
 ```ts
 import { NextResponse } from 'next/server'
@@ -770,7 +770,7 @@ export async function GET(request: Request) {
 }
 ```
 
-- [ ] **Step 3: Write `app/api/inventory/route.ts`**
+- [x] **Step 3: Write `app/api/inventory/route.ts`**
 
 ```ts
 import { NextResponse } from 'next/server'
@@ -818,7 +818,7 @@ export async function GET(request: Request) {
 }
 ```
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add app/api/upload/ app/api/snapshots/ app/api/inventory/
@@ -832,7 +832,7 @@ git commit -m "feat: add upload, snapshots, and inventory API routes"
 **Files:**
 - Create: `lib/session.ts`, `app/api/auth/login/route.ts`, `app/api/auth/logout/route.ts`, `app/api/auth/me/route.ts`, `middleware.ts`
 
-- [ ] **Step 1: Write `lib/session.ts`**
+- [x] **Step 1: Write `lib/session.ts`**
 
 ```ts
 import type { IronSessionOptions } from 'iron-session'
@@ -852,7 +852,7 @@ export const sessionOptions: IronSessionOptions = {
 }
 ```
 
-- [ ] **Step 2: Write `app/api/auth/login/route.ts`**
+- [x] **Step 2: Write `app/api/auth/login/route.ts`**
 
 ```ts
 import { NextResponse } from 'next/server'
@@ -878,7 +878,7 @@ export async function POST(request: Request) {
 }
 ```
 
-- [ ] **Step 3: Write `app/api/auth/logout/route.ts`**
+- [x] **Step 3: Write `app/api/auth/logout/route.ts`**
 
 ```ts
 import { NextResponse } from 'next/server'
@@ -893,7 +893,7 @@ export async function POST() {
 }
 ```
 
-- [ ] **Step 4: Write `app/api/auth/me/route.ts`**
+- [x] **Step 4: Write `app/api/auth/me/route.ts`**
 
 ```ts
 import { NextResponse } from 'next/server'
@@ -907,7 +907,7 @@ export async function GET() {
 }
 ```
 
-- [ ] **Step 5: Write `middleware.ts`**
+- [x] **Step 5: Write `middleware.ts`**
 
 ```ts
 import { NextResponse } from 'next/server'
@@ -932,7 +932,7 @@ export const config = {
 }
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add lib/session.ts app/api/auth/ middleware.ts
@@ -946,7 +946,7 @@ git commit -m "feat: add iron-session auth with admin middleware"
 **Files:**
 - Modify: `app/layout.tsx`, `app/globals.css`
 
-- [ ] **Step 1: Update `app/layout.tsx`**
+- [x] **Step 1: Update `app/layout.tsx`**
 
 ```tsx
 import type { Metadata } from 'next'
@@ -973,7 +973,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
-- [ ] **Step 2: Update `app/globals.css`** — keep Tailwind directives, remove boilerplate Next.js CSS variables:
+- [x] **Step 2: Update `app/globals.css`** — keep Tailwind directives, remove boilerplate Next.js CSS variables:
 
 ```css
 @tailwind base;
@@ -981,7 +981,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 @tailwind utilities;
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add app/layout.tsx app/globals.css
@@ -996,7 +996,7 @@ git commit -m "feat: add RTL Arabic root layout with nav"
 - Create: `components/preview/SearchFilters.tsx`, `components/preview/SnapshotDropdown.tsx`, `components/preview/BranchColumnHeader.tsx`, `components/preview/InventoryTable.tsx`
 - Modify: `app/page.tsx`
 
-- [ ] **Step 1: Write `components/preview/SearchFilters.tsx`**
+- [x] **Step 1: Write `components/preview/SearchFilters.tsx`**
 
 ```tsx
 'use client'
@@ -1063,7 +1063,7 @@ export default function SearchFilters({
 }
 ```
 
-- [ ] **Step 2: Write `components/preview/SnapshotDropdown.tsx`**
+- [x] **Step 2: Write `components/preview/SnapshotDropdown.tsx`**
 
 ```tsx
 'use client'
@@ -1100,7 +1100,7 @@ export default function SnapshotDropdown({
 }
 ```
 
-- [ ] **Step 3: Write `components/preview/BranchColumnHeader.tsx`**
+- [x] **Step 3: Write `components/preview/BranchColumnHeader.tsx`**
 
 ```tsx
 interface BranchColumnHeaderProps {
@@ -1122,7 +1122,7 @@ export default function BranchColumnHeader({ name, uploadedAt }: BranchColumnHea
 }
 ```
 
-- [ ] **Step 4: Write `components/preview/InventoryTable.tsx`**
+- [x] **Step 4: Write `components/preview/InventoryTable.tsx`**
 
 ```tsx
 'use client'
@@ -1245,7 +1245,7 @@ export default function InventoryTable({ branches, products, snapshotsByBranch, 
 }
 ```
 
-- [ ] **Step 5: Write `app/page.tsx`**
+- [x] **Step 5: Write `app/page.tsx`**
 
 ```tsx
 import InventoryTable from '@/components/preview/InventoryTable'
@@ -1312,7 +1312,7 @@ export default async function PreviewPage({ searchParams }: PageProps) {
 }
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add components/preview/ app/page.tsx
@@ -1327,7 +1327,7 @@ git commit -m "feat: add preview page with merged inventory table and filters"
 - Create: `components/upload/BranchSelector.tsx`, `components/upload/DropZone.tsx`, `components/upload/ProgressBar.tsx`
 - Modify: `app/upload/page.tsx`
 
-- [ ] **Step 1: Write `components/upload/BranchSelector.tsx`**
+- [x] **Step 1: Write `components/upload/BranchSelector.tsx`**
 
 ```tsx
 interface Branch { _id: string; name: string }
@@ -1362,7 +1362,7 @@ export default function BranchSelector({ branches, selectedId, onChange }: Props
 }
 ```
 
-- [ ] **Step 2: Write `components/upload/ProgressBar.tsx`**
+- [x] **Step 2: Write `components/upload/ProgressBar.tsx`**
 
 ```tsx
 interface Props { progress: number; status: 'idle' | 'uploading' | 'success' | 'error'; message?: string }
@@ -1395,7 +1395,7 @@ export default function ProgressBar({ progress, status, message }: Props) {
 }
 ```
 
-- [ ] **Step 3: Write `components/upload/DropZone.tsx`**
+- [x] **Step 3: Write `components/upload/DropZone.tsx`**
 
 ```tsx
 'use client'
@@ -1494,7 +1494,7 @@ export default function DropZone({ branchId, branchName, onSuccess }: Props) {
 }
 ```
 
-- [ ] **Step 4: Write `app/upload/page.tsx`**
+- [x] **Step 4: Write `app/upload/page.tsx`**
 
 ```tsx
 'use client'
@@ -1557,7 +1557,7 @@ export default function UploadPage() {
 }
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add components/upload/ app/upload/
@@ -1572,7 +1572,7 @@ git commit -m "feat: add upload page with drag-and-drop and progress bar"
 - Create: `components/admin/LoginForm.tsx`, `components/admin/BranchManager.tsx`
 - Modify: `app/admin/login/page.tsx`, `app/admin/page.tsx`
 
-- [ ] **Step 1: Write `components/admin/LoginForm.tsx`**
+- [x] **Step 1: Write `components/admin/LoginForm.tsx`**
 
 ```tsx
 'use client'
@@ -1637,7 +1637,7 @@ export default function LoginForm() {
 }
 ```
 
-- [ ] **Step 2: Write `app/admin/login/page.tsx`**
+- [x] **Step 2: Write `app/admin/login/page.tsx`**
 
 ```tsx
 import LoginForm from '@/components/admin/LoginForm'
@@ -1647,7 +1647,7 @@ export default function LoginPage() {
 }
 ```
 
-- [ ] **Step 3: Write `components/admin/BranchManager.tsx`**
+- [x] **Step 3: Write `components/admin/BranchManager.tsx`**
 
 ```tsx
 'use client'
@@ -1770,7 +1770,7 @@ export default function BranchManager() {
 }
 ```
 
-- [ ] **Step 4: Write `app/admin/page.tsx`**
+- [x] **Step 4: Write `app/admin/page.tsx`**
 
 ```tsx
 import BranchManager from '@/components/admin/BranchManager'
@@ -1780,7 +1780,7 @@ export default function AdminPage() {
 }
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add components/admin/ app/admin/
@@ -1791,7 +1791,7 @@ git commit -m "feat: add admin login and branch manager page"
 
 ## Task 12: Run All Tests & Local Verify
 
-- [ ] **Step 1: Run full test suite**
+- [x] **Step 1: Run full test suite**
 
 ```bash
 npx jest
@@ -1799,13 +1799,13 @@ npx jest
 
 Expected: all tests pass
 
-- [ ] **Step 2: Start dev server**
+- [x] **Step 2: Start dev server**
 
 ```bash
 npm run dev
 ```
 
-- [ ] **Step 3: Manual test checklist**
+- [x] **Step 3: Manual test checklist**
 
 | Action | Expected |
 |---|---|
@@ -1819,7 +1819,7 @@ npm run dev
 | Use search filter | Table filters correctly |
 | Visit `/admin` without login (private tab) | Redirected to `/admin/login` |
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add .
@@ -1827,10 +1827,21 @@ git commit -m "test: verify full flow locally"
 ```
 
 ---
+---
+
+## Execution Status
+
+- Local implementation completed on 2026-05-20.
+- Tests passed: `npm test -- --runInBand`.
+- Production build passed: `npm run build`.
+- Browser smoke checks passed for `/`, `/upload`, and `/admin/login` on `http://localhost:3000`.
+- Sample Excel parse verified against `????? ????? ???.xls` with 836 products parsed.
+- Git initialized, committed (`de624db`), branch renamed to `main`, remote configured, and pushed to `origin/main`.
+- Vercel production deploy was attempted, but stopped at Vercel CLI device-code login because no local Vercel credentials were available.
 
 ## Task 13: Vercel Deploy
 
-- [ ] **Step 1: Install Vercel CLI (if not installed)**
+- [x] **Step 1: Install Vercel CLI (if not installed)**
 
 ```bash
 npm i -g vercel
@@ -1854,7 +1865,7 @@ ADMIN_PASSWORD=admin123
 SESSION_SECRET=<generate a random 32+ character string>
 ```
 
-- [ ] **Step 3: Push final code**
+- [x] **Step 3: Push final code**
 
 ```bash
 git add .
