@@ -1,6 +1,23 @@
 import * as XLSX from 'xlsx'
 import { decode } from 'iconv-lite'
 
+// Register cptable for SheetJS to resolve Arabic encoding issues in Next.js.
+try {
+  // @ts-ignore
+  const cptable = require('xlsx/dist/cpexcel.js')
+  // @ts-ignore
+  if (typeof XLSX.set_cptable === 'function') {
+    // @ts-ignore
+    XLSX.set_cptable(cptable)
+  } else {
+    // @ts-ignore
+    const xlsxModule = require('xlsx')
+    if (xlsxModule && typeof xlsxModule.set_cptable === 'function') {
+      xlsxModule.set_cptable(cptable)
+    }
+  }
+} catch (e) {}
+
 // Fixes garbled Arabic text that occurs when xlsx reads Windows-1256 bytes as Latin-1.
 // Each garbled char has a code point equal to the original Windows-1256 byte value.
 function fixArabicMojibake(text: string): string {

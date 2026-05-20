@@ -67,12 +67,12 @@ export function InventoryTable({
               {branches.map((branch) => {
                 const qty = product.branches[branch.id] ?? 0
                 return (
-                  <td key={branch.id} className={`px-5 py-3.5 font-semibold tabular-nums text-sm ${qty === 0 ? 'text-[#C7C3BB]/70 font-normal' : 'text-[#1E2229]'}`}>
+                  <td key={branch.id} className={`px-5 py-3.5 tabular-nums text-base ${qty === 0 ? 'text-[#C7C3BB]/70 font-normal' : 'text-[#1E2229] font-bold'}`}>
                     {qty === 0 ? '٠' : qty.toLocaleString('ar-EG')}
                   </td>
                 )
               })}
-              <td className="px-5 py-3.5 font-bold tabular-nums text-sm text-[#A88554] bg-[#FAF8F5]/30 border-r border-[#EAE8E4] group-hover:bg-[#FAF6F0]">
+              <td className="px-5 py-3.5 font-bold tabular-nums text-base text-[#A88554] bg-[#FAF8F5]/30 border-r border-[#EAE8E4] group-hover:bg-[#FAF6F0]">
                 {product.total.toLocaleString('ar-EG')}
               </td>
             </tr>

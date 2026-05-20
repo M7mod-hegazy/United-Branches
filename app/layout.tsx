@@ -32,8 +32,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <Link className="text-[#78726A] hover:text-[#1E2229] transition-colors relative py-1" href="/upload">
                 رفع ملف
               </Link>
-              <Link className="text-[#78726A] hover:text-[#1E2229] transition-colors relative py-1" href="/admin">
-                الفروع
+              <Link className="inline-flex items-center gap-1.5 rounded-lg bg-[#A88554] px-4 py-2 text-sm font-semibold text-white hover:bg-[#96764A] transition-colors" href="/admin">
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                </svg>
+                تسجيل الدخول
               </Link>
             </nav>
           </div>
