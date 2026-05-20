@@ -32,4 +32,18 @@ describe('parseExcelBuffer', () => {
 
     expect(parseExcelBuffer(buffer)).toEqual([{ code: 'c-3', name: 'Cable', quantity: 7 }])
   })
+
+  it('handles exported branch reports with spacer columns and unit-suffixed quantities', () => {
+    const buffer = workbookBuffer([
+      ['Text55', 'Text69', 'NameOfStore', 'FinalStock', 'Text64', 'CodeOfModel', 'Text63', 'Text62'],
+      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '28 قطعة', 'كابولي  لماسورة مربعه سناره', '', '1.23', '1'],
+      ['', '', '', '33 قطعة', 'كابولي 10 بليه على ماسورة مربعه عدل نيكل', '', '1.2', '2'],
+    ])
+
+    expect(parseExcelBuffer(buffer)).toEqual([
+      { code: '1.23', name: 'كابولي  لماسورة مربعه سناره', quantity: 28 },
+      { code: '1.2', name: 'كابولي 10 بليه على ماسورة مربعه عدل نيكل', quantity: 33 },
+    ])
+  })
 })

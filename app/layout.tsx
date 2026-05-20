@@ -14,7 +14,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ar" dir="rtl">
-      <body className={`${geistSans.variable} ${geistMono.variable} bg-slate-50 text-slate-950 antialiased`}>
+      <body
+        suppressHydrationWarning
+        className={`${geistSans.variable} ${geistMono.variable} bg-slate-50 text-slate-950 antialiased`}
+      >
         <header className="border-b border-slate-200 bg-white">
           <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
             <Link href="/" className="text-lg font-bold text-slate-950">

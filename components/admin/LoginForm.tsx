@@ -36,6 +36,7 @@ export function LoginForm() {
         اسم المستخدم
         <input
           value={username}
+          autoComplete="username"
           onChange={(event) => setUsername(event.target.value)}
           className="h-11 rounded-md border border-slate-300 px-3 outline-none focus:border-emerald-600"
         />
@@ -45,6 +46,7 @@ export function LoginForm() {
         <input
           type="password"
           value={password}
+          autoComplete="current-password"
           onChange={(event) => setPassword(event.target.value)}
           className="h-11 rounded-md border border-slate-300 px-3 outline-none focus:border-emerald-600"
         />
