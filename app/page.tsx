@@ -43,6 +43,8 @@ export default function HomePage() {
     })
   }, [branchId, data.products, hideZero, search])
 
+  const productCount = filtered.length
+
   return (
     <div className="space-y-6">
       <div>
@@ -58,10 +60,13 @@ export default function HomePage() {
         onBranchChange={setBranchId}
         onHideZeroChange={setHideZero}
       />
+      {!loading && (
+        <p className="text-sm text-slate-500">
+          {productCount.toLocaleString('ar-EG')} صنف
+        </p>
+      )}
       {loading ? (
-        <div className="rounded-lg border border-slate-200 bg-white p-8 text-center text-slate-600">
-          جاري تحميل البيانات...
-        </div>
+        <InventorySkeleton />
       ) : (
         <InventoryTable
           branches={data.branches}
@@ -72,6 +77,39 @@ export default function HomePage() {
           }
         />
       )}
+    </div>
+  )
+}
+
+function InventorySkeleton() {
+  return (
+    <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
+      <div className="animate-pulse">
+        {/* Header */}
+        <div className="flex gap-6 border-b border-slate-200 bg-slate-100 px-4 py-3">
+          <div className="h-4 w-20 rounded bg-slate-200" />
+          <div className="h-4 w-52 rounded bg-slate-200" />
+          <div className="h-4 w-24 rounded bg-slate-200" />
+          <div className="h-4 w-24 rounded bg-slate-200" />
+          <div className="h-4 w-24 rounded bg-slate-200" />
+          <div className="h-4 w-16 rounded bg-slate-200" />
+        </div>
+        {/* Rows */}
+        {Array.from({ length: 10 }).map((_, i) => (
+          <div
+            key={i}
+            className="flex gap-6 border-b border-slate-100 px-4 py-3"
+            style={{ opacity: 1 - i * 0.07 }}
+          >
+            <div className="h-3 w-14 rounded bg-slate-100" />
+            <div className="h-3 rounded bg-slate-100" style={{ width: `${140 + (i % 3) * 40}px` }} />
+            <div className="h-3 w-12 rounded bg-slate-100" />
+            <div className="h-3 w-12 rounded bg-slate-100" />
+            <div className="h-3 w-12 rounded bg-slate-100" />
+            <div className="h-3 w-10 rounded bg-slate-100" />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

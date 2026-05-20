@@ -16,9 +16,14 @@ export default function UploadPage() {
   useEffect(() => {
     fetch('/api/branches')
       .then((response) => response.json())
-      .then(setBranches)
+      .then((data: Branch[]) => {
+        setBranches(data)
+        if (data.length > 0) setBranchId(data[0]._id)
+      })
       .catch(() => setBranches([]))
   }, [])
+
+  const branchName = branches.find((b) => b._id === branchId)?.name ?? ''
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -29,7 +34,8 @@ export default function UploadPage() {
       <div className="rounded-lg border border-slate-200 bg-white p-5">
         <BranchSelector branches={branches} value={branchId} onChange={setBranchId} />
       </div>
-      <DropZone branchId={branchId} />
+      {/* key resets DropZone state when branch changes */}
+      <DropZone key={branchId} branchId={branchId} branchName={branchName} />
     </div>
   )
 }

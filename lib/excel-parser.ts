@@ -76,6 +76,53 @@ function scoreDataColumn(rows: unknown[][], index: number, kind: 'code' | 'name'
   )
 }
 
+function hasData(rows: unknown[][], index: number): boolean {
+  return rows
+    .slice(0, 80)
+    .some((row) => String(row[index] ?? '').trim().length > 0)
+}
+
+function repairEmptyColumns(
+  rows: unknown[][],
+  header: { rowIndex: number; codeIndex: number; nameIndex: number; quantityIndex: number }
+) {
+  const dataRows = rows.slice(header.rowIndex + 1)
+  const maxColumns = Math.max(...rows.map((row) => row.length), 0)
+  const repaired = { ...header }
+
+  if (!hasData(dataRows, repaired.nameIndex)) {
+    let bestName = { index: repaired.nameIndex, score: 0 }
+    for (let index = 0; index < maxColumns; index += 1) {
+      if (index === repaired.codeIndex || index === repaired.quantityIndex) continue
+      const score = scoreDataColumn(dataRows, index, 'name')
+      if (score > bestName.score) bestName = { index, score }
+    }
+    repaired.nameIndex = bestName.index
+  }
+
+  if (!hasData(dataRows, repaired.codeIndex)) {
+    let bestCode = { index: repaired.codeIndex, score: 0 }
+    for (let index = 0; index < maxColumns; index += 1) {
+      if (index === repaired.nameIndex || index === repaired.quantityIndex) continue
+      const score = scoreDataColumn(dataRows, index, 'code')
+      if (score > bestCode.score) bestCode = { index, score }
+    }
+    repaired.codeIndex = bestCode.index
+  }
+
+  if (!hasData(dataRows, repaired.quantityIndex)) {
+    let bestQuantity = { index: repaired.quantityIndex, score: 0 }
+    for (let index = 0; index < maxColumns; index += 1) {
+      if (index === repaired.codeIndex || index === repaired.nameIndex) continue
+      const score = scoreDataColumn(dataRows, index, 'quantity')
+      if (score > bestQuantity.score) bestQuantity = { index, score }
+    }
+    repaired.quantityIndex = bestQuantity.index
+  }
+
+  return repaired
+}
+
 function findHeader(rows: unknown[][]) {
   let best = { rowIndex: -1, codeIndex: -1, nameIndex: -1, quantityIndex: -1, score: 0 }
 
@@ -113,7 +160,7 @@ function findHeader(rows: unknown[][]) {
     throw new Error('Could not detect code, name, and quantity columns in the Excel file')
   }
 
-  return best
+  return repairEmptyColumns(rows, best)
 }
 
 function toQuantity(value: unknown): number {
@@ -122,7 +169,7 @@ function toQuantity(value: unknown): number {
 }
 
 export function parseExcelBuffer(buffer: Buffer): ParsedProduct[] {
-  const workbook = XLSX.read(buffer, { type: 'buffer' })
+  const workbook = XLSX.read(buffer, { type: 'buffer', codepage: 1256 })
   const firstSheetName = workbook.SheetNames[0]
   if (!firstSheetName) return []
 
