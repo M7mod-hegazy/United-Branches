@@ -1,4 +1,21 @@
 import * as XLSX from 'xlsx'
+import { decode } from 'iconv-lite'
+
+// Fixes garbled Arabic text that occurs when xlsx reads Windows-1256 bytes as Latin-1.
+// Each garbled char has a code point equal to the original Windows-1256 byte value.
+function fixArabicMojibake(text: string): string {
+  if (!text) return text
+  // If already contains Arabic Unicode, no fix needed
+  if (/[؀-ۿ]/.test(text)) return text
+  // If it contains extended Latin chars (0x80-0xFF range), it may be mojibake
+  if (!/[-ÿ]/.test(text)) return text
+  // Reconstruct the original bytes (each char code IS the byte value) and decode as cp1256
+  const bytes = Buffer.alloc(text.length)
+  for (let i = 0; i < text.length; i++) bytes[i] = text.charCodeAt(i) & 0xFF
+  const decoded = decode(bytes, 'cp1256')
+  // Only use the decoded version if it actually contains Arabic
+  return /[؀-ۿ]/.test(decoded) ? decoded : text
+}
 
 export interface ParsedProduct {
   code: string
@@ -187,12 +204,13 @@ export function parseExcelBuffer(buffer: Buffer): ParsedProduct[] {
     if (!code || !name) return
 
     const quantity = toQuantity(row[header.quantityIndex])
+    const fixedName = fixArabicMojibake(name)
     const existing = byCode.get(code)
     if (existing) {
       existing.quantity += quantity
-      if (!existing.name && name) existing.name = name
+      if (!existing.name && fixedName) existing.name = fixedName
     } else {
-      byCode.set(code, { code, name, quantity })
+      byCode.set(code, { code, name: fixedName, quantity })
     }
   })
 

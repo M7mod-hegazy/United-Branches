@@ -25,6 +25,16 @@ export async function POST(request: Request) {
 
   const bytes = Buffer.from(await file.arrayBuffer())
   const products = parseExcelBuffer(bytes)
+  if (products.length === 0) {
+    return NextResponse.json(
+      {
+        error:
+          'No products were found in this Excel file. Check that it contains product code, product name, and quantity columns.',
+      },
+      { status: 422 }
+    )
+  }
+
   const snapshot = await Snapshot.create({ branchId, products })
 
   const staleSnapshots = await Snapshot.find({ branchId })
