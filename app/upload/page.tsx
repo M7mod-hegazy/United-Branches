@@ -85,39 +85,41 @@ export default function UploadPage() {
   const canSave = !!file && !!branchId && status !== 'uploading'
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="mx-auto max-w-3xl space-y-7">
       <div>
-        <p className="text-sm font-semibold text-emerald-700">رفع تقرير فرع</p>
-        <h1 className="mt-2 text-3xl font-bold text-slate-950">استيراد أرصدة Excel</h1>
+        <span className="text-xs font-bold uppercase tracking-wider text-[#A88554] block mb-1">رفع تقارير الفروع</span>
+        <h1 className="text-3xl font-extrabold tracking-tight text-[#1E2229]">استيراد أرصدة المخزون</h1>
       </div>
 
       {status === 'success' && successData ? (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-6">
-          <div className="mb-3 flex items-center gap-2 text-emerald-700">
-            <svg className="h-5 w-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
-            </svg>
-            <span className="font-bold text-base">تم الحفظ بنجاح</span>
+        <div className="rounded-2xl border border-[#A88554]/25 bg-[#FAF6F0] p-8 text-[#1E2229] transition-all duration-300">
+          <div className="mb-5 flex items-center gap-2.5 text-[#A88554]">
+            <div className="rounded-full bg-[#1E2229] p-2 text-white shadow-sm">
+              <svg className="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+            </div>
+            <span className="font-extrabold text-base tracking-wide">تم استيراد البيانات وحفظها بنجاح</span>
           </div>
-          <dl className="grid gap-1.5 text-sm text-slate-700">
-            <div className="flex gap-2">
-              <dt className="text-slate-500 shrink-0">الفرع:</dt>
-              <dd className="font-semibold text-slate-900">{successData.branchName}</dd>
+          <div className="divide-y divide-[#EAE8E4] text-xs font-semibold text-[#78726A]">
+            <div className="flex justify-between py-3">
+              <span className="text-[#A19D95]">الفرع المستهدف</span>
+              <span className="font-bold text-[#1E2229]">{successData.branchName}</span>
             </div>
-            <div className="flex gap-2">
-              <dt className="text-slate-500 shrink-0">عدد الأصناف المستوردة:</dt>
-              <dd className="font-semibold text-emerald-800">{successData.count.toLocaleString('ar-EG')} صنف</dd>
+            <div className="flex justify-between py-3">
+              <span className="text-[#A19D95]">الأصناف المستوردة</span>
+              <span className="font-extrabold text-[#1E2229] tracking-wider">{successData.count.toLocaleString('ar-EG')} صنف</span>
             </div>
-            <div className="flex gap-2">
-              <dt className="text-slate-500 shrink-0">وقت الرفع:</dt>
-              <dd className="font-medium">{new Date(successData.uploadedAt).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' })}</dd>
+            <div className="flex justify-between py-3">
+              <span className="text-[#A19D95]">تاريخ ووقت المعالجة</span>
+              <span className="font-bold text-[#1E2229]">{new Date(successData.uploadedAt).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' })}</span>
             </div>
-          </dl>
-          <div className="mt-4 flex gap-3">
-            <a href="/" className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors">
+          </div>
+          <div className="mt-6 flex gap-3">
+            <a href="/" className="inline-flex items-center justify-center rounded-lg bg-[#1E2229] px-5 py-2.5 text-xs font-bold text-white hover:bg-[#2e343f] transition-all duration-200 shadow-sm">
               عرض المعاينة الموحدة
             </a>
-            <button onClick={reset} className="rounded-lg border border-emerald-300 px-4 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100 transition-colors">
+            <button onClick={reset} className="rounded-lg border border-[#E2E0D9] bg-white px-5 py-2.5 text-xs font-bold text-[#78726A] hover:border-[#A88554] hover:text-[#A88554] transition-all duration-200">
               رفع ملف آخر
             </button>
           </div>
@@ -126,37 +128,41 @@ export default function UploadPage() {
         <>
           <DropZone file={file} onFile={setFile} />
 
-          <div className="rounded-lg border border-slate-200 bg-white p-5">
+          <div className="rounded-xl border border-[#EAE8E4] bg-white p-6 transition-all duration-300">
             <BranchSelector branches={branches} value={branchId} onChange={setBranchId} />
           </div>
 
           {status === 'uploading' && <ProgressBar value={progress} />}
 
           {status === 'error' && (
-            <div className="rounded-xl border border-red-200 bg-red-50 p-4">
-              <div className="mb-1 flex items-center gap-2 text-red-700 font-bold">
-                <svg className="h-4 w-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
+            <div className="rounded-xl border border-red-200/50 bg-red-50/30 p-5 text-red-900 transition-all duration-300">
+              <div className="mb-2 flex items-center gap-2 text-red-700 font-bold text-sm">
+                <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                 </svg>
-                فشل الرفع
+                فشلت عملية الاستيراد
               </div>
-              <p className="text-sm text-red-700">{errorMessage}</p>
-              <button onClick={() => setStatus('idle')} className="mt-3 rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-100 transition-colors">
+              <p className="text-xs font-semibold text-red-700">{errorMessage}</p>
+              <button onClick={() => setStatus('idle')} className="mt-3.5 rounded-lg border border-red-200 bg-white px-4 py-2 text-xs font-bold text-red-700 hover:bg-red-50 transition-all duration-200">
                 المحاولة مرة أخرى
               </button>
             </div>
           )}
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 pt-2">
             <button
               onClick={handleSave}
               disabled={!canSave}
-              className="rounded-lg bg-emerald-600 px-8 py-3 font-semibold text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-40"
+              className={`rounded-lg px-8 py-3.5 text-xs font-bold tracking-wide transition-all duration-300 shadow-sm ${
+                canSave
+                  ? 'bg-[#1E2229] hover:bg-[#2e343f] text-white cursor-pointer active:scale-95'
+                  : 'bg-[#EAE8E4] text-[#A19D95] cursor-not-allowed opacity-60'
+              }`}
             >
-              {status === 'uploading' ? 'جاري الحفظ...' : 'حفظ'}
+              {status === 'uploading' ? 'جاري استيراد البيانات...' : 'حفظ البيانات المحددة'}
             </button>
-            {!file && <p className="text-sm text-slate-400">اختر ملف Excel أولاً</p>}
-            {file && !branchId && <p className="text-sm text-slate-400">اختر الفرع ثم اضغط حفظ</p>}
+            {!file && <p className="text-xs font-bold text-[#A19D95]">يرجى اختيار ملف Excel أولاً</p>}
+            {file && !branchId && <p className="text-xs font-bold text-[#A88554] animate-pulse">يرجى تحديد الفرع المستهدف لإتمام عملية الحفظ</p>}
           </div>
         </>
       )}

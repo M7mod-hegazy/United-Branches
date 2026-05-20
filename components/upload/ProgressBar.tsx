@@ -1,12 +1,22 @@
 'use client'
 
-export function ProgressBar({ value }: { value: number }) {
+interface ProgressBarProps {
+  value: number
+}
+
+export function ProgressBar({ value }: ProgressBarProps) {
   return (
-    <div className="h-3 overflow-hidden rounded-full bg-slate-200">
-      <div
-        className="h-full rounded-full bg-emerald-700 transition-all duration-300"
-        style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
-      />
+    <div className="grid gap-2.5">
+      <div className="flex justify-between items-center text-xs font-bold text-[#78726A]">
+        <span>جاري التحميل والمعالجة...</span>
+        <span className="tabular-nums font-extrabold text-[#A88554]">{value.toLocaleString('ar-EG')}%</span>
+      </div>
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#EAE8E4]">
+        <div
+          className="h-full bg-[#A88554] rounded-full transition-all duration-500 ease-out"
+          style={{ width: `${value}%` }}
+        />
+      </div>
     </div>
   )
 }

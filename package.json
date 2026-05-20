@@ -27,14 +27,14 @@
     "autoprefixer": "^10.5.0",
     "eslint": "^9.39.4",
     "eslint-config-next": "^15.5.18",
+    "impeccable": "^2.1.9",
     "jest": "^29.7.0",
     "jest-environment-node": "^29.7.0",
     "postcss": "^8.5.15",
     "tailwindcss": "^3.4.19",
+    "taste": "^0.5.0",
     "ts-jest": "^29.4.10",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3",
-    "impeccable": "^2.1.9",
-    "taste": "^0.5.0"
+    "typescript": "^5.9.3"
   }
 }

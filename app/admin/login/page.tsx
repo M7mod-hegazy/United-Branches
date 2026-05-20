@@ -2,10 +2,10 @@ import { LoginForm } from '@/components/admin/LoginForm'
 
 export default function AdminLoginPage() {
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-md space-y-7 pt-6">
       <div className="text-center">
-        <p className="text-sm font-semibold text-emerald-700">إدارة الفروع</p>
-        <h1 className="mt-2 text-3xl font-bold text-slate-950">تسجيل الدخول</h1>
+        <span className="text-xs font-bold uppercase tracking-wider text-[#A88554] block mb-1">لوحة التحكم</span>
+        <h1 className="text-3xl font-extrabold tracking-tight text-[#1E2229]">تسجيل الدخول</h1>
       </div>
       <LoginForm />
     </div>

@@ -26,43 +26,50 @@ export function DropZone({ file, onFile }: DropZoneProps) {
   })
 
   const borderColor = isDragReject
-    ? 'border-red-400 bg-red-50'
+    ? 'border-red-400 bg-red-50/30'
     : isDragActive
-      ? 'border-emerald-500 bg-emerald-50'
+      ? 'border-[#A88554] bg-[#FAF6F0]'
       : file
-        ? 'border-emerald-400 bg-emerald-50/50'
-        : 'border-slate-300 hover:border-emerald-500'
+        ? 'border-[#A88554]/50 bg-[#FCFAF7]'
+        : 'border-[#E2E0D9] hover:border-[#A88554] bg-white hover:bg-[#FAFBFD]/30'
 
   return (
     <div
       {...getRootProps()}
-      className={`flex min-h-44 cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed bg-white p-8 text-center transition-all duration-200 ${borderColor}`}
+      className={`flex min-h-[200px] cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed p-8 text-center transition-all duration-300 ${borderColor}`}
     >
       <input {...getInputProps()} />
 
       {file ? (
         <>
-          <svg className="h-10 w-10 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+          <div className="rounded-full bg-[#F7F2EB] p-3 text-[#A88554] shadow-sm">
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
           <div>
-            <p className="font-semibold text-slate-800">{file.name}</p>
-            <p className="mt-1 text-sm text-slate-500">{(file.size / 1024).toFixed(1)} KB — اضغط لتغيير الملف</p>
+            <p className="font-bold text-sm text-[#1E2229]">{file.name}</p>
+            <p className="mt-1 text-xs font-semibold text-[#A19D95]">
+              {(file.size / 1024).toFixed(1)} كيلوبايت — انقر أو اسحب لتعديل الملف
+            </p>
           </div>
         </>
       ) : (
         <>
-          <svg className="h-10 w-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-          </svg>
+          <div className="rounded-full bg-[#FCFAF7] border border-[#EAE8E4] p-3 text-[#78726A] shadow-sm">
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+          </div>
           <div>
-            <p className="font-semibold text-slate-800">
-              {isDragReject ? 'هذا النوع غير مدعوم' : isDragActive ? 'أفلت الملف هنا...' : 'اسحب ملف Excel هنا أو اضغط للاختيار'}
+            <p className="font-bold text-sm text-[#1E2229]">
+              {isDragReject ? 'صيغة الملف غير مدعومة' : isDragActive ? 'أفلت مستند Excel هنا...' : 'قم بسحب ملف Excel وإفلاته هنا أو تصفح جهازك'}
             </p>
-            <p className="mt-1 text-sm text-slate-500">يدعم .xls و .xlsx</p>
+            <p className="mt-1.5 text-xs font-medium text-[#A19D95]">يدعم جداول البيانات بصيغتي .xls و .xlsx فقط</p>
           </div>
         </>
       )}
     </div>
   )
 }
+

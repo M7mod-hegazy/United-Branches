@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    @apply antialiased select-none bg-[#FCFAF7] text-[#1E2229];
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  button, input, select, textarea {
+    @apply transition-all duration-200 ease-out focus:outline-none;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -10,8 +21,3 @@ body {
   margin: 0;
 }
 
-button,
-input,
-select {
-  font: inherit;
-}
