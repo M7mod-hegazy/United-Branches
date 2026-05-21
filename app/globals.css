@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply antialiased select-none bg-[#FCFAF7] text-[#1E2229];
+    @apply antialiased select-none bg-[#F5F8FC] text-[#1A202C];
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
@@ -20,4 +20,3 @@
 body {
   margin: 0;
 }
-
