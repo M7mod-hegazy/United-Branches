@@ -13,6 +13,7 @@ export interface MergedProduct {
   name: string
   total: number
   branches: Record<string, number>
+  nameVariants: { branchId: string; branchName: string; name: string }[]
 }
 
 interface InventoryTableProps {
