@@ -72,6 +72,10 @@ export function SnapshotManager({ branches, onDeleted }: SnapshotManagerProps) {
 
   async function saveRetention() {
     const limit = isUnlimited ? null : Number(retentionInput)
+    if (limit !== null && (isNaN(limit) || limit < 1 || limit > 50)) {
+      setMessage('يجب أن يكون عدد الرفعات رقماً بين ١ و ٥٠')
+      return
+    }
     const response = await fetch('/api/settings', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -82,7 +86,7 @@ export function SnapshotManager({ branches, onDeleted }: SnapshotManagerProps) {
       return
     }
     setRetentionLimit(limit)
-    setMessage('تم حفظ إعداد الاحتفاظ')
+    setMessage('تم حفظ إعداد الاحتفاظ بنجاح')
   }
 
   return (
@@ -96,10 +100,15 @@ export function SnapshotManager({ branches, onDeleted }: SnapshotManagerProps) {
               type="checkbox"
               checked={isUnlimited}
               onChange={(e) => {
-                setIsUnlimited(e.target.checked)
-                if (e.target.checked) setRetentionInput('')
+                const checked = e.target.checked
+                setIsUnlimited(checked)
+                if (checked) {
+                  setRetentionInput('')
+                } else {
+                  setRetentionInput(String(retentionLimit || 10))
+                }
               }}
-              className="rounded"
+              className="rounded animate-pulse"
             />
             بلا حد (غير محدود)
           </label>

@@ -7,7 +7,7 @@ export async function GET() {
   await connectDB()
   const settings = await Settings.findOne().lean() as { retentionLimit?: number | null; dominantBranchId?: mongoose.Types.ObjectId | null } | null
   return NextResponse.json({
-    retentionLimit: settings?.retentionLimit ?? 10,
+    retentionLimit: settings ? (settings.retentionLimit === undefined ? 10 : settings.retentionLimit) : 10,
     dominantBranchId: settings?.dominantBranchId ?? null,
   })
 }

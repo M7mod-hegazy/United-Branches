@@ -39,7 +39,7 @@ export async function POST(request: Request) {
   const snapshot = await Snapshot.create({ branchId, products })
 
   const settingsDoc = await Settings.findOne().lean() as { retentionLimit?: number | null } | null
-  const retentionLimit = settingsDoc?.retentionLimit ?? 10
+  const retentionLimit = settingsDoc ? (settingsDoc.retentionLimit === undefined ? 10 : settingsDoc.retentionLimit) : 10
 
   if (retentionLimit !== null) {
     const staleSnapshots = await Snapshot.find({ branchId })
