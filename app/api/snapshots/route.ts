@@ -27,7 +27,7 @@ export async function GET(request: Request) {
       _id: s._id,
       uploadedAt: s.uploadedAt,
       productsCount: s.products.length,
-      hasPrices: s.products.some(
+      hasPrices: (s.products as { sellingPrice?: number; buyingPrice?: number }[]).some(
         (p) => p.sellingPrice != null || p.buyingPrice != null
       ),
     }))
