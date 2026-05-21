@@ -16,6 +16,7 @@ interface SuccessData {
   count: number
   uploadedAt: string
   branchName: string
+  detectedColumns: string[]
 }
 
 export default function UploadPage() {
@@ -73,7 +74,7 @@ export default function UploadPage() {
 
       setProgress(100)
       setStatus('success')
-      setSuccessData({ count: result.productsCount, uploadedAt: result.uploadedAt, branchName })
+      setSuccessData({ count: result.productsCount, uploadedAt: result.uploadedAt, branchName, detectedColumns: result.detectedColumns ?? [] })
     } catch {
       clearTimeout(t1)
       clearTimeout(t2)
@@ -109,6 +110,25 @@ export default function UploadPage() {
             <div className="flex justify-between py-3">
               <span className="text-[#A19D95]">الأصناف المستوردة</span>
               <span className="font-extrabold text-[#1E2229] tracking-wider">{successData.count.toLocaleString('ar-EG')} صنف</span>
+            </div>
+            <div className="flex justify-between py-3">
+              <span className="text-[#A19D95]">الأعمدة المكتشفة</span>
+              <span className="flex gap-1 flex-wrap justify-end">
+                {successData.detectedColumns.map((col) => {
+                  const labels: Record<string, string> = {
+                    code: 'الكود',
+                    name: 'الاسم',
+                    quantity: 'الكمية',
+                    sellingPrice: 'سعر البيع',
+                    buyingPrice: 'سعر الشراء',
+                  }
+                  return (
+                    <span key={col} className="rounded px-1.5 py-0.5 text-xs font-bold bg-[#EAE8E4] text-[#1E2229]">
+                      {labels[col] ?? col}
+                    </span>
+                  )
+                })}
+              </span>
             </div>
             <div className="flex justify-between py-3">
               <span className="text-[#A19D95]">تاريخ ووقت المعالجة</span>
