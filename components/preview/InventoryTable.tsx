@@ -42,9 +42,9 @@ export function InventoryTable({
   }
 
   return (
-    <div className="overflow-auto rounded-xl border border-[#C8D9EC] bg-white max-h-[65vh] scroll-smooth">
+    <div className="overflow-x-auto rounded-xl border border-[#C8D9EC] bg-white">
       <table className="min-w-full border-collapse text-sm">
-        <thead className="bg-[#EEF4FB] text-[#5A7A9A] sticky top-0 z-20">
+        <thead className="bg-[#EEF4FB] text-[#5A7A9A] sticky top-16 z-20">
           <tr>
             <th className="sticky right-0 z-30 min-w-32 bg-[#EEF4FB] border-b-2 border-l border-b-[#1E6FBF] border-l-[#C8D9EC] px-5 py-4 text-right font-extrabold text-xs uppercase tracking-wider">الكود</th>
             <th className="sticky right-32 z-30 min-w-64 bg-[#EEF4FB] border-b-2 border-l border-b-[#1E6FBF] border-l-[#C8D9EC] px-5 py-4 text-right font-extrabold text-xs uppercase tracking-wider">الصنف</th>
