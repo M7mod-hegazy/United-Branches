@@ -25,7 +25,7 @@ function fixArabicMojibake(text: string): string {
   // If already contains Arabic Unicode, no fix needed
   if (/[؀-ۿ]/.test(text)) return text
   // If it contains extended Latin chars (0x80-0xFF range), it may be mojibake
-  if (!/[-ÿ]/.test(text)) return text
+  if (!/[-ÿ]/.test(text)) return text
   // Reconstruct the original bytes (each char code IS the byte value) and decode as cp1256
   const bytes = Buffer.alloc(text.length)
   for (let i = 0; i < text.length; i++) bytes[i] = text.charCodeAt(i) & 0xFF
@@ -38,11 +38,20 @@ export interface ParsedProduct {
   code: string
   name: string
   quantity: number
+  sellingPrice?: number
+  buyingPrice?: number
+}
+
+export interface ParseResult {
+  products: ParsedProduct[]
+  detectedColumns: string[]
 }
 
 const codeTerms = ['code', 'item code', 'product code', 'codeofmodel', 'sku', 'كود', 'الكود', 'كود الصنف', 'رقم الصنف', 'باركود']
 const nameTerms = ['name', 'item name', 'product name', 'description', 'desc', 'الصنف', 'اسم الصنف', 'الاسم', 'بيان']
 const quantityTerms = ['qty', 'quantity', 'stock', 'finalstock', 'balance', 'on hand', 'كمية', 'الكميه', 'الكمية', 'الرصيد', 'رصيد']
+const sellingPriceTerms = ['price', 'selling price', 'sell price', 'unit price', 'sale price', 'سعر البيع', 'سعر بيع', 'السعر', 'سعر']
+const buyingPriceTerms = ['avgpriceofbuying', 'avg price of buying', 'buying price', 'buy price', 'cost price', 'purchase price', 'سعر الشراء', 'سعر شراء', 'تكلفة']
 
 function normalize(value: unknown): string {
   return String(value ?? '')
@@ -86,7 +95,7 @@ function scoreDataColumn(rows: unknown[][], index: number, kind: 'code' | 'name'
   const uniqueRatio = new Set(values.map((value) => value.toLowerCase())).size / values.length
   const averageLength = values.reduce((sum, value) => sum + value.length, 0) / values.length
   const letterRatio =
-    values.filter((value) => /[a-z\u0600-\u06ff]/i.test(value)).length / values.length
+    values.filter((value) => /[a-z؀-ۿ]/i.test(value)).length / values.length
   const numericRatio = values.filter((value) => firstNumber(value) !== null).length / values.length
   const decimalRatio = values.filter((value) => /\d+\.\d+/.test(value)).length / values.length
 
@@ -197,15 +206,52 @@ function findHeader(rows: unknown[][]) {
   return repairEmptyColumns(rows, best)
 }
 
+function findOptionalPriceColumns(
+  rows: unknown[][],
+  header: { rowIndex: number; codeIndex: number; nameIndex: number; quantityIndex: number }
+): { sellingPriceIndex: number | null; buyingPriceIndex: number | null } {
+  const headerRow = rows[header.rowIndex] ?? []
+  const dataRows = rows.slice(header.rowIndex + 1)
+  const reserved = new Set([header.codeIndex, header.nameIndex, header.quantityIndex])
+
+  let bestSelling = { index: -1, score: 0 }
+  let bestBuying = { index: -1, score: 0 }
+
+  headerRow.forEach((cell, index) => {
+    if (reserved.has(index)) return
+    const headerScore = scoreHeader(cell, sellingPriceTerms)
+    if (headerScore > 0) {
+      const dataScore = scoreDataColumn(dataRows, index, 'quantity')
+      const total = headerScore * 3 + dataScore
+      if (total > bestSelling.score) bestSelling = { index, score: total }
+    }
+  })
+
+  headerRow.forEach((cell, index) => {
+    if (reserved.has(index) || index === bestSelling.index) return
+    const headerScore = scoreHeader(cell, buyingPriceTerms)
+    if (headerScore > 0) {
+      const dataScore = scoreDataColumn(dataRows, index, 'quantity')
+      const total = headerScore * 3 + dataScore
+      if (total > bestBuying.score) bestBuying = { index, score: total }
+    }
+  })
+
+  return {
+    sellingPriceIndex: bestSelling.index >= 0 ? bestSelling.index : null,
+    buyingPriceIndex: bestBuying.index >= 0 ? bestBuying.index : null,
+  }
+}
+
 function toQuantity(value: unknown): number {
   if (typeof value === 'number') return Number.isFinite(value) ? value : 0
   return firstNumber(value) ?? 0
 }
 
-export function parseExcelBuffer(buffer: Buffer): ParsedProduct[] {
+export function parseExcelBuffer(buffer: Buffer): ParseResult {
   const workbook = XLSX.read(buffer, { type: 'buffer', codepage: 1256 })
   const firstSheetName = workbook.SheetNames[0]
-  if (!firstSheetName) return []
+  if (!firstSheetName) return { products: [], detectedColumns: [] }
 
   const rows = XLSX.utils.sheet_to_json<unknown[]>(workbook.Sheets[firstSheetName], {
     header: 1,
@@ -213,6 +259,7 @@ export function parseExcelBuffer(buffer: Buffer): ParsedProduct[] {
     raw: false,
   })
   const header = findHeader(rows)
+  const priceColumns = findOptionalPriceColumns(rows, header)
   const byCode = new Map<string, ParsedProduct>()
 
   rows.slice(header.rowIndex + 1).forEach((row) => {
@@ -222,14 +269,30 @@ export function parseExcelBuffer(buffer: Buffer): ParsedProduct[] {
 
     const quantity = toQuantity(row[header.quantityIndex])
     const fixedName = fixArabicMojibake(name)
+
+    const sellingPrice =
+      priceColumns.sellingPriceIndex !== null
+        ? (firstNumber(row[priceColumns.sellingPriceIndex]) ?? undefined)
+        : undefined
+    const buyingPrice =
+      priceColumns.buyingPriceIndex !== null
+        ? (firstNumber(row[priceColumns.buyingPriceIndex]) ?? undefined)
+        : undefined
+
     const existing = byCode.get(code)
     if (existing) {
       existing.quantity += quantity
       if (!existing.name && fixedName) existing.name = fixedName
+      if (existing.sellingPrice === undefined && sellingPrice !== undefined) existing.sellingPrice = sellingPrice
+      if (existing.buyingPrice === undefined && buyingPrice !== undefined) existing.buyingPrice = buyingPrice
     } else {
-      byCode.set(code, { code, name: fixedName, quantity })
+      byCode.set(code, { code, name: fixedName, quantity, sellingPrice, buyingPrice })
     }
   })
 
-  return Array.from(byCode.values())
+  const detectedColumns = ['code', 'name', 'quantity']
+  if (priceColumns.sellingPriceIndex !== null) detectedColumns.push('sellingPrice')
+  if (priceColumns.buyingPriceIndex !== null) detectedColumns.push('buyingPrice')
+
+  return { products: Array.from(byCode.values()), detectedColumns }
 }
