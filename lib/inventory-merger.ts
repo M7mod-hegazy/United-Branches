@@ -7,11 +7,18 @@ export interface SnapshotInput {
   products: IProduct[]
 }
 
+export interface NameVariant {
+  branchId: string
+  branchName: string
+  name: string
+}
+
 export interface MergedProduct {
   code: string
   name: string
   total: number
   branches: Record<string, number>
+  nameVariants: NameVariant[]
 }
 
 export interface BranchMeta {
@@ -45,12 +52,18 @@ export function mergeInventory(snapshots: SnapshotInput[]): MergedInventory {
           name: product.name,
           total: 0,
           branches: {},
+          nameVariants: [],
         } satisfies MergedProduct)
 
       existing.name = existing.name || product.name
       existing.branches[snapshot.branchId] =
         (existing.branches[snapshot.branchId] || 0) + product.quantity
       existing.total += product.quantity
+      existing.nameVariants.push({
+        branchId: snapshot.branchId,
+        branchName: snapshot.branchName,
+        name: product.name,
+      })
       products.set(code, existing)
     })
   })
