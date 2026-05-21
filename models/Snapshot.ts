@@ -4,6 +4,8 @@ export interface IProduct {
   code: string
   name: string
   quantity: number
+  sellingPrice?: number
+  buyingPrice?: number
 }
 
 export interface ISnapshot extends Document {
@@ -17,6 +19,8 @@ const ProductSchema = new Schema<IProduct>(
     code: { type: String, required: true },
     name: { type: String, required: true },
     quantity: { type: Number, required: true, default: 0 },
+    sellingPrice: { type: Number, required: false },
+    buyingPrice: { type: Number, required: false },
   },
   { _id: false }
 )
