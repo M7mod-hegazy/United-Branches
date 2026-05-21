@@ -26,15 +26,15 @@ export function SearchFilters({
   onCategoryChange,
 }: SearchFiltersProps) {
   return (
-    <section className="grid gap-4 rounded-xl border border-[#EAE8E4] bg-white p-5 md:grid-cols-[1fr_220px_220px_auto] items-center">
+    <section className="grid gap-4 rounded-xl border border-[#C8D9EC] bg-white p-5 md:grid-cols-[1fr_220px_220px_auto] items-center">
       <div className="relative">
         <input
           value={search}
           onChange={(event) => onSearchChange(event.target.value)}
           placeholder="ابحث بالكود أو اسم الصنف..."
-          className="h-11 w-full rounded-lg border border-[#E2E0D9] bg-[#FAF9F6] px-4 pl-10 text-sm placeholder-[#A19D95] focus:border-[#A88554] focus:bg-white focus:ring-1 focus:ring-[#A88554]"
+          className="h-11 w-full rounded-lg border border-[#C8D9EC] bg-[#F5F8FC] px-4 pl-10 text-sm placeholder-[#8AAAC8] focus:border-[#1E6FBF] focus:bg-white focus:ring-1 focus:ring-[#1E6FBF]"
         />
-        <span className="absolute left-3 top-3.5 text-[#78726A]">
+        <span className="absolute left-3 top-3.5 text-[#5A7A9A]">
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
@@ -44,7 +44,7 @@ export function SearchFilters({
         <select
           value={branchId}
           onChange={(event) => onBranchChange(event.target.value)}
-          className="h-11 w-full rounded-lg border border-[#E2E0D9] bg-[#FAF9F6] px-4 text-sm text-[#1E2229] appearance-none focus:border-[#A88554] focus:bg-white focus:ring-1 focus:ring-[#A88554]"
+          className="h-11 w-full rounded-lg border border-[#C8D9EC] bg-[#F5F8FC] px-4 text-sm text-[#1A202C] appearance-none focus:border-[#1E6FBF] focus:bg-white focus:ring-1 focus:ring-[#1E6FBF]"
         >
           <option value="">جميع الفروع</option>
           {branches.map((branch) => (
@@ -53,7 +53,7 @@ export function SearchFilters({
             </option>
           ))}
         </select>
-        <span className="absolute left-3 top-4 pointer-events-none text-[#78726A]">
+        <span className="absolute left-3 top-4 pointer-events-none text-[#5A7A9A]">
           <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
@@ -63,7 +63,7 @@ export function SearchFilters({
         <select
           value={category}
           onChange={(event) => onCategoryChange(event.target.value)}
-          className="h-11 w-full rounded-lg border border-[#E2E0D9] bg-[#FAF9F6] px-4 text-sm text-[#1E2229] appearance-none focus:border-[#A88554] focus:bg-white focus:ring-1 focus:ring-[#A88554]"
+          className="h-11 w-full rounded-lg border border-[#C8D9EC] bg-[#F5F8FC] px-4 text-sm text-[#1A202C] appearance-none focus:border-[#1E6FBF] focus:bg-white focus:ring-1 focus:ring-[#1E6FBF]"
         >
           <option value="">جميع الفئات</option>
           {categories.map((cat) => (
@@ -72,22 +72,21 @@ export function SearchFilters({
             </option>
           ))}
         </select>
-        <span className="absolute left-3 top-4 pointer-events-none text-[#78726A]">
+        <span className="absolute left-3 top-4 pointer-events-none text-[#5A7A9A]">
           <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </span>
       </div>
-      <label className="flex h-11 items-center gap-3 rounded-lg border border-[#E2E0D9] bg-[#FAF9F6] px-4 cursor-pointer select-none hover:border-[#A88554] hover:bg-white">
+      <label className="flex h-11 items-center gap-3 rounded-lg border border-[#C8D9EC] bg-[#F5F8FC] px-4 cursor-pointer select-none hover:border-[#1E6FBF] hover:bg-white">
         <input
           type="checkbox"
           checked={hideZero}
           onChange={(event) => onHideZeroChange(event.target.checked)}
-          className="h-4 w-4 rounded border-[#E2E0D9] text-[#A88554] focus:ring-[#A88554] accent-[#A88554]"
+          className="h-4 w-4 rounded border-[#C8D9EC] text-[#1E6FBF] focus:ring-[#1E6FBF] accent-[#1E6FBF]"
         />
-        <span className="whitespace-nowrap text-sm font-medium text-[#78726A]">إخفاء الأرصدة الصفرية</span>
+        <span className="whitespace-nowrap text-sm font-medium text-[#5A7A9A]">إخفاء الأرصدة الصفرية</span>
       </label>
     </section>
   )
 }
-
