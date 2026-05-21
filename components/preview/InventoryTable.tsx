@@ -42,7 +42,7 @@ export function InventoryTable({
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-[#C8D9EC] bg-white">
+    <div className="rounded-xl border border-[#C8D9EC] bg-white">
       <table className="min-w-full border-collapse text-sm">
         <thead className="bg-[#EEF4FB] text-[#5A7A9A] sticky top-16 z-20">
           <tr>
