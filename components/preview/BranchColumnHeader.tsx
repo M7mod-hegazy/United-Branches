@@ -15,9 +15,9 @@ export function BranchColumnHeader({
 }: BranchColumnHeaderProps) {
   return (
     <div className="min-w-44 text-right py-1">
-      <div className="font-bold text-sm text-[#1E2229]">{branch.name}</div>
-      <div className="text-[10px] font-semibold text-[#A19D95] mt-1 flex items-center gap-1">
-        <span className="h-1 w-1 rounded-full bg-[#A88554]/60" />
+      <div className="font-bold text-sm text-[#1A202C]">{branch.name}</div>
+      <div className="text-[10px] font-semibold text-[#8AAAC8] mt-1 flex items-center gap-1">
+        <span className="h-1 w-1 rounded-full bg-[#1E6FBF]/60" />
         {new Date(branch.uploadedAt).toLocaleDateString('ar-EG', { dateStyle: 'medium' })}
       </div>
       <SnapshotDropdown
@@ -28,4 +28,3 @@ export function BranchColumnHeader({
     </div>
   )
 }
-
