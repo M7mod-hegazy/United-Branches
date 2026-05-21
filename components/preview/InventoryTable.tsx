@@ -65,8 +65,8 @@ export function InventoryTable({
               </th>
             ))}
             {(showSellingPrice || showBuyingPrice) && branches.map((branch) => (
-              <th key={`price-${branch.id}`} className="min-w-28 px-3 py-4 text-right font-extrabold text-xs uppercase tracking-wider border-b-2 border-b-[#1E6FBF] border-l border-l-[#C8D9EC] bg-amber-50/30">
-                <div className="text-[#78726A]">{branch.name}</div>
+              <th key={`price-${branch.id}`} className="w-24 px-3 py-4 text-right font-extrabold text-xs uppercase tracking-wider border-b-2 border-b-[#1E6FBF] border-l border-l-[#C8D9EC] bg-amber-50/30">
+                <div className="text-[#78726A] truncate">{branch.name}</div>
                 <div className="flex gap-1.5 mt-0.5 flex-wrap">
                   {showSellingPrice && <span className="text-amber-600 font-bold normal-case tracking-normal">بيع</span>}
                   {showBuyingPrice && <span className="text-green-600 font-bold normal-case tracking-normal">شراء</span>}
@@ -92,7 +92,7 @@ export function InventoryTable({
               {(showSellingPrice || showBuyingPrice) && branches.map((branch) => {
                 const variant = product.priceVariants.find((v) => v.branchId === branch.id)
                 return (
-                  <td key={`price-${branch.id}`} className="border border-[#C8D9EC] px-3 py-2.5 bg-amber-50/20 align-top">
+                  <td key={`price-${branch.id}`} className="w-24 border border-[#C8D9EC] px-3 py-2.5 bg-amber-50/20 align-top">
                     {showSellingPrice && (
                       <div className="tabular-nums text-xs font-bold text-amber-800">
                         {variant?.sellingPrice != null ? variant.sellingPrice.toLocaleString('ar-EG') : <span className="text-[#C8D9EC]">—</span>}

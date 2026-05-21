@@ -99,13 +99,13 @@ export default function HomePage() {
 
   return (
     <div className="space-y-8">
-      <div>
+      <div className="max-w-7xl mx-auto">
         <p className="text-xs font-bold tracking-widest text-[#1E6FBF] uppercase">الأرصدة الموحدة</p>
         <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-[#1A202C]">معاينة مخزون الفروع</h1>
         <p className="mt-1 text-sm text-[#5A7A9A] font-medium">متابعة فورية ومقارنة كميات المنتجات عبر جميع منافذ البيع والنشاط.</p>
       </div>
       {!loading && (conflicts.length > 0 || priceConflicts.length > 0) && (
-        <div className="flex items-center gap-3 flex-wrap">
+        <div className="max-w-7xl mx-auto flex items-center gap-3 flex-wrap">
           {conflicts.length > 0 && (
             <button
               onClick={() => setShowConflicts(true)}
@@ -130,6 +130,7 @@ export default function HomePage() {
           )}
         </div>
       )}
+      <div className="max-w-7xl mx-auto">
       <SearchFilters
         search={search}
         branchId={branchId}
@@ -142,8 +143,9 @@ export default function HomePage() {
         onHideZeroChange={(v) => { setHideZero(v); resetPage() }}
         onCategoryChange={(v) => { setCategory(v); resetPage() }}
       />
+      </div>
       {!loading && (
-        <div className="flex items-center justify-between gap-4 px-1">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 px-1">
           <div className="flex items-center gap-2 text-xs font-bold text-[#5A7A9A]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#1E6FBF]" />
             <span>{productCount.toLocaleString('ar-EG')} صنف نشط حالياً</span>
@@ -192,7 +194,7 @@ export default function HomePage() {
             showBuyingPrice={showBuyingPrice}
           />
           {totalPages > 1 && (
-            <div className="flex items-center justify-between px-1">
+            <div className="max-w-7xl mx-auto flex items-center justify-between px-1">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={safePage === 1}
