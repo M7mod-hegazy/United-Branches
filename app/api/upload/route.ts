@@ -4,6 +4,7 @@ import { parseExcelBuffer } from '@/lib/excel-parser'
 import { connectDB } from '@/lib/mongodb'
 import Branch from '@/models/Branch'
 import Snapshot from '@/models/Snapshot'
+import Settings from '@/models/Settings'
 
 export async function POST(request: Request) {
   const form = await request.formData()
@@ -24,7 +25,7 @@ export async function POST(request: Request) {
   }
 
   const bytes = Buffer.from(await file.arrayBuffer())
-  const products = parseExcelBuffer(bytes)
+  const { products, detectedColumns } = parseExcelBuffer(bytes)
   if (products.length === 0) {
     return NextResponse.json(
       {
@@ -37,17 +38,23 @@ export async function POST(request: Request) {
 
   const snapshot = await Snapshot.create({ branchId, products })
 
-  const staleSnapshots = await Snapshot.find({ branchId })
-    .sort({ uploadedAt: -1 })
-    .skip(10)
-    .select('_id')
-  if (staleSnapshots.length) {
-    await Snapshot.deleteMany({ _id: { $in: staleSnapshots.map((item) => item._id) } })
+  const settingsDoc = await Settings.findOne().lean() as { retentionLimit?: number | null } | null
+  const retentionLimit = settingsDoc?.retentionLimit ?? 10
+
+  if (retentionLimit !== null) {
+    const staleSnapshots = await Snapshot.find({ branchId })
+      .sort({ uploadedAt: -1 })
+      .skip(retentionLimit)
+      .select('_id')
+    if (staleSnapshots.length) {
+      await Snapshot.deleteMany({ _id: { $in: staleSnapshots.map((s) => s._id) } })
+    }
   }
 
   return NextResponse.json({
     snapshotId: snapshot._id,
     productsCount: products.length,
     uploadedAt: snapshot.uploadedAt,
+    detectedColumns,
   })
 }
