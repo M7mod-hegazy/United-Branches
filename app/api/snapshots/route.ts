@@ -20,9 +20,16 @@ export async function GET(request: Request) {
   await connectDB()
   const snapshots = await Snapshot.find({ branchId })
     .sort({ uploadedAt: -1 })
-    .limit(10)
-    .select('_id uploadedAt products')
     .lean()
 
-  return NextResponse.json(snapshots)
+  return NextResponse.json(
+    snapshots.map((s) => ({
+      _id: s._id,
+      uploadedAt: s.uploadedAt,
+      productsCount: s.products.length,
+      hasPrices: s.products.some(
+        (p) => p.sellingPrice != null || p.buyingPrice != null
+      ),
+    }))
+  )
 }
