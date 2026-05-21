@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { InventoryTable, type BranchMeta, type MergedProduct } from '@/components/preview/InventoryTable'
 import { SearchFilters } from '@/components/preview/SearchFilters'
+import { NameConflictsModal } from '@/components/preview/NameConflictsModal'
 
 interface InventoryResponse {
   branches: BranchMeta[]
@@ -18,6 +19,7 @@ export default function HomePage() {
   const [category, setCategory] = useState('')
   const [page, setPage] = useState(1)
   const [selectedSnapshots, setSelectedSnapshots] = useState<Record<string, string>>({})
+  const [showConflicts, setShowConflicts] = useState(false)
 
   const PAGE_SIZE = 100
 
@@ -41,6 +43,15 @@ export default function HomePage() {
     }
     return Array.from(prefixes).sort((a, b) => Number(a) - Number(b))
   }, [data.products])
+
+  const conflicts = useMemo(
+    () =>
+      data.products.filter((p) => {
+        const uniqueNames = new Set(p.nameVariants.map((v) => v.name.trim().toLowerCase()))
+        return uniqueNames.size > 1
+      }),
+    [data.products]
+  )
 
   const filtered = useMemo(() => {
     const needle = search.trim().toLowerCase()
@@ -67,10 +78,21 @@ export default function HomePage() {
   return (
     <div className="space-y-8">
       <div>
-        <p className="text-xs font-bold tracking-widest text-[#A88554] uppercase">الأرصدة الموحدة</p>
-        <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-[#1E2229]">معاينة مخزون الفروع</h1>
-        <p className="mt-1 text-sm text-[#78726A] font-medium">متابعة فورية ومقارنة كميات المنتجات عبر جميع منافذ البيع والنشاط.</p>
+        <p className="text-xs font-bold tracking-widest text-[#1E6FBF] uppercase">الأرصدة الموحدة</p>
+        <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-[#1A202C]">معاينة مخزون الفروع</h1>
+        <p className="mt-1 text-sm text-[#5A7A9A] font-medium">متابعة فورية ومقارنة كميات المنتجات عبر جميع منافذ البيع والنشاط.</p>
       </div>
+      {!loading && conflicts.length > 0 && (
+        <button
+          onClick={() => setShowConflicts(true)}
+          className="inline-flex items-center gap-2 rounded-lg border border-[#1E6FBF] px-4 py-2 text-sm font-semibold text-[#1E6FBF] hover:bg-[#EEF4FB] transition-colors"
+        >
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+          </svg>
+          {conflicts.length.toLocaleString('ar-EG')} أصناف بأسماء متعارضة
+        </button>
+      )}
       <SearchFilters
         search={search}
         branchId={branchId}
@@ -84,8 +106,8 @@ export default function HomePage() {
         onCategoryChange={(v) => { setCategory(v); resetPage() }}
       />
       {!loading && (
-        <div className="flex items-center gap-2 text-xs font-bold text-[#78726A] px-1">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#A88554]" />
+        <div className="flex items-center gap-2 text-xs font-bold text-[#5A7A9A] px-1">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#1E6FBF]" />
           <span>{productCount.toLocaleString('ar-EG')} صنف نشط حالياً</span>
         </div>
       )}
@@ -106,20 +128,20 @@ export default function HomePage() {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={safePage === 1}
-                className="flex items-center gap-1.5 rounded-lg border border-[#E2E0D9] bg-white px-4 py-2 text-sm font-medium text-[#78726A] hover:border-[#A88554] hover:text-[#A88554] disabled:opacity-40 disabled:pointer-events-none transition-colors"
+                className="flex items-center gap-1.5 rounded-lg border border-[#C8D9EC] bg-white px-4 py-2 text-sm font-medium text-[#5A7A9A] hover:border-[#1E6FBF] hover:text-[#1E6FBF] disabled:opacity-40 disabled:pointer-events-none transition-colors"
               >
                 <svg className="h-4 w-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
                 السابق
               </button>
-              <span className="text-xs font-semibold text-[#78726A]">
+              <span className="text-xs font-semibold text-[#5A7A9A]">
                 صفحة {safePage.toLocaleString('ar-EG')} من {totalPages.toLocaleString('ar-EG')}
               </span>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={safePage === totalPages}
-                className="flex items-center gap-1.5 rounded-lg border border-[#E2E0D9] bg-white px-4 py-2 text-sm font-medium text-[#78726A] hover:border-[#A88554] hover:text-[#A88554] disabled:opacity-40 disabled:pointer-events-none transition-colors"
+                className="flex items-center gap-1.5 rounded-lg border border-[#C8D9EC] bg-white px-4 py-2 text-sm font-medium text-[#5A7A9A] hover:border-[#1E6FBF] hover:text-[#1E6FBF] disabled:opacity-40 disabled:pointer-events-none transition-colors"
               >
                 التالي
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,40 +152,43 @@ export default function HomePage() {
           )}
         </>
       )}
+      {showConflicts && (
+        <NameConflictsModal
+          conflicts={conflicts}
+          onClose={() => setShowConflicts(false)}
+        />
+      )}
     </div>
   )
 }
 
 function InventorySkeleton() {
   return (
-    <div className="overflow-hidden rounded-xl border border-[#EAE8E4] bg-white">
+    <div className="overflow-hidden rounded-xl border border-[#C8D9EC] bg-white">
       <div className="animate-pulse">
-        {/* Header */}
-        <div className="flex gap-6 border-b border-[#EAE8E4] bg-[#FAF8F5] px-6 py-4">
-          <div className="h-4 w-24 rounded bg-[#EAE8E4]" />
-          <div className="h-4 w-60 rounded bg-[#EAE8E4]" />
-          <div className="h-4 w-28 rounded bg-[#EAE8E4]" />
-          <div className="h-4 w-28 rounded bg-[#EAE8E4]" />
-          <div className="h-4 w-28 rounded bg-[#EAE8E4]" />
-          <div className="h-4 w-20 rounded bg-[#EAE8E4]" />
+        <div className="flex gap-6 border-b border-[#C8D9EC] bg-[#EEF4FB] px-6 py-4">
+          <div className="h-4 w-24 rounded bg-[#C8D9EC]" />
+          <div className="h-4 w-60 rounded bg-[#C8D9EC]" />
+          <div className="h-4 w-28 rounded bg-[#C8D9EC]" />
+          <div className="h-4 w-28 rounded bg-[#C8D9EC]" />
+          <div className="h-4 w-28 rounded bg-[#C8D9EC]" />
+          <div className="h-4 w-20 rounded bg-[#C8D9EC]" />
         </div>
-        {/* Rows */}
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
-            className="flex gap-6 border-b border-[#F2EFEA] px-6 py-4 items-center"
+            className="flex gap-6 border-b border-[#D0E3F5] px-6 py-4 items-center"
             style={{ opacity: 1 - i * 0.1 }}
           >
-            <div className="h-3.5 w-16 rounded bg-[#F2EFEA]" />
-            <div className="h-3.5 rounded bg-[#F2EFEA]" style={{ width: `${180 + (i % 3) * 50}px` }} />
-            <div className="h-3.5 w-14 rounded bg-[#F2EFEA]" />
-            <div className="h-3.5 w-14 rounded bg-[#F2EFEA]" />
-            <div className="h-3.5 w-14 rounded bg-[#F2EFEA]" />
-            <div className="h-3.5 w-12 rounded bg-[#F2EFEA]" />
+            <div className="h-3.5 w-16 rounded bg-[#D0E3F5]" />
+            <div className="h-3.5 rounded bg-[#D0E3F5]" style={{ width: `${180 + (i % 3) * 50}px` }} />
+            <div className="h-3.5 w-14 rounded bg-[#D0E3F5]" />
+            <div className="h-3.5 w-14 rounded bg-[#D0E3F5]" />
+            <div className="h-3.5 w-14 rounded bg-[#D0E3F5]" />
+            <div className="h-3.5 w-12 rounded bg-[#D0E3F5]" />
           </div>
         ))}
       </div>
     </div>
   )
 }
-
