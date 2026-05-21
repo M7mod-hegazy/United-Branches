@@ -14,6 +14,7 @@ export interface MergedProduct {
   total: number
   branches: Record<string, number>
   nameVariants: { branchId: string; branchName: string; name: string }[]
+  priceVariants: { branchId: string; branchName: string; sellingPrice?: number; buyingPrice?: number }[]
 }
 
 interface InventoryTableProps {
@@ -21,6 +22,8 @@ interface InventoryTableProps {
   products: MergedProduct[]
   selectedSnapshots: Record<string, string>
   onSnapshotChange: (branchId: string, snapshotId: string) => void
+  showSellingPrice: boolean
+  showBuyingPrice: boolean
 }
 
 export function InventoryTable({
@@ -28,6 +31,8 @@ export function InventoryTable({
   products,
   selectedSnapshots,
   onSnapshotChange,
+  showSellingPrice,
+  showBuyingPrice,
 }: InventoryTableProps) {
   if (!branches.length) {
     return (
@@ -40,6 +45,9 @@ export function InventoryTable({
       </div>
     )
   }
+
+  const extraCols =
+    (showSellingPrice ? branches.length : 0) + (showBuyingPrice ? branches.length : 0)
 
   return (
     <div className="rounded-xl border border-[#C8D9EC] bg-white">
@@ -57,6 +65,20 @@ export function InventoryTable({
                 />
               </th>
             ))}
+            {branches.map((branch) =>
+              showSellingPrice ? (
+                <th key={`sp-${branch.id}`} className="min-w-32 px-5 py-4 text-right font-extrabold text-xs uppercase tracking-wider border-b-2 border-b-[#1E6FBF] border-l border-l-[#C8D9EC] bg-amber-50/50 text-amber-700">
+                  {branch.name} (بيع)
+                </th>
+              ) : null
+            )}
+            {branches.map((branch) =>
+              showBuyingPrice ? (
+                <th key={`bp-${branch.id}`} className="min-w-32 px-5 py-4 text-right font-extrabold text-xs uppercase tracking-wider border-b-2 border-b-[#1E6FBF] border-l border-l-[#C8D9EC] bg-green-50/50 text-green-700">
+                  {branch.name} (شراء)
+                </th>
+              ) : null
+            )}
             <th className="min-w-32 px-5 py-4 text-right font-extrabold text-xs uppercase tracking-wider bg-[#EEF4FB] border-b-2 border-r border-b-[#1E6FBF] border-r-[#C8D9EC]">الإجمالي</th>
           </tr>
         </thead>
@@ -73,6 +95,26 @@ export function InventoryTable({
                   </td>
                 )
               })}
+              {branches.map((branch) => {
+                if (!showSellingPrice) return null
+                const variant = product.priceVariants.find((v) => v.branchId === branch.id)
+                const price = variant?.sellingPrice
+                return (
+                  <td key={`sp-${branch.id}`} className="border border-[#C8D9EC] px-5 py-3.5 tabular-nums text-sm bg-amber-50/30 text-amber-800 font-semibold">
+                    {price != null ? price.toLocaleString('ar-EG') : '—'}
+                  </td>
+                )
+              })}
+              {branches.map((branch) => {
+                if (!showBuyingPrice) return null
+                const variant = product.priceVariants.find((v) => v.branchId === branch.id)
+                const price = variant?.buyingPrice
+                return (
+                  <td key={`bp-${branch.id}`} className="border border-[#C8D9EC] px-5 py-3.5 tabular-nums text-sm bg-green-50/30 text-green-800 font-semibold">
+                    {price != null ? price.toLocaleString('ar-EG') : '—'}
+                  </td>
+                )
+              })}
               <td className="border border-[#C8D9EC] px-5 py-3.5 font-extrabold tabular-nums text-base text-[#1E6FBF] bg-[#EEF4FB]/50 group-hover:bg-[#DCEEFB]">
                 {product.total.toLocaleString('ar-EG')}
               </td>
@@ -80,7 +122,7 @@ export function InventoryTable({
           ))}
           {products.length === 0 && (
             <tr>
-              <td colSpan={branches.length + 3} className="py-16 text-center text-[#8AAAC8] font-bold text-sm">
+              <td colSpan={branches.length + 3 + extraCols} className="py-16 text-center text-[#8AAAC8] font-bold text-sm">
                 لا توجد أصناف تطابق معايير البحث والفرز الحالية
               </td>
             </tr>
