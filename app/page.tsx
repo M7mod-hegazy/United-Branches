@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { InventoryTable, type BranchMeta, type MergedProduct } from '@/components/preview/InventoryTable'
 import { SearchFilters } from '@/components/preview/SearchFilters'
 import { NameConflictsModal } from '@/components/preview/NameConflictsModal'
+import { PriceConflictsModal } from '@/components/preview/PriceConflictsModal'
 
 interface InventoryResponse {
   branches: BranchMeta[]
@@ -20,6 +21,9 @@ export default function HomePage() {
   const [page, setPage] = useState(1)
   const [selectedSnapshots, setSelectedSnapshots] = useState<Record<string, string>>({})
   const [showConflicts, setShowConflicts] = useState(false)
+  const [showPriceConflicts, setShowPriceConflicts] = useState(false)
+  const [showSellingPrice, setShowSellingPrice] = useState(false)
+  const [showBuyingPrice, setShowBuyingPrice] = useState(false)
 
   const PAGE_SIZE = 100
 
@@ -53,6 +57,24 @@ export default function HomePage() {
     [data.products]
   )
 
+  const priceConflicts = useMemo(
+    () =>
+      data.products.filter((p) => {
+        const withPrices = p.priceVariants.filter(
+          (v) => v.sellingPrice != null || v.buyingPrice != null
+        )
+        if (withPrices.length < 2) return false
+        const uniqueSelling = new Set(
+          withPrices.map((v) => v.sellingPrice).filter((v) => v != null)
+        )
+        const uniqueBuying = new Set(
+          withPrices.map((v) => v.buyingPrice).filter((v) => v != null)
+        )
+        return uniqueSelling.size > 1 || uniqueBuying.size > 1
+      }),
+    [data.products]
+  )
+
   const filtered = useMemo(() => {
     const needle = search.trim().toLowerCase()
     return data.products.filter((product) => {
@@ -82,16 +104,43 @@ export default function HomePage() {
         <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-[#1A202C]">معاينة مخزون الفروع</h1>
         <p className="mt-1 text-sm text-[#5A7A9A] font-medium">متابعة فورية ومقارنة كميات المنتجات عبر جميع منافذ البيع والنشاط.</p>
       </div>
-      {!loading && conflicts.length > 0 && (
-        <button
-          onClick={() => setShowConflicts(true)}
-          className="inline-flex items-center gap-2 rounded-lg border border-[#1E6FBF] px-4 py-2 text-sm font-semibold text-[#1E6FBF] hover:bg-[#EEF4FB] transition-colors"
-        >
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-          </svg>
-          {conflicts.length.toLocaleString('ar-EG')} أصناف بأسماء متعارضة
-        </button>
+      {!loading && (conflicts.length > 0 || priceConflicts.length > 0) && (
+        <div className="flex items-center gap-3 flex-wrap">
+          {conflicts.length > 0 && (
+            <button
+              onClick={() => setShowConflicts(true)}
+              className="inline-flex items-center gap-2 rounded-lg border border-[#1E6FBF] px-4 py-2 text-sm font-semibold text-[#1E6FBF] hover:bg-[#EEF4FB] transition-colors"
+            >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+              </svg>
+              {conflicts.length.toLocaleString('ar-EG')} أصناف بأسماء متعارضة
+            </button>
+          )}
+          {priceConflicts.length > 0 && (
+            <button
+              onClick={() => setShowPriceConflicts(true)}
+              className="inline-flex items-center gap-2 rounded-lg border border-amber-500 px-4 py-2 text-sm font-semibold text-amber-700 hover:bg-amber-50 transition-colors"
+            >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+              </svg>
+              {priceConflicts.length.toLocaleString('ar-EG')} أصناف بأسعار متعارضة
+            </button>
+          )}
+          <button
+            onClick={() => setShowSellingPrice((v) => !v)}
+            className={`inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition-colors ${showSellingPrice ? 'border-amber-500 bg-amber-50 text-amber-700' : 'border-[#E2E0D9] text-[#78726A] hover:border-amber-400 hover:text-amber-700'}`}
+          >
+            سعر البيع
+          </button>
+          <button
+            onClick={() => setShowBuyingPrice((v) => !v)}
+            className={`inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition-colors ${showBuyingPrice ? 'border-green-500 bg-green-50 text-green-700' : 'border-[#E2E0D9] text-[#78726A] hover:border-green-400 hover:text-green-700'}`}
+          >
+            سعر الشراء
+          </button>
+        </div>
       )}
       <SearchFilters
         search={search}
@@ -122,6 +171,8 @@ export default function HomePage() {
             onSnapshotChange={(branch, snapshot) =>
               setSelectedSnapshots((current) => ({ ...current, [branch]: snapshot }))
             }
+            showSellingPrice={showSellingPrice}
+            showBuyingPrice={showBuyingPrice}
           />
           {totalPages > 1 && (
             <div className="flex items-center justify-between px-1">
@@ -156,6 +207,12 @@ export default function HomePage() {
         <NameConflictsModal
           conflicts={conflicts}
           onClose={() => setShowConflicts(false)}
+        />
+      )}
+      {showPriceConflicts && (
+        <PriceConflictsModal
+          conflicts={priceConflicts}
+          onClose={() => setShowPriceConflicts(false)}
         />
       )}
     </div>
