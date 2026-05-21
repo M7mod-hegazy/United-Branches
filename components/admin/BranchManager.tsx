@@ -1,6 +1,7 @@
 'use client'
 
 import { FormEvent, useEffect, useState } from 'react'
+import { SnapshotManager } from '@/components/admin/SnapshotManager'
 
 interface Branch {
   _id: string
@@ -153,6 +154,8 @@ export function BranchManager() {
           </div>
         ))}
       </div>
+
+      <SnapshotManager branches={branches} onDeleted={loadBranches} />
     </div>
   )
 }
