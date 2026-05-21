@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from 'react'
 import { SnapshotManager } from '@/components/admin/SnapshotManager'
+import { DominantBranchSelector } from '@/components/admin/DominantBranchSelector'
 
 interface Branch {
   _id: string
@@ -154,6 +155,8 @@ export function BranchManager() {
           </div>
         ))}
       </div>
+
+      <DominantBranchSelector branches={branches} />
 
       <SnapshotManager branches={branches} onDeleted={loadBranches} />
     </div>

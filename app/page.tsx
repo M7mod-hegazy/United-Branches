@@ -5,6 +5,7 @@ import { InventoryTable, type BranchMeta, type MergedProduct } from '@/component
 import { SearchFilters } from '@/components/preview/SearchFilters'
 import { NameConflictsModal } from '@/components/preview/NameConflictsModal'
 import { PriceConflictsModal } from '@/components/preview/PriceConflictsModal'
+import { SharedUpdatesModal } from '@/components/preview/SharedUpdatesModal'
 
 interface InventoryResponse {
   branches: BranchMeta[]
@@ -25,7 +26,21 @@ export default function HomePage() {
   const [showSellingPrice, setShowSellingPrice] = useState(false)
   const [showBuyingPrice, setShowBuyingPrice] = useState(false)
 
+  const [updatesCount, setUpdatesCount] = useState(0)
+  const [showUpdatesModal, setShowUpdatesModal] = useState(false)
+
   const PAGE_SIZE = 100
+
+  useEffect(() => {
+    fetch('/api/shared-updates')
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setUpdatesCount(data.length)
+        }
+      })
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     const selected = Object.entries(selectedSnapshots)
@@ -104,8 +119,24 @@ export default function HomePage() {
         <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-[#1A202C]">معاينة مخزون الفروع</h1>
         <p className="mt-1 text-sm text-[#5A7A9A] font-medium">متابعة فورية ومقارنة كميات المنتجات عبر جميع منافذ البيع والنشاط.</p>
       </div>
-      {!loading && (conflicts.length > 0 || priceConflicts.length > 0) && (
+      {!loading && (conflicts.length > 0 || priceConflicts.length > 0 || updatesCount > 0) && (
         <div className="max-w-7xl mx-auto flex items-center gap-3 flex-wrap">
+          {updatesCount > 0 && (
+            <button
+              onClick={() => setShowUpdatesModal(true)}
+              className="relative inline-flex items-center gap-2 rounded-lg border border-amber-500 bg-gradient-to-r from-amber-500/10 to-amber-600/10 px-4 py-2 text-sm font-extrabold text-amber-700 shadow-md hover:from-amber-500/20 hover:to-amber-600/20 focus:outline-none transition-all duration-300 border-dashed group"
+            >
+              {/* Glowing ping animation effect */}
+              <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-600"></span>
+              </span>
+              <svg className="h-4 w-4 text-amber-600 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+              </svg>
+              <span>{updatesCount.toLocaleString('ar-EG')} قوائم تحديثات الأسعار معممة</span>
+            </button>
+          )}
           {conflicts.length > 0 && (
             <button
               onClick={() => setShowConflicts(true)}
@@ -232,6 +263,11 @@ export default function HomePage() {
         <PriceConflictsModal
           conflicts={priceConflicts}
           onClose={() => setShowPriceConflicts(false)}
+        />
+      )}
+      {showUpdatesModal && (
+        <SharedUpdatesModal
+          onClose={() => setShowUpdatesModal(false)}
         />
       )}
     </div>

@@ -1,18 +1,23 @@
+import mongoose from 'mongoose'
 import { NextResponse } from 'next/server'
 import { connectDB } from '@/lib/mongodb'
 import Settings from '@/models/Settings'
 
 export async function GET() {
   await connectDB()
-  const settings = await Settings.findOne().lean() as { retentionLimit?: number | null } | null
-  return NextResponse.json({ retentionLimit: settings?.retentionLimit ?? 10 })
+  const settings = await Settings.findOne().lean() as { retentionLimit?: number | null; dominantBranchId?: mongoose.Types.ObjectId | null } | null
+  return NextResponse.json({
+    retentionLimit: settings?.retentionLimit ?? 10,
+    dominantBranchId: settings?.dominantBranchId ?? null,
+  })
 }
 
 export async function PUT(request: Request) {
   const body = await request.json()
-  const { retentionLimit } = body
+  const { retentionLimit, dominantBranchId } = body
 
   if (
+    retentionLimit !== undefined &&
     retentionLimit !== null &&
     (typeof retentionLimit !== 'number' || retentionLimit < 1 || retentionLimit > 50)
   ) {
@@ -22,7 +27,28 @@ export async function PUT(request: Request) {
     )
   }
 
+  if (
+    dominantBranchId !== undefined &&
+    dominantBranchId !== null &&
+    dominantBranchId !== '' &&
+    !mongoose.Types.ObjectId.isValid(dominantBranchId)
+  ) {
+    return NextResponse.json(
+      { error: 'dominantBranchId must be a valid branch ID or null' },
+      { status: 400 }
+    )
+  }
+
   await connectDB()
-  await Settings.findOneAndUpdate({}, { retentionLimit }, { upsert: true, new: true })
-  return NextResponse.json({ retentionLimit })
+  
+  const updateData: Record<string, any> = {}
+  if (retentionLimit !== undefined) updateData.retentionLimit = retentionLimit
+  if (dominantBranchId !== undefined) updateData.dominantBranchId = dominantBranchId || null
+
+  const settings = await Settings.findOneAndUpdate({}, updateData, { upsert: true, new: true })
+  
+  return NextResponse.json({
+    retentionLimit: settings.retentionLimit,
+    dominantBranchId: settings.dominantBranchId,
+  })
 }

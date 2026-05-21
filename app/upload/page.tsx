@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { BranchSelector } from '@/components/upload/BranchSelector'
 import { DropZone } from '@/components/upload/DropZone'
 import { ProgressBar } from '@/components/upload/ProgressBar'
+import { UploadDiffEditor } from '@/components/upload/UploadDiffEditor'
 
 interface Branch {
   _id: string
@@ -17,6 +18,9 @@ interface SuccessData {
   uploadedAt: string
   branchName: string
   detectedColumns: string[]
+  isDominant?: boolean
+  changesCount?: number
+  updateName?: string
 }
 
 export default function UploadPage() {
@@ -27,6 +31,13 @@ export default function UploadPage() {
   const [progress, setProgress] = useState(0)
   const [successData, setSuccessData] = useState<SuccessData | null>(null)
   const [errorMessage, setErrorMessage] = useState('')
+
+  const [diffMode, setDiffMode] = useState(false)
+  const [diffData, setDiffData] = useState<{
+    changes: any[]
+    allProducts: any[]
+    defaultUpdateName: string
+  } | null>(null)
 
   useEffect(() => {
     fetch('/api/branches')
@@ -42,6 +53,8 @@ export default function UploadPage() {
     setProgress(0)
     setSuccessData(null)
     setErrorMessage('')
+    setDiffMode(false)
+    setDiffData(null)
   }
 
   async function handleSave() {
@@ -51,14 +64,41 @@ export default function UploadPage() {
     setStatus('uploading')
     setProgress(15)
 
-    const t1 = setTimeout(() => setProgress(40), 400)
-    const t2 = setTimeout(() => setProgress(65), 900)
+    const t1 = setTimeout(() => setProgress(45), 400)
+    const t2 = setTimeout(() => setProgress(75), 900)
 
     const form = new FormData()
     form.append('branchId', branchId)
     form.append('file', file)
 
     try {
+      // Step 1: Upload to compare endpoint first
+      const compareResponse = await fetch('/api/upload/compare', { method: 'POST', body: form })
+      const compareResult = await compareResponse.json()
+
+      if (!compareResponse.ok) {
+        clearTimeout(t1)
+        clearTimeout(t2)
+        setStatus('error')
+        setErrorMessage(buildErrorMessage(compareResponse.status, compareResult.error))
+        return
+      }
+
+      if (compareResult.isDominant) {
+        clearTimeout(t1)
+        clearTimeout(t2)
+        setProgress(100)
+        setStatus('idle')
+        setDiffData({
+          changes: compareResult.changes,
+          allProducts: compareResult.allProducts,
+          defaultUpdateName: compareResult.defaultUpdateName,
+        })
+        setDiffMode(true)
+        return
+      }
+
+      // Step 2: If not dominant branch, proceed to standard save
       const response = await fetch('/api/upload', { method: 'POST', body: form })
       clearTimeout(t1)
       clearTimeout(t2)
@@ -74,7 +114,13 @@ export default function UploadPage() {
 
       setProgress(100)
       setStatus('success')
-      setSuccessData({ count: result.productsCount, uploadedAt: result.uploadedAt, branchName, detectedColumns: result.detectedColumns ?? [] })
+      setSuccessData({
+        count: result.productsCount,
+        uploadedAt: result.uploadedAt,
+        branchName,
+        detectedColumns: result.detectedColumns ?? [],
+        isDominant: false,
+      })
     } catch {
       clearTimeout(t1)
       clearTimeout(t2)
@@ -100,7 +146,9 @@ export default function UploadPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
             </div>
-            <span className="font-extrabold text-base tracking-wide">تم استيراد البيانات وحفظها بنجاح</span>
+            <span className="font-extrabold text-base tracking-wide">
+              {successData.isDominant ? 'تم حفظ البيانات وتعميم التحديث بنجاح' : 'تم استيراد البيانات وحفظها بنجاح'}
+            </span>
           </div>
           <div className="divide-y divide-[#EAE8E4] text-xs font-semibold text-[#78726A]">
             <div className="flex justify-between py-3">
@@ -111,6 +159,20 @@ export default function UploadPage() {
               <span className="text-[#A19D95]">الأصناف المستوردة</span>
               <span className="font-extrabold text-[#1E2229] tracking-wider">{successData.count.toLocaleString('ar-EG')} صنف</span>
             </div>
+            {successData.isDominant && (
+              <>
+                <div className="flex justify-between py-3">
+                  <span className="text-[#A19D95]">اسم قائمة التحديث</span>
+                  <span className="font-bold text-[#A88554]">{successData.updateName}</span>
+                </div>
+                <div className="flex justify-between py-3">
+                  <span className="text-[#A19D95]">التعديلات التي تم تعميمها</span>
+                  <span className="font-extrabold text-green-700 tracking-wider">
+                    {successData.changesCount?.toLocaleString('ar-EG')} تعديل
+                  </span>
+                </div>
+              </>
+            )}
             <div className="flex justify-between py-3">
               <span className="text-[#A19D95]">الأعمدة المكتشفة</span>
               <span className="flex gap-1 flex-wrap justify-end">
@@ -144,6 +206,31 @@ export default function UploadPage() {
             </button>
           </div>
         </div>
+      ) : diffMode && diffData ? (
+        <UploadDiffEditor
+          branchId={branchId}
+          initialChanges={diffData.changes}
+          initialAllProducts={diffData.allProducts}
+          defaultUpdateName={diffData.defaultUpdateName}
+          onSuccess={(result) => {
+            setSuccessData({
+              count: result.count,
+              uploadedAt: result.uploadedAt,
+              branchName: branches.find((b) => b._id === branchId)?.name ?? '',
+              detectedColumns: ['code', 'name', 'quantity', 'sellingPrice', 'buyingPrice'],
+              isDominant: true,
+              changesCount: result.changesCount,
+              updateName: result.updateName,
+            })
+            setDiffMode(false)
+            setStatus('success')
+          }}
+          onCancel={() => {
+            setDiffMode(false)
+            setDiffData(null)
+            setStatus('idle')
+          }}
+        />
       ) : (
         <>
           <DropZone file={file} onFile={setFile} />
