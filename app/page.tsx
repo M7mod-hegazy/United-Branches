@@ -128,18 +128,6 @@ export default function HomePage() {
               {priceConflicts.length.toLocaleString('ar-EG')} أصناف بأسعار متعارضة
             </button>
           )}
-          <button
-            onClick={() => setShowSellingPrice((v) => !v)}
-            className={`inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition-colors ${showSellingPrice ? 'border-amber-500 bg-amber-50 text-amber-700' : 'border-[#E2E0D9] text-[#78726A] hover:border-amber-400 hover:text-amber-700'}`}
-          >
-            سعر البيع
-          </button>
-          <button
-            onClick={() => setShowBuyingPrice((v) => !v)}
-            className={`inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition-colors ${showBuyingPrice ? 'border-green-500 bg-green-50 text-green-700' : 'border-[#E2E0D9] text-[#78726A] hover:border-green-400 hover:text-green-700'}`}
-          >
-            سعر الشراء
-          </button>
         </div>
       )}
       <SearchFilters
@@ -155,9 +143,38 @@ export default function HomePage() {
         onCategoryChange={(v) => { setCategory(v); resetPage() }}
       />
       {!loading && (
-        <div className="flex items-center gap-2 text-xs font-bold text-[#5A7A9A] px-1">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#1E6FBF]" />
-          <span>{productCount.toLocaleString('ar-EG')} صنف نشط حالياً</span>
+        <div className="flex items-center justify-between gap-4 px-1">
+          <div className="flex items-center gap-2 text-xs font-bold text-[#5A7A9A]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#1E6FBF]" />
+            <span>{productCount.toLocaleString('ar-EG')} صنف نشط حالياً</span>
+          </div>
+          {data.products.some((p) => p.priceVariants.length > 0) && (
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-[#A19D95] shrink-0">عرض الأسعار:</span>
+              <button
+                onClick={() => setShowSellingPrice((v) => !v)}
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-bold transition-all duration-200 ${
+                  showSellingPrice
+                    ? 'border-amber-400 bg-amber-50 text-amber-700 shadow-sm'
+                    : 'border-[#E2E0D9] bg-white text-[#78726A] hover:border-amber-300 hover:text-amber-600'
+                }`}
+              >
+                <span className={`h-2 w-2 rounded-full ${showSellingPrice ? 'bg-amber-500' : 'bg-[#D0CCC8]'}`} />
+                سعر البيع
+              </button>
+              <button
+                onClick={() => setShowBuyingPrice((v) => !v)}
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-bold transition-all duration-200 ${
+                  showBuyingPrice
+                    ? 'border-green-400 bg-green-50 text-green-700 shadow-sm'
+                    : 'border-[#E2E0D9] bg-white text-[#78726A] hover:border-green-300 hover:text-green-600'
+                }`}
+              >
+                <span className={`h-2 w-2 rounded-full ${showBuyingPrice ? 'bg-green-500' : 'bg-[#D0CCC8]'}`} />
+                سعر الشراء
+              </button>
+            </div>
+          )}
         </div>
       )}
       {loading ? (

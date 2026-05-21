@@ -46,8 +46,7 @@ export function InventoryTable({
     )
   }
 
-  const extraCols =
-    (showSellingPrice ? branches.length : 0) + (showBuyingPrice ? branches.length : 0)
+  const extraCols = (showSellingPrice || showBuyingPrice) ? branches.length : 0
 
   return (
     <div className="rounded-xl border border-[#C8D9EC] bg-white">
@@ -65,20 +64,15 @@ export function InventoryTable({
                 />
               </th>
             ))}
-            {branches.map((branch) =>
-              showSellingPrice ? (
-                <th key={`sp-${branch.id}`} className="min-w-32 px-5 py-4 text-right font-extrabold text-xs uppercase tracking-wider border-b-2 border-b-[#1E6FBF] border-l border-l-[#C8D9EC] bg-amber-50/50 text-amber-700">
-                  {branch.name} (بيع)
-                </th>
-              ) : null
-            )}
-            {branches.map((branch) =>
-              showBuyingPrice ? (
-                <th key={`bp-${branch.id}`} className="min-w-32 px-5 py-4 text-right font-extrabold text-xs uppercase tracking-wider border-b-2 border-b-[#1E6FBF] border-l border-l-[#C8D9EC] bg-green-50/50 text-green-700">
-                  {branch.name} (شراء)
-                </th>
-              ) : null
-            )}
+            {(showSellingPrice || showBuyingPrice) && branches.map((branch) => (
+              <th key={`price-${branch.id}`} className="min-w-28 px-3 py-4 text-right font-extrabold text-xs uppercase tracking-wider border-b-2 border-b-[#1E6FBF] border-l border-l-[#C8D9EC] bg-amber-50/30">
+                <div className="text-[#78726A]">{branch.name}</div>
+                <div className="flex gap-1.5 mt-0.5 flex-wrap">
+                  {showSellingPrice && <span className="text-amber-600 font-bold normal-case tracking-normal">بيع</span>}
+                  {showBuyingPrice && <span className="text-green-600 font-bold normal-case tracking-normal">شراء</span>}
+                </div>
+              </th>
+            ))}
             <th className="min-w-32 px-5 py-4 text-right font-extrabold text-xs uppercase tracking-wider bg-[#EEF4FB] border-b-2 border-r border-b-[#1E6FBF] border-r-[#C8D9EC]">الإجمالي</th>
           </tr>
         </thead>
@@ -95,23 +89,20 @@ export function InventoryTable({
                   </td>
                 )
               })}
-              {branches.map((branch) => {
-                if (!showSellingPrice) return null
+              {(showSellingPrice || showBuyingPrice) && branches.map((branch) => {
                 const variant = product.priceVariants.find((v) => v.branchId === branch.id)
-                const price = variant?.sellingPrice
                 return (
-                  <td key={`sp-${branch.id}`} className="border border-[#C8D9EC] px-5 py-3.5 tabular-nums text-sm bg-amber-50/30 text-amber-800 font-semibold">
-                    {price != null ? price.toLocaleString('ar-EG') : '—'}
-                  </td>
-                )
-              })}
-              {branches.map((branch) => {
-                if (!showBuyingPrice) return null
-                const variant = product.priceVariants.find((v) => v.branchId === branch.id)
-                const price = variant?.buyingPrice
-                return (
-                  <td key={`bp-${branch.id}`} className="border border-[#C8D9EC] px-5 py-3.5 tabular-nums text-sm bg-green-50/30 text-green-800 font-semibold">
-                    {price != null ? price.toLocaleString('ar-EG') : '—'}
+                  <td key={`price-${branch.id}`} className="border border-[#C8D9EC] px-3 py-2.5 bg-amber-50/20 align-top">
+                    {showSellingPrice && (
+                      <div className="tabular-nums text-xs font-bold text-amber-800">
+                        {variant?.sellingPrice != null ? variant.sellingPrice.toLocaleString('ar-EG') : <span className="text-[#C8D9EC]">—</span>}
+                      </div>
+                    )}
+                    {showBuyingPrice && (
+                      <div className="tabular-nums text-xs font-semibold text-green-800 mt-0.5">
+                        {variant?.buyingPrice != null ? variant.buyingPrice.toLocaleString('ar-EG') : <span className="text-[#C8D9EC]">—</span>}
+                      </div>
+                    )}
                   </td>
                 )
               })}
