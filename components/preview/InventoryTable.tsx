@@ -54,12 +54,12 @@ export function InventoryTable({
     <div className="overflow-hidden rounded-3xl border border-slate-200/40 bg-white shadow-premium">
       <div className="overflow-x-auto">
         <table className="min-w-full border-collapse text-right">
-          <thead className="text-slate-500 border-b border-slate-200/40 sticky top-0 z-20">
+          <thead className="text-slate-500 border-b border-slate-200/40">
             <tr>
-              <th className="sticky right-0 top-[72px] z-30 min-w-32 bg-slate-50 border-l border-slate-200/40 px-6 py-4 text-right font-black text-[11px] uppercase tracking-wider">
+              <th className="sticky right-0 top-[72px] z-30 min-w-32 bg-slate-50 border-l border-slate-200/40 px-6 pt-[22px] pb-4 text-right font-black text-[11px] uppercase tracking-wider align-top">
                 كود الصنف
               </th>
-              <th className="sticky right-32 top-[72px] z-30 min-w-72 bg-slate-50 border-l border-slate-200/40 px-6 py-4 text-right font-black text-[11px] uppercase tracking-wider">
+              <th className="sticky right-32 top-[72px] z-30 min-w-72 bg-slate-50 border-l border-slate-200/40 px-6 pt-[22px] pb-4 text-right font-black text-[11px] uppercase tracking-wider align-top">
                 اسم الصنف
               </th>
               {branches.map((branch) => (
@@ -71,7 +71,7 @@ export function InventoryTable({
                   />
                 </th>
               ))}
-              <th className="sticky left-0 top-[72px] z-30 min-w-36 bg-slate-50 px-6 py-4 text-right font-black text-[11px] uppercase tracking-wider border-r border-slate-200/40">
+              <th className="sticky left-0 top-[72px] z-30 min-w-36 bg-slate-50 px-6 pt-[22px] pb-4 text-right font-black text-[11px] uppercase tracking-wider border-r border-slate-200/40 align-top">
                 إجمالي المخزون
               </th>
             </tr>
