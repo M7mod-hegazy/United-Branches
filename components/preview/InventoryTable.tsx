@@ -57,7 +57,7 @@ export function InventoryTable({
   const NAME_COL_W = 288
 
   return (
-    <div className="rounded-3xl border border-slate-200/40 bg-white shadow-premium overflow-hidden">
+    <div className="rounded-3xl border border-slate-200/40 bg-white shadow-premium">
       {/*
         KEY FIX: This div is the ONLY scroll container.
         overflow: auto on both axes + max-height makes `sticky` on thead work correctly.
@@ -65,8 +65,8 @@ export function InventoryTable({
         ONE container that scrolls both directions.
       */}
       <div
-        className="overflow-auto"
-        style={{ maxHeight: 'calc(100vh - var(--header-h) - 6rem)' }}
+        className="overflow-auto rounded-3xl"
+        style={{ maxHeight: 'calc(100vh - var(--header-h) - 5rem)' }}
       >
         <table className="min-w-full border-collapse text-right">
           {/* ───── STICKY HEADER ───── */}

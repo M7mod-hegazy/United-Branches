@@ -113,9 +113,9 @@ export default function HomePage() {
   const resetPage = () => setPage(1)
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       {/* Premium Elegant Header & Info Panel */}
-      <div className="relative overflow-hidden rounded-3xl border border-slate-200/40 bg-white/60 p-8 backdrop-blur-md shadow-premium">
+      <div className="mx-auto max-w-7xl relative overflow-hidden rounded-3xl border border-slate-200/40 bg-white/60 p-8 backdrop-blur-md shadow-premium">
         <div className="absolute -left-16 -top-16 h-48 w-48 rounded-full bg-blue-500/5 blur-3xl" />
         <div className="absolute -bottom-16 -right-16 h-48 w-48 rounded-full bg-indigo-500/5 blur-3xl" />
         
@@ -125,7 +125,7 @@ export default function HomePage() {
               <span className="h-1.5 w-1.5 rounded-full bg-[#1E6FBF]" />
               الأرصدة الموحدة للفروع
             </span>
-            <h1 className="mt-4 text-3xl md:text-3.5xl font-black tracking-tight text-slate-900 leading-tight">
+            <h1 className="mt-4 text-3xl md:text-4xl font-black tracking-tight text-slate-900 leading-tight">
               معاينة وحركة مخزون الفروع
             </h1>
             <p className="mt-3 text-sm text-slate-500 font-extrabold leading-relaxed">
@@ -137,13 +137,13 @@ export default function HomePage() {
           <div className="grid grid-cols-2 gap-4 shrink-0 sm:min-w-[320px]">
             <div className="rounded-2xl border border-slate-200/40 bg-white/80 p-5 shadow-sm hover:border-[#1E6FBF] hover:-translate-y-[2px] transition-all duration-300">
               <div className="text-[10px] font-black text-slate-400 uppercase tracking-wide">المنتجات النشطة</div>
-              <div className="mt-2 text-2.5xl font-black text-slate-900 tabular-nums">
+              <div className="mt-2 text-3xl font-black text-slate-900 tabular-nums">
                 {loading ? '…' : productCount.toLocaleString('ar-EG')}
               </div>
             </div>
             <div className="rounded-2xl border border-slate-200/40 bg-white/80 p-5 shadow-sm hover:border-indigo-400 hover:-translate-y-[2px] transition-all duration-300">
               <div className="text-[10px] font-black text-slate-400 uppercase tracking-wide">الفروع النشطة</div>
-              <div className="mt-2 text-2.5xl font-black text-[#1E6FBF] tabular-nums">
+              <div className="mt-2 text-3xl font-black text-[#1E6FBF] tabular-nums">
                 {loading ? '…' : data.branches.length.toLocaleString('ar-EG')}
               </div>
             </div>
@@ -153,7 +153,7 @@ export default function HomePage() {
 
       {/* Notifications & Warning Alerts Section */}
       {!loading && (conflicts.length > 0 || priceConflicts.length > 0 || updatesCount > 0) && (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto max-w-7xl grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {updatesCount > 0 && (
             <button
               onClick={() => setShowUpdatesModal(true)}
@@ -164,7 +164,7 @@ export default function HomePage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
               </span>
-              <div className="rounded-xl bg-amber-550 p-2.5 text-white shadow-sm shadow-amber-500/20 group-hover:scale-105 transition-transform duration-200">
+              <div className="rounded-xl bg-amber-500 p-2.5 text-white shadow-sm shadow-amber-500/20 group-hover:scale-105 transition-transform duration-200">
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
                 </svg>
@@ -202,7 +202,7 @@ export default function HomePage() {
               onClick={() => setShowPriceConflicts(true)}
               className="relative flex items-center gap-4 rounded-2xl border border-violet-200/60 bg-gradient-to-r from-violet-50/50 to-violet-100/10 p-5 text-right transition-all duration-300 hover:scale-[1.01] hover:shadow-premium group"
             >
-              <div className="rounded-xl bg-violet-550 p-2.5 text-white shadow-sm shadow-violet-500/20 group-hover:scale-105 transition-transform duration-200">
+              <div className="rounded-xl bg-violet-600 p-2.5 text-white shadow-sm shadow-violet-500/20 group-hover:scale-105 transition-transform duration-200">
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                 </svg>
@@ -219,7 +219,7 @@ export default function HomePage() {
       )}
 
       {/* Filter and Search Panel */}
-      <SearchFilters
+      <div className="mx-auto max-w-7xl"><SearchFilters
         search={search}
         branchId={branchId}
         hideZero={hideZero}
@@ -230,11 +230,11 @@ export default function HomePage() {
         onBranchChange={(v) => { setBranchId(v); resetPage() }}
         onHideZeroChange={(v) => { setHideZero(v); resetPage() }}
         onCategoryChange={(v) => { setCategory(v); resetPage() }}
-      />
+      /></div>
 
       {/* Pricing Toggles & Results Counter */}
       {!loading && (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
+        <div className="mx-auto max-w-7xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
           <div className="flex items-center gap-2.5 text-sm font-bold text-slate-500">
             <span className="h-2 w-2 rounded-full bg-[#1E6FBF]" />
             <span>العثور على {productCount.toLocaleString('ar-EG')} صنف نشط</span>
