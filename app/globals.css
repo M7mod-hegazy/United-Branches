@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --header-h: 73px;
+}
+
 @layer base {
   body {
     @apply antialiased select-none text-slate-800 font-medium;
