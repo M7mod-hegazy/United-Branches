@@ -111,7 +111,7 @@ export function SnapshotManager({ branches, onDeleted }: SnapshotManagerProps) {
                   setRetentionInput(String(retentionLimit || 10))
                 }
               }}
-              className="h-4.5 w-4.5 rounded border-slate-350 text-[#1E6FBF] focus:ring-[#1E6FBF] accent-[#1E6FBF]"
+              className="h-4 w-4 rounded border-slate-350 text-[#1E6FBF] focus:ring-[#1E6FBF] accent-[#1E6FBF]"
             />
             احتفاظ غير محدود (بلا حد أقصى)
           </label>
@@ -160,7 +160,7 @@ export function SnapshotManager({ branches, onDeleted }: SnapshotManagerProps) {
             >
               <span className="text-sm font-extrabold text-slate-800">{branch.name}</span>
               <svg
-                className={`h-4.5 w-4.5 text-slate-400 transition-transform duration-300 ${expanded === branch._id ? 'rotate-180' : ''}`}
+                className={`h-4 w-4 text-slate-400 transition-transform duration-300 ${expanded === branch._id ? 'rotate-180' : ''}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -177,7 +177,7 @@ export function SnapshotManager({ branches, onDeleted }: SnapshotManagerProps) {
                   <div className="px-5 py-5 text-xs text-slate-400 font-bold">لا توجد أي رفعات مخزنة لهذا الفرع.</div>
                 ) : (
                   snapshots[branch._id].map((snap) => (
-                    <div key={snap._id} className="flex items-center gap-4 px-5 py-4.5">
+                    <div key={snap._id} className="flex items-center gap-4 px-5 py-4">
                       <div className="flex-1 min-w-0">
                         <div className="text-xs font-extrabold text-slate-800">
                           {new Date(snap.uploadedAt).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' })}
@@ -197,7 +197,7 @@ export function SnapshotManager({ branches, onDeleted }: SnapshotManagerProps) {
                       </div>
                       <button
                         onClick={() => deleteSnapshot(snap._id, branch._id)}
-                        className="rounded-xl border border-rose-100 bg-rose-50/20 px-4.5 py-2 text-xs font-black text-rose-600 hover:bg-rose-50 hover:text-rose-800 transition-all duration-300 active:scale-95 border-dashed"
+                        className="rounded-xl border border-rose-100 bg-rose-50/20 px-4 py-2 text-xs font-black text-rose-600 hover:bg-rose-50 hover:text-rose-800 transition-all duration-300 active:scale-95 border-dashed"
                       >
                         حذف اللقطة
                       </button>

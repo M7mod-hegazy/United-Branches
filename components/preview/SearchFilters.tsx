@@ -26,7 +26,7 @@ export function SearchFilters({
   onCategoryChange,
 }: SearchFiltersProps) {
   return (
-    <section className="grid gap-4.5 rounded-2xl border border-slate-200/50 bg-white p-5 md:grid-cols-[1fr_220px_220px_auto] items-center shadow-premium transition-all duration-300">
+    <section className="grid gap-4 rounded-3xl border border-slate-200/40 bg-white/60 p-5 md:grid-cols-[1fr_220px_220px_auto] items-center shadow-premium backdrop-blur-md transition-all duration-300">
       
       {/* Search Input Box */}
       <div className="relative">
@@ -34,7 +34,7 @@ export function SearchFilters({
           value={search}
           onChange={(event) => onSearchChange(event.target.value)}
           placeholder="ابحث بالكود أو اسم الصنف..."
-          className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-5 pl-11 text-sm font-bold text-slate-800 placeholder-slate-400 focus:border-[#1E6FBF] focus:bg-white focus:ring-2 focus:ring-blue-100"
+          className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-5 pl-11 text-xs font-black text-slate-800 placeholder-slate-400 focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100/50 shadow-sm transition-all"
         />
         <span className="absolute left-4 top-3.5 text-slate-400">
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,7 +48,7 @@ export function SearchFilters({
         <select
           value={branchId}
           onChange={(event) => onBranchChange(event.target.value)}
-          className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-5 text-sm font-bold text-slate-800 appearance-none focus:border-[#1E6FBF] focus:bg-white focus:ring-2 focus:ring-blue-100"
+          className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-5 text-xs font-black text-slate-800 appearance-none focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100/50 shadow-sm transition-all"
         >
           <option value="">جميع الفروع</option>
           {branches.map((branch) => (
@@ -57,7 +57,7 @@ export function SearchFilters({
             </option>
           ))}
         </select>
-        <span className="absolute left-4 top-4.5 pointer-events-none text-slate-400">
+        <span className="absolute left-4 top-[18px] pointer-events-none text-slate-400">
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
           </svg>
@@ -69,7 +69,7 @@ export function SearchFilters({
         <select
           value={category}
           onChange={(event) => onCategoryChange(event.target.value)}
-          className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-5 text-sm font-bold text-slate-800 appearance-none focus:border-[#1E6FBF] focus:bg-white focus:ring-2 focus:ring-blue-100"
+          className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-5 text-xs font-black text-slate-800 appearance-none focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100/50 shadow-sm transition-all"
         >
           <option value="">جميع الفئات</option>
           {categories.map((cat) => (
@@ -78,23 +78,32 @@ export function SearchFilters({
             </option>
           ))}
         </select>
-        <span className="absolute left-4 top-4.5 pointer-events-none text-slate-400">
+        <span className="absolute left-4 top-[18px] pointer-events-none text-slate-400">
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
           </svg>
         </span>
       </div>
 
-      {/* Checkbox Switch */}
-      <label className="flex h-12 items-center gap-3.5 rounded-xl border border-slate-200 bg-slate-50/50 px-5 cursor-pointer select-none hover:border-[#1E6FBF] hover:bg-white transition-all duration-300">
-        <input
-          type="checkbox"
-          checked={hideZero}
-          onChange={(event) => onHideZeroChange(event.target.checked)}
-          className="h-5 w-5 rounded-lg border-slate-300 text-[#1E6FBF] focus:ring-[#1E6FBF] accent-[#1E6FBF] cursor-pointer"
-        />
-        <span className="whitespace-nowrap text-sm font-extrabold text-slate-500 hover:text-slate-800 transition-colors">إخفاء الأرصدة الصفرية</span>
-      </label>
+      {/* Custom iOS Toggle Switch */}
+      <div 
+        onClick={() => onHideZeroChange(!hideZero)}
+        className="flex h-12 items-center justify-between gap-5 rounded-2xl border border-slate-250 bg-slate-50/40 px-5 cursor-pointer select-none hover:border-[#1E6FBF] hover:bg-white transition-all duration-300 w-full md:w-auto shadow-sm"
+      >
+        <span className="whitespace-nowrap text-xs font-black text-slate-500 transition-colors">إخفاء الأرصدة الصفرية</span>
+        <button
+          type="button"
+          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+            hideZero ? 'bg-[#1E6FBF]' : 'bg-slate-250'
+          }`}
+        >
+          <span
+            className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+              hideZero ? '-translate-x-5' : 'translate-x-0'
+            }`}
+          />
+        </button>
+      </div>
     </section>
   )
 }

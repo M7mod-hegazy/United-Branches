@@ -266,7 +266,7 @@ export default function UploadPage() {
             </div>
           )}
 
-          <div className="flex items-center gap-4.5 pt-2 flex-wrap">
+          <div className="flex items-center gap-4 pt-2 flex-wrap">
             <button
               onClick={handleSave}
               disabled={!canSave}

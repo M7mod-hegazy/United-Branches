@@ -152,11 +152,11 @@ export function UploadDiffEditor({
       </div>
 
       {/* Metrics Summary cards (Tabs) */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4.5">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <button
           type="button"
           onClick={() => setActiveTab('price')}
-          className={`rounded-2xl border p-4.5 text-right transition-all duration-300 shadow-sm ${
+          className={`rounded-2xl border p-5 text-right transition-all duration-300 shadow-sm ${
             activeTab === 'price'
               ? 'border-amber-400 bg-amber-50/20 ring-1 ring-amber-400'
               : 'border-slate-200 bg-white hover:bg-slate-50/50 hover:-translate-y-[1px]'
@@ -171,7 +171,7 @@ export function UploadDiffEditor({
         <button
           type="button"
           onClick={() => setActiveTab('name')}
-          className={`rounded-2xl border p-4.5 text-right transition-all duration-300 shadow-sm ${
+          className={`rounded-2xl border p-5 text-right transition-all duration-300 shadow-sm ${
             activeTab === 'name'
               ? 'border-blue-400 bg-blue-50/20 ring-1 ring-blue-400'
               : 'border-slate-200 bg-white hover:bg-slate-50/50 hover:-translate-y-[1px]'
@@ -186,7 +186,7 @@ export function UploadDiffEditor({
         <button
           type="button"
           onClick={() => setActiveTab('new')}
-          className={`rounded-2xl border p-4.5 text-right transition-all duration-300 shadow-sm ${
+          className={`rounded-2xl border p-5 text-right transition-all duration-300 shadow-sm ${
             activeTab === 'new'
               ? 'border-green-400 bg-green-50/20 ring-1 ring-green-400'
               : 'border-slate-200 bg-white hover:bg-slate-50/50 hover:-translate-y-[1px]'

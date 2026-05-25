@@ -115,35 +115,35 @@ export default function HomePage() {
   return (
     <div className="space-y-10">
       {/* Premium Elegant Header & Info Panel */}
-      <div className="relative overflow-hidden rounded-3xl border border-slate-200/50 bg-white/40 p-8 backdrop-blur-md shadow-premium">
+      <div className="relative overflow-hidden rounded-3xl border border-slate-200/40 bg-white/60 p-8 backdrop-blur-md shadow-premium">
         <div className="absolute -left-16 -top-16 h-48 w-48 rounded-full bg-blue-500/5 blur-3xl" />
         <div className="absolute -bottom-16 -right-16 h-48 w-48 rounded-full bg-indigo-500/5 blur-3xl" />
         
-        <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-[#1E6FBF] border border-blue-100">
+        <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+          <div className="max-w-2xl">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-[11px] font-black text-[#1E6FBF] border border-blue-100/50">
               <span className="h-1.5 w-1.5 rounded-full bg-[#1E6FBF]" />
               الأرصدة الموحدة للفروع
             </span>
-            <h1 className="mt-3.5 text-3.5xl font-black tracking-tight text-slate-900 leading-tight">
+            <h1 className="mt-4 text-3xl md:text-3.5xl font-black tracking-tight text-slate-900 leading-tight">
               معاينة وحركة مخزون الفروع
             </h1>
-            <p className="mt-2.5 max-w-2xl text-base text-slate-500 font-semibold leading-relaxed">
+            <p className="mt-3 text-sm text-slate-500 font-extrabold leading-relaxed">
               متابعة فورية ومقارنة كميات المنتجات والأسعار عبر جميع منافذ البيع والنشاط، مع كشف فوري لتعارض الأسماء وتحديثات التسعير المعتمدة.
             </p>
           </div>
           
           {/* Quick Stats Grid */}
-          <div className="grid grid-cols-2 gap-4 shrink-0 sm:min-w-[280px]">
-            <div className="rounded-2xl border border-slate-200/50 bg-white p-4.5 shadow-sm hover:border-[#1E6FBF] hover:-translate-y-[1px] transition-all duration-300">
-              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">المنتجات النشطة</div>
-              <div className="mt-1.5 text-2xl font-black text-slate-900 tabular-nums">
+          <div className="grid grid-cols-2 gap-4 shrink-0 sm:min-w-[320px]">
+            <div className="rounded-2xl border border-slate-200/40 bg-white/80 p-5 shadow-sm hover:border-[#1E6FBF] hover:-translate-y-[2px] transition-all duration-300">
+              <div className="text-[10px] font-black text-slate-400 uppercase tracking-wide">المنتجات النشطة</div>
+              <div className="mt-2 text-2.5xl font-black text-slate-900 tabular-nums">
                 {loading ? '…' : productCount.toLocaleString('ar-EG')}
               </div>
             </div>
-            <div className="rounded-2xl border border-slate-200/50 bg-white p-4.5 shadow-sm hover:border-indigo-400 hover:-translate-y-[1px] transition-all duration-300">
-              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">الفروع النشطة</div>
-              <div className="mt-1.5 text-2xl font-black text-[#1E6FBF] tabular-nums">
+            <div className="rounded-2xl border border-slate-200/40 bg-white/80 p-5 shadow-sm hover:border-indigo-400 hover:-translate-y-[2px] transition-all duration-300">
+              <div className="text-[10px] font-black text-slate-400 uppercase tracking-wide">الفروع النشطة</div>
+              <div className="mt-2 text-2.5xl font-black text-[#1E6FBF] tabular-nums">
                 {loading ? '…' : data.branches.length.toLocaleString('ar-EG')}
               </div>
             </div>
@@ -157,21 +157,21 @@ export default function HomePage() {
           {updatesCount > 0 && (
             <button
               onClick={() => setShowUpdatesModal(true)}
-              className="relative flex items-start gap-3.5 rounded-2xl border border-amber-500/25 bg-gradient-to-br from-amber-50/40 via-amber-500/5 to-amber-600/5 p-5 text-right transition-all duration-300 hover:scale-[1.01] hover:shadow-premium group"
+              className="relative flex items-center gap-4 rounded-2xl border border-amber-200/60 bg-gradient-to-r from-amber-50/50 to-amber-100/10 p-5 text-right transition-all duration-300 hover:scale-[1.01] hover:shadow-premium group"
             >
               {/* Pulse element */}
-              <span className="absolute left-4 top-4 flex h-3 w-3">
+              <span className="absolute left-4 top-4 flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
               </span>
-              <div className="rounded-xl bg-amber-500 p-2.5 text-white shadow-sm shadow-amber-500/20 group-hover:scale-105 transition-transform duration-200">
+              <div className="rounded-xl bg-amber-550 p-2.5 text-white shadow-sm shadow-amber-500/20 group-hover:scale-105 transition-transform duration-200">
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
                 </svg>
               </div>
-              <div className="flex-1">
-                <div className="text-sm font-extrabold text-amber-900">تحديثات أسعار معممة</div>
-                <div className="mt-1 text-xs font-bold text-amber-700/80">
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-black text-amber-900">تحديثات أسعار معممة</div>
+                <div className="mt-1 text-[11px] font-bold text-amber-700/80 truncate">
                   {updatesCount.toLocaleString('ar-EG')} قائمة أسعار جديدة جاهزة للمطابقة
                 </div>
               </div>
@@ -181,16 +181,16 @@ export default function HomePage() {
           {conflicts.length > 0 && (
             <button
               onClick={() => setShowConflicts(true)}
-              className="relative flex items-start gap-3.5 rounded-2xl border border-red-500/20 bg-gradient-to-br from-red-50/40 via-red-500/5 to-red-600/5 p-5 text-right transition-all duration-300 hover:scale-[1.01] hover:shadow-premium group"
+              className="relative flex items-center gap-4 rounded-2xl border border-rose-200/60 bg-gradient-to-r from-rose-50/50 to-rose-100/10 p-5 text-right transition-all duration-300 hover:scale-[1.01] hover:shadow-premium group"
             >
               <div className="rounded-xl bg-red-500 p-2.5 text-white shadow-sm shadow-red-500/20 group-hover:scale-105 transition-transform duration-200">
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                 </svg>
               </div>
-              <div className="flex-1">
-                <div className="text-sm font-extrabold text-red-900">تعارض أسماء المنتجات</div>
-                <div className="mt-1 text-xs font-bold text-red-700/80">
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-black text-rose-900">تعارض أسماء المنتجات</div>
+                <div className="mt-1 text-[11px] font-bold text-rose-700/80 truncate">
                   كشف {conflicts.length.toLocaleString('ar-EG')} أصناف تختلف أسماؤها بين الفروع
                 </div>
               </div>
@@ -200,16 +200,16 @@ export default function HomePage() {
           {priceConflicts.length > 0 && (
             <button
               onClick={() => setShowPriceConflicts(true)}
-              className="relative flex items-start gap-3.5 rounded-2xl border border-violet-500/20 bg-gradient-to-br from-violet-50/40 via-violet-500/5 to-violet-600/5 p-5 text-right transition-all duration-300 hover:scale-[1.01] hover:shadow-premium group"
+              className="relative flex items-center gap-4 rounded-2xl border border-violet-200/60 bg-gradient-to-r from-violet-50/50 to-violet-100/10 p-5 text-right transition-all duration-300 hover:scale-[1.01] hover:shadow-premium group"
             >
-              <div className="rounded-xl bg-violet-500 p-2.5 text-white shadow-sm shadow-violet-500/20 group-hover:scale-105 transition-transform duration-200">
+              <div className="rounded-xl bg-violet-550 p-2.5 text-white shadow-sm shadow-violet-500/20 group-hover:scale-105 transition-transform duration-200">
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                 </svg>
               </div>
-              <div className="flex-1">
-                <div className="text-sm font-extrabold text-violet-900">تعارض أسعار البيع/الشراء</div>
-                <div className="mt-1 text-xs font-bold text-violet-700/80">
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-black text-violet-900">تعارض أسعار البيع/الشراء</div>
+                <div className="mt-1 text-[11px] font-bold text-violet-700/80 truncate">
                   كشف {priceConflicts.length.toLocaleString('ar-EG')} أصناف تختلف أسعارها بين الفروع
                 </div>
               </div>
@@ -302,7 +302,7 @@ export default function HomePage() {
                 السابق
               </button>
               
-              <div className="rounded-xl bg-slate-100 border border-slate-200/40 px-4.5 py-2 text-xs font-black text-slate-500 tracking-wider">
+              <div className="rounded-xl bg-slate-100 border border-slate-200/40 px-4 py-2 text-xs font-black text-slate-500 tracking-wider">
                 صفحة {safePage.toLocaleString('ar-EG')} من {totalPages.toLocaleString('ar-EG')}
               </div>
               
@@ -346,13 +346,13 @@ function InventorySkeleton() {
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200/60 bg-white shadow-premium">
       <div className="animate-pulse">
-        <div className="flex gap-6 border-b border-slate-100 bg-slate-50/50 px-6 py-4.5">
-          <div className="h-4.5 w-24 rounded bg-slate-200" />
-          <div className="h-4.5 w-60 rounded bg-slate-200" />
-          <div className="h-4.5 w-28 rounded bg-slate-200" />
-          <div className="h-4.5 w-28 rounded bg-slate-200" />
-          <div className="h-4.5 w-28 rounded bg-slate-200" />
-          <div className="h-4.5 w-20 rounded bg-slate-200" />
+        <div className="flex gap-6 border-b border-slate-100 bg-slate-50/50 px-6 py-4">
+          <div className="h-4 w-24 rounded bg-slate-200" />
+          <div className="h-4 w-60 rounded bg-slate-200" />
+          <div className="h-4 w-28 rounded bg-slate-200" />
+          <div className="h-4 w-28 rounded bg-slate-200" />
+          <div className="h-4 w-28 rounded bg-slate-200" />
+          <div className="h-4 w-20 rounded bg-slate-200" />
         </div>
         {Array.from({ length: 8 }).map((_, i) => (
           <div

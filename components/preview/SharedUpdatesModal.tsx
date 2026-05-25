@@ -105,7 +105,7 @@ export function SharedUpdatesModal({ onClose }: SharedUpdatesModalProps) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Header */}
-        <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/50 px-6 py-4.5 shrink-0">
+        <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/50 px-6 py-4 shrink-0">
           <div className="flex items-center gap-3">
             <div className="rounded-xl bg-amber-500/10 p-2.5 text-amber-600 shadow-sm border border-amber-100">
               <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
@@ -292,8 +292,8 @@ export function SharedUpdatesModal({ onClose }: SharedUpdatesModalProps) {
                       <tbody className="divide-y divide-slate-100 text-xs font-bold text-slate-800">
                         {filteredChanges.map((c) => (
                           <tr key={c.code} className="hover:bg-slate-50/40 transition-colors">
-                            <td className="px-6 py-4.5 font-mono text-[11px] text-slate-500">{c.code}</td>
-                            <td className="px-6 py-4.5">
+                            <td className="px-6 py-4 font-mono text-[11px] text-slate-500">{c.code}</td>
+                            <td className="px-6 py-4">
                               {c.type === 'new_product' && (
                                 <span className="rounded-lg bg-green-50 border border-green-200 px-2.5 py-1 text-[10px] font-black text-green-700">صنف جديد</span>
                               )}
@@ -304,7 +304,7 @@ export function SharedUpdatesModal({ onClose }: SharedUpdatesModalProps) {
                                 <span className="rounded-lg bg-blue-50 border border-blue-200 px-2.5 py-1 text-[10px] font-black text-blue-700">تعديل اسم</span>
                               )}
                             </td>
-                            <td className="px-6 py-4.5">
+                            <td className="px-6 py-4">
                               {c.type === 'new_product' && (
                                 <div className="space-y-2">
                                   <div className="font-extrabold text-slate-800 text-sm">{c.name}</div>
