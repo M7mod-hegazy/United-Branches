@@ -113,9 +113,9 @@ export default function HomePage() {
   const resetPage = () => setPage(1)
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto w-full max-w-[1600px] space-y-8">
       {/* Premium Elegant Header & Info Panel */}
-      <div className="mx-auto max-w-7xl relative overflow-hidden rounded-3xl border border-slate-200/40 bg-white/60 p-8 backdrop-blur-md shadow-premium">
+      <div className="relative overflow-hidden rounded-3xl border border-slate-200/40 bg-white/60 p-8 backdrop-blur-md shadow-premium">
         <div className="absolute -left-16 -top-16 h-48 w-48 rounded-full bg-blue-500/5 blur-3xl" />
         <div className="absolute -bottom-16 -right-16 h-48 w-48 rounded-full bg-indigo-500/5 blur-3xl" />
         
@@ -153,7 +153,7 @@ export default function HomePage() {
 
       {/* Notifications & Warning Alerts Section */}
       {!loading && (conflicts.length > 0 || priceConflicts.length > 0 || updatesCount > 0) && (
-        <div className="mx-auto max-w-7xl grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {updatesCount > 0 && (
             <button
               onClick={() => setShowUpdatesModal(true)}
@@ -219,7 +219,7 @@ export default function HomePage() {
       )}
 
       {/* Filter and Search Panel */}
-      <div className="mx-auto max-w-7xl"><SearchFilters
+      <SearchFilters
         search={search}
         branchId={branchId}
         hideZero={hideZero}
@@ -230,11 +230,11 @@ export default function HomePage() {
         onBranchChange={(v) => { setBranchId(v); resetPage() }}
         onHideZeroChange={(v) => { setHideZero(v); resetPage() }}
         onCategoryChange={(v) => { setCategory(v); resetPage() }}
-      /></div>
+      />
 
       {/* Pricing Toggles & Results Counter */}
       {!loading && (
-        <div className="mx-auto max-w-7xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
           <div className="flex items-center gap-2.5 text-sm font-bold text-slate-500">
             <span className="h-2 w-2 rounded-full bg-[#1E6FBF]" />
             <span>العثور على {productCount.toLocaleString('ar-EG')} صنف نشط</span>

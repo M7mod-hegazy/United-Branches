@@ -138,16 +138,25 @@ export function InventoryTable({
                     if (!sourceBranch) return null
                     return (
                       <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
-                        <span className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[9px] font-black bg-blue-50/60 text-[#1E6FBF] border border-blue-100/40 leading-none whitespace-nowrap">
+                        {/* Branch name badge */}
+                        <span className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[9px] font-black bg-blue-50/70 text-[#1E6FBF] border border-blue-100/50 leading-none whitespace-nowrap">
                           <svg className="h-2 w-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                           </svg>
                           {sourceBranch.name}
                         </span>
+                        {/* Upload date badge */}
+                        <span className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[9px] font-black bg-slate-50 text-slate-400 border border-slate-200/60 leading-none whitespace-nowrap">
+                          <svg className="h-2 w-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          {new Date(sourceBranch.uploadedAt).toLocaleDateString('ar-EG', { dateStyle: 'short' })}
+                        </span>
                       </div>
                     )
                   })()}
                 </td>
+
 
                 {/* Branch Quantities & Prices */}
                 {branches.map((branch) => {

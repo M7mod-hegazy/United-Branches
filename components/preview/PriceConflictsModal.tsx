@@ -26,6 +26,25 @@ function isDiffValue(value: number | undefined, allValues: (number | undefined)[
   return value !== defined[0]
 }
 
+// Copy icon (default)
+function IconCopy() {
+  return (
+    <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
+        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+    </svg>
+  )
+}
+
+// Check icon (after copy)
+function IconCheck() {
+  return (
+    <svg className="h-3 w-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+    </svg>
+  )
+}
+
 export function PriceConflictsModal({ conflicts, onClose }: PriceConflictsModalProps) {
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
   const [query, setQuery] = useState('')
@@ -47,11 +66,8 @@ export function PriceConflictsModal({ conflicts, onClose }: PriceConflictsModalP
     )
   }, [conflicts, query])
 
-  function copyPrices(variant: PriceVariant, key: string) {
-    const parts: string[] = []
-    if (variant.sellingPrice != null) parts.push(`سعر البيع: ${variant.sellingPrice}`)
-    if (variant.buyingPrice != null) parts.push(`سعر الشراء: ${variant.buyingPrice}`)
-    navigator.clipboard.writeText(parts.join(' | '))
+  function copyValue(value: number, key: string) {
+    navigator.clipboard.writeText(String(value))
     setCopiedKey(key)
     setTimeout(() => setCopiedKey(null), 1500)
   }
@@ -114,76 +130,93 @@ export function PriceConflictsModal({ conflicts, onClose }: PriceConflictsModalP
               <span className="text-sm font-bold text-slate-400">لا توجد نتائج تطابق البحث</span>
             </div>
           )}
-          
+
           {filtered.map((product) => {
             const allSelling = product.priceVariants.map((v) => v.sellingPrice)
-            const allBuying = product.priceVariants.map((v) => v.buyingPrice)
+            const allBuying  = product.priceVariants.map((v) => v.buyingPrice)
+
             return (
-              <div key={product.code} className="rounded-2xl border border-slate-200/50 bg-slate-50/40 p-5 hover:border-violet-400 transition-all duration-300 shadow-sm">
-                <div className="inline-flex rounded-lg bg-violet-50 px-2.5 py-1 text-xs font-mono font-black text-violet-600 border border-violet-100/30 mb-2">
-                  كود الصنف: {product.code}
+              <div key={product.code} className="rounded-2xl border border-slate-200/50 bg-slate-50/40 p-5 hover:border-violet-300 transition-all duration-300 shadow-sm">
+                {/* Product header */}
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div className="flex-1 min-w-0">
+                    {showNames && (
+                      <div className="text-sm font-extrabold text-slate-800 leading-snug">{product.name}</div>
+                    )}
+                  </div>
+                  <div className="inline-flex shrink-0 rounded-lg bg-violet-50 px-2.5 py-1 text-xs font-mono font-black text-violet-600 border border-violet-100/30">
+                    كود: {product.code}
+                  </div>
                 </div>
-                {showNames && (
-                  <div className="text-sm font-extrabold text-slate-800 mb-4">{product.name}</div>
-                )}
-                
-                <ul className="space-y-3.5 border-t border-slate-100 pt-3.5">
+
+                {/* Branch rows */}
+                <ul className="space-y-2 border-t border-slate-100 pt-3">
                   {product.priceVariants.map((variant) => {
-                    const key = `${product.code}-${variant.branchId}`
-                    const wasCopied = copiedKey === key
                     const sellingDiff = isDiffValue(variant.sellingPrice, allSelling)
-                    const buyingDiff = isDiffValue(variant.buyingPrice, allBuying)
+                    const buyingDiff  = isDiffValue(variant.buyingPrice, allBuying)
+
                     return (
-                      <li key={variant.branchId} className="flex items-center gap-3 text-sm">
-                        <span className="font-extrabold text-slate-400 min-w-32 shrink-0">
+                      <li key={variant.branchId} className="flex items-center gap-2 text-sm">
+
+                        {/* Branch name */}
+                        <span className="font-extrabold text-slate-500 min-w-[100px] shrink-0 text-right text-xs">
                           {variant.branchName}
                         </span>
-                        <span className="text-slate-300">←</span>
-                        <span className="flex-1 flex gap-3.5 flex-wrap">
-                          {variant.sellingPrice != null && (
-                            <span className="font-bold text-slate-800 flex items-center gap-1">
-                              <span className="text-[10px] font-bold text-slate-400">بيع:</span>
-                              {sellingDiff ? (
-                                <mark className="bg-rose-50 text-rose-700 rounded-lg px-2.5 py-0.5 font-black not-italic border border-rose-200/50 shadow-sm">
-                                  {variant.sellingPrice.toLocaleString('ar-EG')}
-                                </mark>
-                              ) : (
-                                <span className="bg-slate-100/80 text-slate-700 px-2.5 py-0.5 rounded-lg border border-slate-200/40">
-                                  {variant.sellingPrice.toLocaleString('ar-EG')}
-                                </span>
-                              )}
-                            </span>
-                          )}
-                          {variant.buyingPrice != null && (
-                            <span className="font-bold text-slate-800 flex items-center gap-1">
-                              <span className="text-[10px] font-bold text-slate-400">شراء:</span>
-                              {buyingDiff ? (
-                                <mark className="bg-amber-50 text-amber-800 rounded-lg px-2.5 py-0.5 font-black not-italic border border-amber-200/50 shadow-sm">
-                                  {variant.buyingPrice.toLocaleString('ar-EG')}
-                                </mark>
-                              ) : (
-                                <span className="bg-slate-100/80 text-slate-700 px-2.5 py-0.5 rounded-lg border border-slate-200/40">
-                                  {variant.buyingPrice.toLocaleString('ar-EG')}
-                                </span>
-                              )}
-                            </span>
-                          )}
-                        </span>
-                        <button
-                          onClick={() => copyPrices(variant, key)}
-                          title="نسخ الأسعار"
-                          className="shrink-0 rounded-lg p-2 text-slate-400 hover:text-[#1E6FBF] hover:bg-blue-50/50 border border-transparent hover:border-blue-100/50 transition-all duration-300 active:scale-90"
-                        >
-                          {wasCopied ? (
-                            <svg className="h-4 w-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                            </svg>
-                          ) : (
-                            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                            </svg>
-                          )}
-                        </button>
+
+                        <span className="text-slate-300 shrink-0">←</span>
+
+                        {/* Selling price + copy */}
+                        {variant.sellingPrice != null ? (
+                          <span className="flex items-center gap-1">
+                            <span className="text-[10px] font-bold text-slate-400 shrink-0">بيع:</span>
+                            {sellingDiff ? (
+                              <mark className="bg-rose-50 text-rose-700 rounded-lg px-2 py-0.5 font-black not-italic border border-rose-200/60 shadow-sm text-xs">
+                                {variant.sellingPrice.toLocaleString('ar-EG')}
+                              </mark>
+                            ) : (
+                              <span className="bg-slate-100/80 text-slate-600 px-2 py-0.5 rounded-lg border border-slate-200/50 text-xs font-bold">
+                                {variant.sellingPrice.toLocaleString('ar-EG')}
+                              </span>
+                            )}
+                            <button
+                              onClick={() => copyValue(variant.sellingPrice!, `${product.code}-${variant.branchId}-sell`)}
+                              title="نسخ سعر البيع"
+                              className="rounded-md p-1 text-slate-350 hover:text-[#1E6FBF] hover:bg-blue-50 border border-transparent hover:border-blue-100/50 transition-all duration-200 active:scale-90"
+                            >
+                              {copiedKey === `${product.code}-${variant.branchId}-sell` ? <IconCheck /> : <IconCopy />}
+                            </button>
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-slate-300 italic">لا يوجد</span>
+                        )}
+
+                        <span className="text-slate-200 shrink-0">|</span>
+
+                        {/* Buying price + copy */}
+                        {variant.buyingPrice != null ? (
+                          <span className="flex items-center gap-1">
+                            <span className="text-[10px] font-bold text-slate-400 shrink-0">شراء:</span>
+                            {buyingDiff ? (
+                              <mark className="bg-amber-50 text-amber-800 rounded-lg px-2 py-0.5 font-black not-italic border border-amber-200/60 shadow-sm text-xs">
+                                {variant.buyingPrice.toLocaleString('ar-EG')}
+                              </mark>
+                            ) : (
+                              <span className="bg-slate-100/80 text-slate-600 px-2 py-0.5 rounded-lg border border-slate-200/50 text-xs font-bold">
+                                {variant.buyingPrice.toLocaleString('ar-EG')}
+                              </span>
+                            )}
+                            <button
+                              onClick={() => copyValue(variant.buyingPrice!, `${product.code}-${variant.branchId}-buy`)}
+                              title="نسخ سعر الشراء"
+                              className="rounded-md p-1 text-slate-350 hover:text-amber-600 hover:bg-amber-50 border border-transparent hover:border-amber-100/50 transition-all duration-200 active:scale-90"
+                            >
+                              {copiedKey === `${product.code}-${variant.branchId}-buy` ? <IconCheck /> : <IconCopy />}
+                            </button>
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-slate-300 italic">لا يوجد</span>
+                        )}
+
                       </li>
                     )
                   })}
