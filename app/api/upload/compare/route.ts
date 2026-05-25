@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import { NextResponse } from 'next/server'
 import { parseExcelBuffer } from '@/lib/excel-parser'
+import { computeChanges } from '@/lib/compare-changes'
 import { connectDB } from '@/lib/mongodb'
 import Branch from '@/models/Branch'
 import Snapshot from '@/models/Snapshot'
@@ -54,58 +55,14 @@ export async function POST(request: Request) {
     .sort({ uploadedAt: -1 })
     .lean() as { products: { code: string; name: string; quantity: number; sellingPrice?: number; buyingPrice?: number }[] } | null
 
-  const oldProductsMap = new Map<string, any>()
-  if (lastSnapshot && lastSnapshot.products) {
-    lastSnapshot.products.forEach((p) => {
-      const codeKey = p.code.trim().toLowerCase()
-      oldProductsMap.set(codeKey, p)
-    })
-  }
+  console.log(`[API/UPLOAD/COMPARE] Dominant branch upload initiated:`);
+  console.log(`- Uploaded Products count: ${uploadedProducts.length}`);
+  console.log(`- Detected Columns:`, detectedColumns);
+  console.log(`- Last Snapshot found: ${lastSnapshot ? 'YES' : 'NO'} (${lastSnapshot?.products?.length ?? 0} products)`);
 
-  const changes: any[] = []
+  const changes = computeChanges(lastSnapshot?.products ?? [], uploadedProducts)
 
-  uploadedProducts.forEach((newProd) => {
-    const codeKey = newProd.code.trim().toLowerCase()
-    const oldProd = oldProductsMap.get(codeKey)
-
-    if (!oldProd) {
-      // New product creation
-      changes.push({
-        code: newProd.code,
-        type: 'new_product',
-        name: newProd.name,
-        sellingPrice: newProd.sellingPrice,
-        buyingPrice: newProd.buyingPrice,
-      })
-    } else {
-      const nameChanged = newProd.name.trim() !== oldProd.name.trim()
-      const sellingChanged = newProd.sellingPrice !== oldProd.sellingPrice
-      const buyingChanged = newProd.buyingPrice !== oldProd.buyingPrice
-
-      if (nameChanged) {
-        changes.push({
-          code: newProd.code,
-          type: 'name_update',
-          name: newProd.name,
-          oldName: oldProd.name,
-          sellingPrice: newProd.sellingPrice,
-          buyingPrice: newProd.buyingPrice,
-        })
-      }
-
-      if (sellingChanged || buyingChanged) {
-        changes.push({
-          code: newProd.code,
-          type: 'price_update',
-          name: newProd.name,
-          sellingPrice: newProd.sellingPrice,
-          oldSellingPrice: oldProd.sellingPrice,
-          buyingPrice: newProd.buyingPrice,
-          oldBuyingPrice: oldProd.buyingPrice,
-        })
-      }
-    }
-  })
+  console.log(`[API/UPLOAD/COMPARE] Total changes detected: ${changes.length}`);
 
   // Suggested default name for the update list
   const formattedDate = new Date().toLocaleDateString('ar-EG', {
@@ -123,3 +80,4 @@ export async function POST(request: Request) {
     detectedColumns,
   })
 }
+

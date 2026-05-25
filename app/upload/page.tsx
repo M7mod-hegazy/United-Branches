@@ -132,50 +132,58 @@ export default function UploadPage() {
   const canSave = !!file && !!branchId && status !== 'uploading'
 
   return (
-    <div className="mx-auto max-w-3xl space-y-7">
+    <div className="mx-auto max-w-3xl space-y-8">
+      
+      {/* Title Header */}
       <div>
-        <span className="text-xs font-bold uppercase tracking-wider text-[#A88554] block mb-1">رفع تقارير الفروع</span>
-        <h1 className="text-3xl font-extrabold tracking-tight text-[#1E2229]">استيراد أرصدة المخزون</h1>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-[#1E6FBF] border border-blue-100 mb-3">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#1E6FBF]" />
+          أدوات البيانات الذكية
+        </span>
+        <h1 className="text-3.5xl font-black tracking-tight text-slate-900 leading-tight">استيراد وأرشفة أرصدة المخزون</h1>
+        <p className="text-sm font-semibold text-slate-400 mt-2">قم برفع تقارير الفروع بصيغة Excel لدمجها فورياً مع أرصدة الفروع المتحدة.</p>
       </div>
 
+      {/* Success Panel */}
       {status === 'success' && successData ? (
-        <div className="rounded-2xl border border-[#A88554]/25 bg-[#FAF6F0] p-8 text-[#1E2229] transition-all duration-300">
-          <div className="mb-5 flex items-center gap-2.5 text-[#A88554]">
-            <div className="rounded-full bg-[#1E2229] p-2 text-white shadow-sm">
-              <svg className="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+        <div className="rounded-3xl border border-emerald-200/60 bg-emerald-50/20 p-8 text-slate-850 shadow-premium transition-all duration-300">
+          <div className="mb-6 flex items-center gap-3 text-emerald-800">
+            <div className="rounded-xl bg-emerald-500 p-2.5 text-white shadow-sm shadow-emerald-500/20">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
             </div>
-            <span className="font-extrabold text-base tracking-wide">
-              {successData.isDominant ? 'تم حفظ البيانات وتعميم التحديث بنجاح' : 'تم استيراد البيانات وحفظها بنجاح'}
+            <span className="font-black text-base tracking-wide">
+              {successData.isDominant ? 'تم حفظ التحديث وتعميم الأسعار بنجاح' : 'تم استيراد وقراءة البيانات وحفظها بنجاح'}
             </span>
           </div>
-          <div className="divide-y divide-[#EAE8E4] text-xs font-semibold text-[#78726A]">
-            <div className="flex justify-between py-3">
-              <span className="text-[#A19D95]">الفرع المستهدف</span>
-              <span className="font-bold text-[#1E2229]">{successData.branchName}</span>
+          
+          <div className="divide-y divide-emerald-100/60 text-xs font-bold text-slate-600">
+            <div className="flex justify-between py-3.5">
+              <span className="text-slate-400">الفرع المستهدف للتقرير</span>
+              <span className="font-extrabold text-slate-900 text-sm">{successData.branchName}</span>
             </div>
-            <div className="flex justify-between py-3">
-              <span className="text-[#A19D95]">الأصناف المستوردة</span>
-              <span className="font-extrabold text-[#1E2229] tracking-wider">{successData.count.toLocaleString('ar-EG')} صنف</span>
+            <div className="flex justify-between py-3.5">
+              <span className="text-slate-400">عدد الأصناف المستوردة</span>
+              <span className="font-black text-slate-900 text-sm tabular-nums">{successData.count.toLocaleString('ar-EG')} صنف</span>
             </div>
             {successData.isDominant && (
               <>
-                <div className="flex justify-between py-3">
-                  <span className="text-[#A19D95]">اسم قائمة التحديث</span>
-                  <span className="font-bold text-[#A88554]">{successData.updateName}</span>
+                <div className="flex justify-between py-3.5">
+                  <span className="text-slate-400">اسم قائمة التحديث المعممة</span>
+                  <span className="font-extrabold text-[#1E6FBF] text-sm">{successData.updateName}</span>
                 </div>
-                <div className="flex justify-between py-3">
-                  <span className="text-[#A19D95]">التعديلات التي تم تعميمها</span>
-                  <span className="font-extrabold text-green-700 tracking-wider">
-                    {successData.changesCount?.toLocaleString('ar-EG')} تعديل
+                <div className="flex justify-between py-3.5">
+                  <span className="text-slate-400">التعديلات السعرية النشطة</span>
+                  <span className="font-black text-green-700 text-sm tabular-nums">
+                    {successData.changesCount?.toLocaleString('ar-EG')} تعديل معمّم
                   </span>
                 </div>
               </>
             )}
-            <div className="flex justify-between py-3">
-              <span className="text-[#A19D95]">الأعمدة المكتشفة</span>
-              <span className="flex gap-1 flex-wrap justify-end">
+            <div className="flex justify-between py-3.5">
+              <span className="text-slate-400">الأعمدة المكتشفة بالملف</span>
+              <span className="flex gap-1.5 flex-wrap justify-end">
                 {successData.detectedColumns.map((col) => {
                   const labels: Record<string, string> = {
                     code: 'الكود',
@@ -185,24 +193,25 @@ export default function UploadPage() {
                     buyingPrice: 'سعر الشراء',
                   }
                   return (
-                    <span key={col} className="rounded px-1.5 py-0.5 text-xs font-bold bg-[#EAE8E4] text-[#1E2229]">
+                    <span key={col} className="rounded-lg px-2 py-0.5 text-[10px] font-black bg-emerald-100/60 text-emerald-800 border border-emerald-200/30">
                       {labels[col] ?? col}
                     </span>
                   )
                 })}
               </span>
             </div>
-            <div className="flex justify-between py-3">
-              <span className="text-[#A19D95]">تاريخ ووقت المعالجة</span>
-              <span className="font-bold text-[#1E2229]">{new Date(successData.uploadedAt).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' })}</span>
+            <div className="flex justify-between py-3.5">
+              <span className="text-slate-400">تاريخ المعالجة والأرشفة</span>
+              <span className="font-extrabold text-slate-900">{new Date(successData.uploadedAt).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' })}</span>
             </div>
           </div>
-          <div className="mt-6 flex gap-3">
-            <a href="/" className="inline-flex items-center justify-center rounded-lg bg-[#1E2229] px-5 py-2.5 text-xs font-bold text-white hover:bg-[#2e343f] transition-all duration-200 shadow-sm">
+          
+          <div className="mt-8 flex gap-3.5 flex-wrap">
+            <a href="/" className="inline-flex items-center justify-center rounded-xl bg-slate-950 px-6 py-3.5 text-xs font-black text-white hover:bg-indigo-900 transition-all duration-300 shadow-premium shadow-slate-900/10 active:scale-95">
               عرض المعاينة الموحدة
             </a>
-            <button onClick={reset} className="rounded-lg border border-[#E2E0D9] bg-white px-5 py-2.5 text-xs font-bold text-[#78726A] hover:border-[#A88554] hover:text-[#A88554] transition-all duration-200">
-              رفع ملف آخر
+            <button onClick={reset} className="rounded-xl border border-slate-200 bg-white px-6 py-3.5 text-xs font-black text-slate-500 hover:border-[#1E6FBF] hover:text-[#1E6FBF] transition-all duration-300 active:scale-95">
+              رفع ملف فرع آخر
             </button>
           </div>
         </div>
@@ -233,49 +242,51 @@ export default function UploadPage() {
         />
       ) : (
         <>
-          <DropZone file={file} onFile={setFile} />
-
-          <div className="rounded-xl border border-[#EAE8E4] bg-white p-6 transition-all duration-300">
-            <BranchSelector branches={branches} value={branchId} onChange={setBranchId} />
+          <div className="rounded-3xl border border-slate-200/50 bg-white p-7 shadow-premium space-y-6">
+            <DropZone file={file} onFile={setFile} />
+            <div className="border-t border-slate-100 pt-6">
+              <BranchSelector branches={branches} value={branchId} onChange={setBranchId} />
+            </div>
           </div>
 
           {status === 'uploading' && <ProgressBar value={progress} />}
 
           {status === 'error' && (
-            <div className="rounded-xl border border-red-200/50 bg-red-50/30 p-5 text-red-900 transition-all duration-300">
-              <div className="mb-2 flex items-center gap-2 text-red-700 font-bold text-sm">
-                <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+            <div className="rounded-2xl border border-red-200/50 bg-red-50/20 p-6 text-red-900 shadow-sm transition-all duration-300">
+              <div className="mb-2 flex items-center gap-2 text-red-700 font-extrabold text-sm">
+                <svg className="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                 </svg>
-                فشلت عملية الاستيراد
+                فشلت معالجة ملف الاستيراد
               </div>
-              <p className="text-xs font-semibold text-red-700">{errorMessage}</p>
-              <button onClick={() => setStatus('idle')} className="mt-3.5 rounded-lg border border-red-200 bg-white px-4 py-2 text-xs font-bold text-red-700 hover:bg-red-50 transition-all duration-200">
-                المحاولة مرة أخرى
+              <p className="text-xs font-bold text-red-600/80 leading-relaxed">{errorMessage}</p>
+              <button onClick={() => setStatus('idle')} className="mt-4 rounded-xl border border-red-200 bg-white px-5 py-2.5 text-xs font-black text-red-700 hover:bg-red-50 transition-all duration-200 active:scale-95">
+                إعادة المحاولة
               </button>
             </div>
           )}
 
-          <div className="flex items-center gap-4 pt-2">
+          <div className="flex items-center gap-4.5 pt-2 flex-wrap">
             <button
               onClick={handleSave}
               disabled={!canSave}
-              className={`rounded-lg px-8 py-3.5 text-xs font-bold tracking-wide transition-all duration-300 shadow-sm ${
+              className={`rounded-xl px-8 py-4 text-xs font-black tracking-wide transition-all duration-300 shadow-premium active:scale-95 ${
                 canSave
-                  ? 'bg-[#1E2229] hover:bg-[#2e343f] text-white cursor-pointer active:scale-95'
-                  : 'bg-[#EAE8E4] text-[#A19D95] cursor-not-allowed opacity-60'
+                  ? 'bg-slate-900 hover:bg-indigo-900 text-white cursor-pointer shadow-slate-900/10'
+                  : 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-60'
               }`}
             >
-              {status === 'uploading' ? 'جاري استيراد البيانات...' : 'حفظ البيانات المحددة'}
+              {status === 'uploading' ? 'جاري استيراد البيانات...' : 'حفظ ومطابقة الملف المرفوع'}
             </button>
-            {!file && <p className="text-xs font-bold text-[#A19D95]">يرجى اختيار ملف Excel أولاً</p>}
-            {file && !branchId && <p className="text-xs font-bold text-[#A88554] animate-pulse">يرجى تحديد الفرع المستهدف لإتمام عملية الحفظ</p>}
+            {!file && <p className="text-xs font-bold text-slate-400">يرجى سحب وإرفاق مستند Excel للبدء في المطابقة</p>}
+            {file && !branchId && <p className="text-xs font-bold text-amber-600 animate-pulse">حدد الفرع المستهدف لإتمام الاستيراد</p>}
           </div>
         </>
       )}
     </div>
   )
 }
+
 
 function buildErrorMessage(status: number, serverMessage?: string): string {
   if (serverMessage) return serverMessage

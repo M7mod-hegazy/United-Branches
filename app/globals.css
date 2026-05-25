@@ -4,13 +4,34 @@
 
 @layer base {
   body {
-    @apply antialiased select-none bg-[#F5F8FC] text-[#1A202C] font-medium;
+    @apply antialiased select-none text-slate-800 font-medium;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    background: radial-gradient(circle at 100% 0%, rgba(243, 248, 255, 0.9) 0%, rgba(248, 250, 252, 1) 100%);
+    min-height: 100vh;
   }
 
   button, input, select, textarea {
-    @apply transition-all duration-200 ease-out focus:outline-none;
+    @apply transition-all duration-300 ease-out focus:outline-none;
   }
+}
+
+/* Custom Scrollbar for sleek, professional looking scroll lists */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(30, 111, 191, 0.6);
 }
 
 * {
@@ -20,3 +41,10 @@
 body {
   margin: 0;
 }
+
+/* Selection Color for Arabic text */
+::selection {
+  background-color: rgba(30, 111, 191, 0.15);
+  color: #1e6fbf;
+}
+

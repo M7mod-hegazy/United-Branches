@@ -14,18 +14,18 @@ interface BranchSelectorProps {
 export function BranchSelector({ branches, value, onChange }: BranchSelectorProps) {
   if (!branches.length) {
     return (
-      <div className="rounded-xl border border-dashed border-[#E2E0D9] p-6 text-center text-sm text-[#78726A] bg-[#FCFAF7]/50">
-        <span>لا توجد فروع مسجلة حالياً. يرجى إضافة فرع جديد من </span>
-        <a href="/admin" className="font-bold text-[#A88554] underline hover:text-[#BD9865] transition-colors">
-          صفحة الإدارة
+      <div className="rounded-2xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-400 bg-slate-50/50 leading-relaxed">
+        <span>لا توجد فروع مسجلة حالياً في النظام. يرجى إضافة فرع جديد من </span>
+        <a href="/admin" className="font-extrabold text-[#1E6FBF] underline hover:text-[#1557A0] transition-colors">
+          لوحة التحكم أولاً
         </a>
       </div>
     )
   }
 
   return (
-    <div className="grid gap-3">
-      <span className="text-xs font-bold uppercase tracking-wider text-[#78726A]">اختر الفرع المستهدف</span>
+    <div className="grid gap-4">
+      <span className="text-xs font-black uppercase tracking-wider text-slate-400">حدد الفرع المستهدف للمستند</span>
       <div className="flex flex-wrap gap-2.5">
         {branches.map((branch) => {
           const selected = value === branch._id
@@ -34,10 +34,10 @@ export function BranchSelector({ branches, value, onChange }: BranchSelectorProp
               key={branch._id}
               type="button"
               onClick={() => onChange(selected ? '' : branch._id)}
-              className={`rounded-full border px-5 py-2 text-xs font-bold transition-all duration-200 ${
+              className={`rounded-2xl border px-6 py-2.5 text-xs font-black transition-all duration-300 active:scale-95 ${
                 selected
-                  ? 'border-[#1E2229] bg-[#1E2229] text-white shadow-sm ring-1 ring-[#1E2229]'
-                  : 'border-[#E2E0D9] bg-white text-[#78726A] hover:border-[#A88554] hover:text-[#A88554]'
+                  ? 'border-[#1E6FBF] bg-[#1E6FBF] text-white shadow-premium shadow-blue-500/10'
+                  : 'border-slate-200 bg-white text-slate-500 hover:border-[#1E6FBF] hover:text-[#1E6FBF] hover:shadow-sm'
               }`}
             >
               {branch.name}
@@ -45,11 +45,14 @@ export function BranchSelector({ branches, value, onChange }: BranchSelectorProp
           )
         })}
       </div>
-      {!value && <p className="text-[11px] font-semibold text-[#A88554] mt-1 flex items-center gap-1">
-        <span className="h-1 w-1 rounded-full bg-[#A88554]" />
-        اختر فرعاً لتتمكن من حفظ الملف
-      </p>}
+      {!value && (
+        <p className="text-xs font-bold text-amber-600 mt-1 flex items-center gap-1.5 animate-pulse">
+          <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+          يرجى تحديد الفرع لتتمكن من حفظ ملف الأرصدة
+        </p>
+      )}
     </div>
   )
 }
+
 

@@ -26,25 +26,29 @@ export function SearchFilters({
   onCategoryChange,
 }: SearchFiltersProps) {
   return (
-    <section className="grid gap-4 rounded-xl border border-[#C8D9EC] bg-white p-5 md:grid-cols-[1fr_220px_220px_auto] items-center">
+    <section className="grid gap-4.5 rounded-2xl border border-slate-200/50 bg-white p-5 md:grid-cols-[1fr_220px_220px_auto] items-center shadow-premium transition-all duration-300">
+      
+      {/* Search Input Box */}
       <div className="relative">
         <input
           value={search}
           onChange={(event) => onSearchChange(event.target.value)}
           placeholder="ابحث بالكود أو اسم الصنف..."
-          className="h-11 w-full rounded-lg border border-[#C8D9EC] bg-[#F5F8FC] px-4 pl-10 text-sm placeholder-[#8AAAC8] focus:border-[#1E6FBF] focus:bg-white focus:ring-1 focus:ring-[#1E6FBF]"
+          className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-5 pl-11 text-sm font-bold text-slate-800 placeholder-slate-400 focus:border-[#1E6FBF] focus:bg-white focus:ring-2 focus:ring-blue-100"
         />
-        <span className="absolute left-3 top-3.5 text-[#5A7A9A]">
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <span className="absolute left-4 top-3.5 text-slate-400">
+          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </span>
       </div>
+
+      {/* Branch Selector Box */}
       <div className="relative">
         <select
           value={branchId}
           onChange={(event) => onBranchChange(event.target.value)}
-          className="h-11 w-full rounded-lg border border-[#C8D9EC] bg-[#F5F8FC] px-4 text-sm text-[#1A202C] appearance-none focus:border-[#1E6FBF] focus:bg-white focus:ring-1 focus:ring-[#1E6FBF]"
+          className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-5 text-sm font-bold text-slate-800 appearance-none focus:border-[#1E6FBF] focus:bg-white focus:ring-2 focus:ring-blue-100"
         >
           <option value="">جميع الفروع</option>
           {branches.map((branch) => (
@@ -53,17 +57,19 @@ export function SearchFilters({
             </option>
           ))}
         </select>
-        <span className="absolute left-3 top-4 pointer-events-none text-[#5A7A9A]">
-          <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        <span className="absolute left-4 top-4.5 pointer-events-none text-slate-400">
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
           </svg>
         </span>
       </div>
+
+      {/* Category Selector Box */}
       <div className="relative">
         <select
           value={category}
           onChange={(event) => onCategoryChange(event.target.value)}
-          className="h-11 w-full rounded-lg border border-[#C8D9EC] bg-[#F5F8FC] px-4 text-sm text-[#1A202C] appearance-none focus:border-[#1E6FBF] focus:bg-white focus:ring-1 focus:ring-[#1E6FBF]"
+          className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-5 text-sm font-bold text-slate-800 appearance-none focus:border-[#1E6FBF] focus:bg-white focus:ring-2 focus:ring-blue-100"
         >
           <option value="">جميع الفئات</option>
           {categories.map((cat) => (
@@ -72,21 +78,24 @@ export function SearchFilters({
             </option>
           ))}
         </select>
-        <span className="absolute left-3 top-4 pointer-events-none text-[#5A7A9A]">
-          <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        <span className="absolute left-4 top-4.5 pointer-events-none text-slate-400">
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
           </svg>
         </span>
       </div>
-      <label className="flex h-11 items-center gap-3 rounded-lg border border-[#C8D9EC] bg-[#F5F8FC] px-4 cursor-pointer select-none hover:border-[#1E6FBF] hover:bg-white">
+
+      {/* Checkbox Switch */}
+      <label className="flex h-12 items-center gap-3.5 rounded-xl border border-slate-200 bg-slate-50/50 px-5 cursor-pointer select-none hover:border-[#1E6FBF] hover:bg-white transition-all duration-300">
         <input
           type="checkbox"
           checked={hideZero}
           onChange={(event) => onHideZeroChange(event.target.checked)}
-          className="h-4 w-4 rounded border-[#C8D9EC] text-[#1E6FBF] focus:ring-[#1E6FBF] accent-[#1E6FBF]"
+          className="h-5 w-5 rounded-lg border-slate-300 text-[#1E6FBF] focus:ring-[#1E6FBF] accent-[#1E6FBF] cursor-pointer"
         />
-        <span className="whitespace-nowrap text-sm font-medium text-[#5A7A9A]">إخفاء الأرصدة الصفرية</span>
+        <span className="whitespace-nowrap text-sm font-extrabold text-slate-500 hover:text-slate-800 transition-colors">إخفاء الأرصدة الصفرية</span>
       </label>
     </section>
   )
 }
+

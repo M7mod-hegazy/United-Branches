@@ -81,59 +81,65 @@ export function BranchManager() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-8">
+      
+      {/* Database control actions */}
+      <div className="flex justify-between items-center bg-slate-50/50 p-4 rounded-2xl border border-slate-200/50 backdrop-blur-sm shadow-sm">
         <button
           onClick={clearAllSnapshots}
-          className="rounded-lg border border-red-200/60 bg-white px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50/50 hover:border-red-300 transition-all duration-200 active:scale-95 shadow-sm"
+          className="rounded-xl border border-rose-200 bg-rose-50/30 px-5 py-2.5 text-xs font-black text-rose-700 hover:bg-rose-100/50 transition-all duration-300 active:scale-95 shadow-sm"
         >
-          مسح قاعدة البيانات
+          مسح قاعدة البيانات كاملة
         </button>
         <button
           onClick={logout}
-          className="rounded-lg border border-[#E2E0D9] bg-white px-4 py-2 text-xs font-bold text-[#78726A] hover:border-[#1E2229] hover:text-[#1E2229] transition-all duration-200 active:scale-95 shadow-sm"
+          className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs font-black text-slate-500 hover:border-[#1E6FBF] hover:text-[#1E6FBF] transition-all duration-300 active:scale-95 shadow-sm"
         >
           تسجيل الخروج
         </button>
       </div>
 
-      <form onSubmit={addBranch} className="flex gap-3 rounded-xl border border-[#EAE8E4] bg-white p-4 transition-all duration-300 shadow-sm">
+      {/* Add new branch form */}
+      <form onSubmit={addBranch} className="flex gap-4 rounded-2xl border border-slate-200/55 bg-white p-5 shadow-premium">
         <input
           value={name}
           onChange={(event) => setName(event.target.value)}
-          placeholder="أدخل اسم الفرع الجديد..."
-          className="h-11 flex-1 rounded-lg border border-[#E2E0D9] bg-[#FCFAF7]/30 px-3.5 text-xs font-semibold text-[#1E2229] placeholder-[#A19D95] outline-none transition-all duration-200 focus:border-[#A88554] focus:bg-white focus:ring-1 focus:ring-[#A88554]"
+          placeholder="أدخل اسم الفرع الجديد المراد تسجيله..."
+          className="h-12 flex-1 rounded-xl border border-slate-200 bg-slate-50/50 px-4 text-xs font-bold text-slate-850 placeholder-slate-400 outline-none transition-all duration-300 focus:border-[#1E6FBF] focus:bg-white focus:ring-2 focus:ring-blue-100 shadow-sm"
         />
-        <button className="h-11 rounded-lg bg-[#1E2229] hover:bg-[#2e343f] px-6 text-xs font-bold tracking-wide text-white transition-all duration-200 active:scale-95 shadow-sm">
+        <button className="h-12 rounded-xl bg-slate-900 hover:bg-indigo-900 px-6 text-xs font-black text-white transition-all duration-300 active:scale-95 shadow-premium shadow-slate-900/10 shrink-0">
           إضافة الفرع
         </button>
       </form>
 
+      {/* Notification banner */}
       {message && (
-        <div className="rounded-xl border border-[#A88554]/20 bg-[#FAF6F0] px-4 py-3 text-xs font-bold text-[#A88554] flex items-center gap-2 transition-all duration-300 shadow-sm">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#A88554]" />
+        <div className="rounded-xl border border-blue-200/50 bg-blue-50/20 px-5 py-4 text-xs font-black text-[#1E6FBF] flex items-center gap-2.5 transition-all duration-300 shadow-sm animate-pulse">
+          <span className="h-2 w-2 rounded-full bg-[#1E6FBF]" />
           {message}
         </div>
       )}
 
-      <div className="overflow-hidden rounded-xl border border-[#EAE8E4] bg-white transition-all duration-300 shadow-sm divide-y divide-[#EAE8E4]">
+      {/* Branches List Container */}
+      <div className="overflow-hidden rounded-2xl border border-slate-200/60 bg-white shadow-premium divide-y divide-slate-100">
         {branches.map((branch) => (
-          <div key={branch._id} className="flex items-center gap-3 p-4 transition-colors duration-150 hover:bg-[#FCFAF7]/40">
+          <div key={branch._id} className="flex items-center gap-4 p-5 transition-colors duration-200 hover:bg-slate-50/30">
             {editingId === branch._id ? (
               <input
                 value={editingName}
                 onChange={(event) => setEditingName(event.target.value)}
-                className="h-10 flex-1 rounded-lg border border-[#E2E0D9] px-3.5 text-xs font-semibold text-[#1E2229] focus:border-[#A88554] focus:ring-1 focus:ring-[#A88554] outline-none transition-all duration-200"
+                className="h-10 flex-1 rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-bold text-slate-800 focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300"
               />
             ) : (
-              <div className="flex-1 text-xs font-bold text-[#1E2229]">{branch.name}</div>
+              <div className="flex-1 text-sm font-extrabold text-slate-800">{branch.name}</div>
             )}
+            
             {editingId === branch._id ? (
               <button
                 onClick={() => updateBranch(branch._id)}
-                className="rounded-lg bg-[#A88554] hover:bg-[#BD9865] px-4 py-2 text-xs font-bold text-white transition-all duration-200 active:scale-95 shadow-sm"
+                className="rounded-xl bg-blue-600 hover:bg-blue-700 px-5 py-2 text-xs font-black text-white transition-all duration-300 active:scale-95 shadow-sm shrink-0"
               >
-                حفظ
+                حفظ الاسم
               </button>
             ) : (
               <button
@@ -141,16 +147,16 @@ export function BranchManager() {
                   setEditingId(branch._id)
                   setEditingName(branch.name)
                 }}
-                className="rounded-lg border border-[#E2E0D9] px-4 py-2 text-xs font-bold text-[#78726A] hover:border-[#1E2229] hover:text-[#1E2229] transition-all duration-200 active:scale-95 bg-white shadow-sm"
+                className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs font-black text-slate-500 hover:border-[#1E6FBF] hover:text-[#1E6FBF] transition-all duration-300 active:scale-95 shadow-sm"
               >
-                تعديل
+                تعديل الاسم
               </button>
             )}
             <button
               onClick={() => deleteBranch(branch._id)}
-              className="rounded-lg border border-red-100 px-4 py-2 text-xs font-bold text-red-600 hover:border-red-200 hover:bg-red-50/30 transition-all duration-200 active:scale-95 bg-white shadow-sm"
+              className="rounded-xl border border-rose-100 bg-rose-50/20 px-5 py-2.5 text-xs font-black text-rose-600 hover:bg-rose-50 hover:text-rose-800 transition-all duration-300 active:scale-95 border-dashed"
             >
-              حذف
+              حذف الفرع
             </button>
           </div>
         ))}
@@ -162,3 +168,4 @@ export function BranchManager() {
     </div>
   )
 }
+

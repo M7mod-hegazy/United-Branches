@@ -90,12 +90,15 @@ export function SnapshotManager({ branches, onDeleted }: SnapshotManagerProps) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      
       {/* Retention setting */}
-      <div className="rounded-xl border border-[#EAE8E4] bg-white p-4 space-y-3">
-        <div className="text-xs font-extrabold uppercase tracking-wider text-[#A88554]">إعداد الاحتفاظ بالرفعات</div>
-        <div className="flex items-center gap-3 flex-wrap">
-          <label className="flex items-center gap-2 text-xs font-semibold text-[#78726A] cursor-pointer">
+      <div className="rounded-2xl border border-slate-200/50 bg-white p-5 space-y-4 shadow-premium transition-all duration-300">
+        <div className="text-[10px] font-black uppercase tracking-wider text-[#1E6FBF] bg-blue-50/50 px-3 py-1 rounded-full w-fit border border-blue-100/40">
+          قواعد أرشفة والاحتفاظ بالرفعات التاريخية
+        </div>
+        <div className="flex items-center gap-4 flex-wrap">
+          <label className="flex items-center gap-2 text-xs font-bold text-slate-500 cursor-pointer select-none">
             <input
               type="checkbox"
               checked={isUnlimited}
@@ -108,10 +111,11 @@ export function SnapshotManager({ branches, onDeleted }: SnapshotManagerProps) {
                   setRetentionInput(String(retentionLimit || 10))
                 }
               }}
-              className="rounded animate-pulse"
+              className="h-4.5 w-4.5 rounded border-slate-350 text-[#1E6FBF] focus:ring-[#1E6FBF] accent-[#1E6FBF]"
             />
-            بلا حد (غير محدود)
+            احتفاظ غير محدود (بلا حد أقصى)
           </label>
+          
           {!isUnlimited && (
             <input
               type="number"
@@ -119,74 +123,83 @@ export function SnapshotManager({ branches, onDeleted }: SnapshotManagerProps) {
               max={50}
               value={retentionInput}
               onChange={(e) => setRetentionInput(e.target.value)}
-              className="h-9 w-20 rounded-lg border border-[#E2E0D9] px-3 text-xs font-semibold text-[#1E2229] focus:border-[#A88554] focus:ring-1 focus:ring-[#A88554] outline-none"
+              className="h-10 w-24 rounded-xl border border-slate-200 px-3 text-xs font-bold text-slate-800 focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300 shadow-sm"
             />
           )}
+          
           <button
             onClick={saveRetention}
-            className="rounded-lg bg-[#1E2229] hover:bg-[#2e343f] px-4 py-2 text-xs font-bold text-white transition-all duration-200 active:scale-95"
+            className="rounded-xl bg-slate-900 hover:bg-indigo-900 active:scale-95 px-5 h-10 text-xs font-black text-white transition-all duration-300 shadow-premium shadow-slate-950/5 shrink-0"
           >
-            حفظ
+            حفظ القاعدة
           </button>
         </div>
         {!isUnlimited && (
-          <p className="text-xs text-[#A19D95]">
-            الاحتفاظ بأحدث {retentionInput || '…'} رفعة لكل فرع (النطاق: ١–٥٠)
+          <p className="text-xs font-semibold text-slate-400">
+            سيقوم النظام تلقائياً بالاحتفاظ بأحدث {retentionInput || '…'} رفعة لكل فرع وحذف ما قبلها لتوفير المساحة (النطاق المسموح: ١–٥٠).
           </p>
         )}
       </div>
 
       {message && (
-        <div className="rounded-xl border border-[#A88554]/20 bg-[#FAF6F0] px-4 py-3 text-xs font-bold text-[#A88554] flex items-center gap-2">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#A88554]" />
+        <div className="rounded-xl border border-blue-200/50 bg-blue-50/20 px-5 py-4 text-xs font-black text-[#1E6FBF] flex items-center gap-2.5 transition-all duration-300 shadow-sm animate-pulse">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#1E6FBF]" />
           {message}
         </div>
       )}
 
       {/* Per-branch snapshot list */}
-      <div className="space-y-2">
-        <div className="text-xs font-extrabold uppercase tracking-wider text-[#A88554]">رفعات الفروع</div>
+      <div className="space-y-3.5">
+        <div className="text-xs font-black uppercase tracking-wider text-slate-400">سجل رفعات الفروع الحالية</div>
+        
         {branches.map((branch) => (
-          <div key={branch._id} className="rounded-xl border border-[#EAE8E4] bg-white overflow-hidden">
+          <div key={branch._id} className="rounded-2xl border border-slate-200/60 bg-white overflow-hidden shadow-premium">
             <button
               onClick={() => toggleBranch(branch._id)}
-              className="w-full flex items-center justify-between px-4 py-3 text-xs font-bold text-[#1E2229] hover:bg-[#FCFAF7]/40 transition-colors"
+              className="w-full flex items-center justify-between px-5 py-4 text-xs font-black text-slate-800 hover:bg-slate-50/30 transition-colors"
             >
-              <span>{branch.name}</span>
+              <span className="text-sm font-extrabold text-slate-800">{branch.name}</span>
               <svg
-                className={`h-4 w-4 text-[#A19D95] transition-transform ${expanded === branch._id ? 'rotate-180' : ''}`}
+                className={`h-4.5 w-4.5 text-slate-400 transition-transform duration-300 ${expanded === branch._id ? 'rotate-180' : ''}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
+            
             {expanded === branch._id && (
-              <div className="border-t border-[#EAE8E4] divide-y divide-[#EAE8E4]">
+              <div className="border-t border-slate-100 divide-y divide-slate-100 bg-slate-50/10">
                 {!snapshots[branch._id] ? (
-                  <div className="px-4 py-3 text-xs text-[#A19D95] font-semibold">جاري التحميل…</div>
+                  <div className="px-5 py-5 text-xs text-slate-400 font-bold">جاري تحميل السجل…</div>
                 ) : snapshots[branch._id].length === 0 ? (
-                  <div className="px-4 py-3 text-xs text-[#A19D95] font-semibold">لا توجد رفعات</div>
+                  <div className="px-5 py-5 text-xs text-slate-400 font-bold">لا توجد أي رفعات مخزنة لهذا الفرع.</div>
                 ) : (
                   snapshots[branch._id].map((snap) => (
-                    <div key={snap._id} className="flex items-center gap-3 px-4 py-3">
+                    <div key={snap._id} className="flex items-center gap-4 px-5 py-4.5">
                       <div className="flex-1 min-w-0">
-                        <div className="text-xs font-bold text-[#1E2229]">
+                        <div className="text-xs font-extrabold text-slate-800">
                           {new Date(snap.uploadedAt).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' })}
                         </div>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-xs text-[#78726A] font-semibold">{snap.productsCount.toLocaleString('ar-EG')} صنف</span>
-                          <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${snap.hasPrices ? 'bg-green-50 text-green-700' : 'bg-[#F5F5F0] text-[#A19D95]'}`}>
+                        <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                          <span className="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200/30 tabular-nums">
+                            {snap.productsCount.toLocaleString('ar-EG')} صنف
+                          </span>
+                          <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg border ${
+                            snap.hasPrices
+                              ? 'bg-green-50 border-green-200/60 text-green-700'
+                              : 'bg-slate-50 border-slate-200/60 text-slate-400'
+                          }`}>
                             {snap.hasPrices ? 'كميات وأسعار' : 'كميات فقط'}
                           </span>
                         </div>
                       </div>
                       <button
                         onClick={() => deleteSnapshot(snap._id, branch._id)}
-                        className="rounded-lg border border-red-100 px-3 py-1.5 text-xs font-bold text-red-600 hover:border-red-200 hover:bg-red-50/30 transition-all duration-200 shrink-0"
+                        className="rounded-xl border border-rose-100 bg-rose-50/20 px-4.5 py-2 text-xs font-black text-rose-600 hover:bg-rose-50 hover:text-rose-800 transition-all duration-300 active:scale-95 border-dashed"
                       >
-                        حذف
+                        حذف اللقطة
                       </button>
                     </div>
                   ))

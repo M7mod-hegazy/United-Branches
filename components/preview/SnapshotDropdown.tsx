@@ -24,11 +24,11 @@ export function SnapshotDropdown({ branchId, selectedSnapshotId, onChange }: Sna
   }, [branchId])
 
   return (
-    <div className="relative mt-2">
+    <div className="relative mt-2.5">
       <select
         value={selectedSnapshotId || ''}
         onChange={(event) => onChange(branchId, event.target.value)}
-        className="w-full rounded-lg border border-[#C8D9EC] bg-white pl-7 pr-3 py-1.5 text-xs font-medium text-[#5A7A9A] appearance-none focus:border-[#1E6FBF] focus:ring-1 focus:ring-[#1E6FBF]"
+        className="w-full rounded-xl border border-slate-200 bg-white pl-8 pr-4 py-2 text-[11px] font-black text-slate-500 hover:text-slate-800 appearance-none focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100 transition-all duration-300 cursor-pointer"
       >
         <option value="">آخر تقرير رفع</option>
         {snapshots.map((snapshot) => (
@@ -37,11 +37,12 @@ export function SnapshotDropdown({ branchId, selectedSnapshotId, onChange }: Sna
           </option>
         ))}
       </select>
-      <span className="absolute left-2.5 top-2.5 pointer-events-none text-[#5A7A9A]">
+      <span className="absolute left-3.5 top-3 pointer-events-none text-slate-400">
         <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
         </svg>
       </span>
     </div>
   )
 }
+
