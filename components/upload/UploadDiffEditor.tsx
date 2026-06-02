@@ -46,7 +46,9 @@ export function UploadDiffEditor({
   const [manualCode, setManualCode] = useState('')
   const [manualName, setManualName] = useState('')
   const [manualSelling, setManualSelling] = useState('')
+  const [manualOldSelling, setManualOldSelling] = useState('')
   const [manualBuying, setManualBuying] = useState('')
+  const [manualOldBuying, setManualOldBuying] = useState('')
   const [manualError, setManualError] = useState('')
 
   // Split changes by type (excluding excluded codes)
@@ -85,6 +87,33 @@ export function UploadDiffEditor({
     setChanges((prev) => prev.filter((c) => c.code !== code))
   }
 
+  // Handle manual code entry and auto-prefill fields
+  function handleCodeChange(val: string) {
+    setManualCode(val)
+    setManualError('')
+
+    if (val.trim()) {
+      const existing = initialAllProducts.find(
+        (p: any) => String(p.code).trim().toLowerCase() === val.trim().toLowerCase()
+      )
+      if (existing) {
+        if (existing.name && !manualName) {
+          setManualName(existing.name)
+        }
+        if (existing.sellingPrice != null) {
+          setManualOldSelling(existing.sellingPrice.toString())
+        } else {
+          setManualOldSelling('')
+        }
+        if (existing.buyingPrice != null) {
+          setManualOldBuying(existing.buyingPrice.toString())
+        } else {
+          setManualOldBuying('')
+        }
+      }
+    }
+  }
+
   // Add a manual entry based on explicitly selected type
   function addManualEntry() {
     const code = manualCode.trim()
@@ -102,7 +131,9 @@ export function UploadDiffEditor({
     }
 
     const selling = manualSelling !== '' ? parseFloat(manualSelling) : undefined
+    const oldSelling = manualOldSelling !== '' ? parseFloat(manualOldSelling) : undefined
     const buying = manualBuying !== '' ? parseFloat(manualBuying) : undefined
+    const oldBuying = manualOldBuying !== '' ? parseFloat(manualOldBuying) : undefined
 
     // Smart lookup: does this code already exist in the product database?
     const existing = initialAllProducts.find(
@@ -130,23 +161,38 @@ export function UploadDiffEditor({
         setManualError('كود الصنف هذا غير موجود كصنف سابق. يرجى اختيار نوع التعديل "صنف جديد"')
         return
       }
-      const oldName = existing.name ?? ''
-      const oldSelling = existing.sellingPrice
-      const oldBuying = existing.buyingPrice
 
+      const hasSelling = manualSelling !== ''
+      const hasOldSelling = manualOldSelling !== ''
+      if (hasSelling !== hasOldSelling) {
+        setManualError('عند تعديل سعر البيع، يجب إدخال السعر القديم والجديد معاً')
+        return
+      }
+
+      const hasBuying = manualBuying !== ''
+      const hasOldBuying = manualOldBuying !== ''
+      if (hasBuying !== hasOldBuying) {
+        setManualError('عند تعديل سعر الشراء، يجب إدخال السعر القديم والجديد معاً')
+        return
+      }
+
+      if (!hasSelling && !hasBuying) {
+        setManualError('يرجى إدخال تعديل سعر البيع (القديم والجديد) أو سعر الشراء (القديم والجديد)')
+        return
+      }
+
+      const oldName = existing.name ?? ''
       const targetName = name || oldName
-      const targetSelling = selling !== undefined ? selling : oldSelling
-      const targetBuying = buying !== undefined ? buying : oldBuying
 
       entry = {
         code,
         type: 'price_update',
         name: targetName,
         oldName: targetName.trim() !== oldName.trim() ? oldName : undefined,
-        sellingPrice: targetSelling,
-        oldSellingPrice: oldSelling,
-        buyingPrice: targetBuying,
-        oldBuyingPrice: oldBuying,
+        sellingPrice: hasSelling ? selling : undefined,
+        oldSellingPrice: hasOldSelling ? oldSelling : undefined,
+        buyingPrice: hasBuying ? buying : undefined,
+        oldBuyingPrice: hasOldBuying ? oldBuying : undefined,
         isManual: true,
       }
       setActiveTab('price')
@@ -174,7 +220,9 @@ export function UploadDiffEditor({
     setManualCode('')
     setManualName('')
     setManualSelling('')
+    setManualOldSelling('')
     setManualBuying('')
+    setManualOldBuying('')
   }
 
   async function handleShareUpdate() {
@@ -352,7 +400,7 @@ export function UploadDiffEditor({
               <input
                 type="text"
                 value={manualCode}
-                onChange={(e) => { setManualCode(e.target.value); setManualError('') }}
+                onChange={(e) => handleCodeChange(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && addManualEntry()}
                 placeholder="مثال: 12.001"
                 className="h-10 w-full rounded-xl border border-indigo-200 bg-white px-3 text-xs font-bold text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all duration-300"
@@ -360,7 +408,7 @@ export function UploadDiffEditor({
             </div>
 
             {/* Name */}
-            <div className={`space-y-1.5 ${manualType === 'name_update' ? 'lg:col-span-2' : ''}`}>
+            <div className={`space-y-1.5 ${manualType !== 'new_product' ? 'lg:col-span-3' : ''}`}>
               <label className="text-[10px] font-black text-slate-500 block">
                 {manualType === 'price_update' && 'اسم الصنف (اختياري لتغيير الاسم)'}
                 {manualType === 'name_update' && 'الاسم الجديد للصنف *'}
@@ -376,21 +424,72 @@ export function UploadDiffEditor({
               />
             </div>
 
-            {/* Price fields or Name Update Button */}
-            {manualType === 'name_update' ? (
-              <div className="space-y-1.5">
-                <button
-                  type="button"
-                  onClick={addManualEntry}
-                  className="h-10 w-full flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 px-4 text-xs font-black text-white transition-all duration-200 shadow-sm shadow-indigo-500/25"
-                >
-                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                  </svg>
-                  إضافة تعديل الاسم
-                </button>
-              </div>
-            ) : (
+            {/* Price fields depending on manualType */}
+            {manualType === 'price_update' && (
+              <>
+                {/* Selling Price - Old */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black text-slate-500 block">سعر البيع القديم (ج.م)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={manualOldSelling}
+                    onChange={(e) => setManualOldSelling(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && addManualEntry()}
+                    placeholder="0.00"
+                    className="h-10 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold text-slate-850 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all duration-300"
+                  />
+                </div>
+
+                {/* Selling Price - New */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black text-slate-500 block">سعر البيع الجديد (ج.م)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={manualSelling}
+                    onChange={(e) => setManualSelling(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && addManualEntry()}
+                    placeholder="0.00"
+                    className="h-10 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold text-slate-850 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all duration-300"
+                  />
+                </div>
+
+                {/* Buying Price - Old */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black text-slate-500 block">سعر الشراء القديم (ج.م)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={manualOldBuying}
+                    onChange={(e) => setManualOldBuying(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && addManualEntry()}
+                    placeholder="0.00"
+                    className="h-10 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold text-slate-850 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all duration-300"
+                  />
+                </div>
+
+                {/* Buying Price - New */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black text-slate-500 block">سعر الشراء الجديد (ج.م)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={manualBuying}
+                    onChange={(e) => setManualBuying(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && addManualEntry()}
+                    placeholder="0.00"
+                    className="h-10 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold text-slate-850 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all duration-300"
+                  />
+                </div>
+              </>
+            )}
+
+            {manualType === 'new_product' && (
               <>
                 {/* Selling Price */}
                 <div className="space-y-1.5">
@@ -407,45 +506,51 @@ export function UploadDiffEditor({
                   />
                 </div>
 
-                {/* Buying Price + Add Button */}
+                {/* Buying Price */}
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black text-slate-500 block">سعر الشراء (ج.م)</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      value={manualBuying}
-                      onChange={(e) => setManualBuying(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && addManualEntry()}
-                      placeholder="0.00"
-                      className="h-10 flex-1 min-w-0 rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all duration-300"
-                    />
-                    <button
-                      type="button"
-                      onClick={addManualEntry}
-                      className="h-10 shrink-0 flex items-center gap-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 px-4 text-xs font-black text-white transition-all duration-200 shadow-sm shadow-indigo-500/25"
-                    >
-                      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                      </svg>
-                      إضافة
-                    </button>
-                  </div>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={manualBuying}
+                    onChange={(e) => setManualBuying(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && addManualEntry()}
+                    placeholder="0.00"
+                    className="h-10 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all duration-300"
+                  />
                 </div>
               </>
             )}
           </div>
 
-          {/* Inline validation error */}
-          {manualError && (
-            <div className="mt-3 flex items-center gap-2 text-xs font-bold text-rose-600">
-              <svg className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+          {/* Action Zone - Elegant Full Width Footer */}
+          <div className="mt-5 pt-4 border-t border-indigo-100/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+            {manualError ? (
+              <div className="flex items-center gap-2 text-xs font-bold text-rose-600">
+                <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                </svg>
+                {manualError}
+              </div>
+            ) : (
+              <span className="text-[10px] font-bold text-slate-400/80">
+                {manualType === 'price_update' && '* في تعديل السعر، عند تعديل فئة (البيع أو الشراء) يلزم إدخال السعرين القديم والجديد معاً'}
+                {manualType === 'name_update' && '* الحقول المميزة بنجمة مطلوبة لتعديل اسم الصنف'}
+                {manualType === 'new_product' && '* الحقول المميزة بنجمة مطلوبة لإضافة صنف جديد'}
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={addManualEntry}
+              className="h-10 w-full sm:w-auto min-w-[180px] flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 px-6 text-xs font-black text-white transition-all duration-200 shadow-sm shadow-indigo-500/25"
+            >
+              <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
-              {manualError}
-            </div>
-          )}
+              إضافة التعديل للتعميم
+            </button>
+          </div>
         </div>
       </div>
 
