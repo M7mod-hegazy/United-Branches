@@ -53,14 +53,21 @@ export function SharedUpdatesModal({ onClose }: SharedUpdatesModalProps) {
   const CARDS_PER_PAGE = 10
 
   useEffect(() => {
-    fetch('/api/shared-updates')
-      .then((r) => r.json())
+    fetch('/api/shared-updates?t=' + Date.now())
+      .then((r) => {
+        if (!r.ok) throw new Error('API error')
+        return r.json()
+      })
       .then((data) => {
         setUpdates(Array.isArray(data) ? data : [])
         setCardPage(1)
         setLoading(false)
       })
-      .catch(() => setLoading(false))
+      .catch((err) => {
+        console.error('Error loading shared updates:', err)
+        setUpdates([])
+        setLoading(false)
+      })
   }, [])
 
   async function handleSelectUpdate(id: string) {
@@ -71,14 +78,23 @@ export function SharedUpdatesModal({ onClose }: SharedUpdatesModalProps) {
     setDetailsTab('all')
 
     try {
-      const response = await fetch(`/api/shared-updates/${id}`)
+      const response = await fetch(`/api/shared-updates/${id}?t=` + Date.now())
+      if (!response.ok) {
+        throw new Error('Failed to fetch details')
+      }
       const data = await response.json()
+      if (data.error) {
+        throw new Error(data.error)
+      }
       setDetails(data)
       setLoadingDetails(false)
-    } catch {
+    } catch (err) {
+      console.error('Error fetching details:', err)
+      setDetails(null)
       setLoadingDetails(false)
     }
   }
+
 
   // Filtered detail changes based on tab and search query
   const filteredChanges = useMemo(() => {

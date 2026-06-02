@@ -33,7 +33,7 @@ export default function HomePage() {
 
   useEffect(() => {
     const fetchCount = () => {
-      fetch('/api/shared-updates')
+      fetch('/api/shared-updates?t=' + Date.now())
         .then((r) => r.json())
         .then((data) => {
           if (Array.isArray(data)) {

@@ -8,6 +8,8 @@ interface RouteContext {
   params: Promise<{ id: string }>
 }
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: Request, context: RouteContext) {
   try {
     const { id } = await context.params
@@ -24,8 +26,16 @@ export async function GET(request: Request, context: RouteContext) {
       return NextResponse.json({ error: 'Update not found' }, { status: 404 })
     }
 
-    return NextResponse.json(update)
+    // Resilient fallback just in case
+    const safeUpdate = {
+      ...update,
+      changes: Array.isArray(update.changes) ? update.changes : []
+    }
+
+    return NextResponse.json(safeUpdate)
   } catch (err: any) {
+    console.error(`[API/SHARED-UPDATES/[ID]] Error for id ${context.params}:`, err)
     return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 })
   }
 }
+
