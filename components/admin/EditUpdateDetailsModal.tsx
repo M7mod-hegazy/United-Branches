@@ -34,7 +34,6 @@ export function EditUpdateDetailsModal({
   const [error, setError] = useState('')
 
   const [activeTab, setActiveTab] = useState<TabType>('price')
-  const [showAddForm, setShowAddForm] = useState(false)
 
   // Manual entry states inside Edit modal
   const [manualType, setManualType] = useState<'price_update' | 'name_update' | 'new_product'>('price_update')
@@ -172,7 +171,6 @@ export function EditUpdateDetailsModal({
     setManualOldSelling('')
     setManualBuying('')
     setManualOldBuying('')
-    setShowAddForm(false)
   }
 
   async function handleSaveChanges() {
@@ -197,7 +195,7 @@ export function EditUpdateDetailsModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md">
       <div 
-        className="relative flex flex-col w-full max-w-5xl min-h-[680px] max-h-[90vh] rounded-3xl border border-slate-100 bg-white shadow-2xl overflow-hidden"
+        className="relative flex flex-col w-full max-w-5xl h-[85vh] rounded-3xl border border-slate-100 bg-white shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -243,177 +241,138 @@ export function EditUpdateDetailsModal({
                 >
                   <span className="text-[9px] font-black text-indigo-700 block uppercase tracking-wider">
                     {tab === 'price' && 'تعديلات الأسعار'}
-                    {tab === 'name' && 'تعديل الأسم�            {/* ── Sleek Trigger Button / Collapsed State ── */}
-            {!showAddForm ? (
-              <div className="flex justify-between items-center shrink-0 border border-slate-200/50 bg-slate-50/30 rounded-2xl p-4">
-                <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-indigo-600 animate-pulse" />
-                  <span className="text-xs font-black text-slate-700">بنود التحديث المعتمدة في هذا التبويب:</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShowAddForm(true)}
-                  className="rounded-xl border border-indigo-150 bg-indigo-50/60 hover:bg-indigo-50 px-4 py-2 text-xs font-black text-indigo-700 transition-all duration-300 active:scale-95 flex items-center gap-1.5 shadow-sm"
-                >
-                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                  </svg>
-                  إضافة صنف أو بند جديد لهذا التعميم
+                    {tab === 'name' && 'تعديل الأسماء'}
+                    {tab === 'new' && 'أصناف جديدة'}
+                  </span>
+                  <span className="text-2xl font-black text-indigo-950 mt-1 block tabular-nums">
+                    {tab === 'price' && priceChanges.length}
+                    {tab === 'name' && nameChanges.length}
+                    {tab === 'new' && newChanges.length}
+                  </span>
                 </button>
+              ))}
+            </div>
+
+            {/* ── Manual Add Form inside Edit Modal ────────────────── */}
+            <div className="relative overflow-hidden rounded-xl border border-indigo-200/50 bg-gradient-to-br from-indigo-50/20 to-violet-50/10 p-5 shrink-0">
+              {/* Selector */}
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-indigo-100/50 pb-3 mb-4">
+                <span className="text-xs font-black text-indigo-900">إضافة بند جديد إلى هذا التعميم</span>
+                <div className="flex gap-1.5 p-1 rounded-xl bg-indigo-100/50">
+                  {(['price_update', 'name_update', 'new_product'] as const).map((type) => (
+                    <button
+                      key={type}
+                      type="button"
+                      onClick={() => { setManualType(type); setManualError('') }}
+                      className={`py-1 px-3 rounded-lg text-[9px] font-black transition-all duration-300 ${
+                        manualType === type ? 'bg-indigo-600 text-white shadow-sm' : 'text-indigo-700 hover:bg-indigo-200/30'
+                      }`}
+                    >
+                      {type === 'price_update' && 'تعديل سعر'}
+                      {type === 'name_update' && 'تعديل اسم'}
+                      {type === 'new_product' && 'صنف جديد'}
+                    </button>
+                  ))}
+                </div>
               </div>
-            ) : (
-              /* ── Manual Add Form inside Edit Modal ────────────────── */
-              <div className="relative overflow-hidden rounded-xl border border-indigo-200/50 bg-gradient-to-br from-indigo-50/20 to-violet-50/10 p-5 shrink-0">
-                {/* Selector */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-indigo-100/50 pb-3 mb-4">
-                  <span className="text-xs font-black text-indigo-900">إضافة بند جديد إلى هذا التعميم</span>
-                  <div className="flex items-center gap-3">
-                    <div className="flex gap-1.5 p-1 rounded-xl bg-indigo-100/50">
-                      {(['price_update', 'name_update', 'new_product'] as const).map((type) => (
-                        <button
-                          key={type}
-                          type="button"
-                          onClick={() => { setManualType(type); setManualError('') }}
-                          className={`py-1 px-3 rounded-lg text-[9px] font-black transition-all duration-300 ${
-                            manualType === type ? 'bg-indigo-600 text-white shadow-sm' : 'text-indigo-700 hover:bg-indigo-200/30'
-                          }`}
-                        >
-                          {type === 'price_update' && 'تعديل سعر'}
-                          {type === 'name_update' && 'تعديل اسم'}
-                          {type === 'new_product' && 'صنف جديد'}
-                        </button>
-                      ))}
+
+              {/* Grid fields */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-black text-slate-500 block">الكود *</label>
+                  <input
+                    value={manualCode}
+                    onChange={(e) => { setManualCode(e.target.value); setManualError('') }}
+                    placeholder="مثال: 12.001"
+                    className="h-9 w-full rounded-xl border border-indigo-200 bg-white px-3 text-xs font-bold text-slate-800 focus:border-indigo-500 outline-none"
+                  />
+                </div>
+
+                <div className={`space-y-1.5 ${manualType !== 'new_product' ? 'lg:col-span-3' : ''}`}>
+                  <label className="text-[9px] font-black text-slate-500 block">
+                    {manualType === 'price_update' ? 'الاسم' : 'الاسم الجديد *'}
+                  </label>
+                  <input
+                    value={manualName}
+                    onChange={(e) => { setManualName(e.target.value); setManualError('') }}
+                    placeholder="اسم الصنف..."
+                    className="h-9 w-full rounded-xl border border-indigo-200 bg-white px-3 text-xs font-bold text-slate-800 focus:border-indigo-500 outline-none"
+                  />
+                </div>
+
+                {manualType === 'price_update' && (
+                  <>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-black text-slate-500 block">سعر البيع القديم</label>
+                      <input
+                        type="number"
+                        value={manualOldSelling}
+                        onChange={(e) => setManualOldSelling(e.target.value)}
+                        placeholder="0.00"
+                        className="h-9 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold"
+                      />
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setShowAddForm(false)}
-                      className="text-xs font-black text-slate-400 hover:text-slate-650 transition-colors"
-                    >
-                      إلغاء ×
-                    </button>
-                  </div>
-                </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-black text-slate-500 block">سعر البيع الجديد</label>
+                      <input
+                        type="number"
+                        value={manualSelling}
+                        onChange={(e) => setManualSelling(e.target.value)}
+                        placeholder="0.00"
+                        className="h-9 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-black text-slate-500 block">سعر الشراء القديم</label>
+                      <input
+                        type="number"
+                        value={manualOldBuying}
+                        onChange={(e) => setManualOldBuying(e.target.value)}
+                        placeholder="0.00"
+                        className="h-9 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-black text-slate-500 block">سعر الشراء الجديد</label>
+                      <input
+                        type="number"
+                        value={manualBuying}
+                        onChange={(e) => setManualBuying(e.target.value)}
+                        placeholder="0.00"
+                        className="h-9 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold"
+                      />
+                    </div>
+                  </>
+                )}
 
-                {/* Grid fields */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
-                  <div className="space-y-1.5">
-                    <label className="text-[9px] font-black text-slate-500 block">الكود *</label>
-                    <input
-                      value={manualCode}
-                      onChange={(e) => { setManualCode(e.target.value); setManualError('') }}
-                      placeholder="مثال: 12.001"
-                      className="h-9 w-full rounded-xl border border-indigo-200 bg-white px-3 text-xs font-bold text-slate-800 focus:border-indigo-500 outline-none"
-                    />
-                  </div>
-
-                  <div className={`space-y-1.5 ${manualType !== 'new_product' ? 'lg:col-span-3' : ''}`}>
-                    <label className="text-[9px] font-black text-slate-500 block">
-                      {manualType === 'price_update' ? 'الاسم' : 'الاسم الجديد *'}
-                    </label>
-                    <input
-                      value={manualName}
-                      onChange={(e) => { setManualName(e.target.value); setManualError('') }}
-                      placeholder="اسم الصنف..."
-                      className="h-9 w-full rounded-xl border border-indigo-200 bg-white px-3 text-xs font-bold text-slate-800 focus:border-indigo-500 outline-none"
-                    />
-                  </div>
-
-                  {manualType === 'price_update' && (
-                    <>
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-black text-slate-500 block">سعر البيع القديم</label>
-                        <input
-                          type="number"
-                          value={manualOldSelling}
-                          onChange={(e) => setManualOldSelling(e.target.value)}
-                          placeholder="0.00"
-                          className="h-9 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold"
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-black text-slate-500 block">سعر البيع الجديد</label>
-                        <input
-                          type="number"
-                          value={manualSelling}
-                          onChange={(e) => setManualSelling(e.target.value)}
-                          placeholder="0.00"
-                          className="h-9 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold"
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-black text-slate-500 block">سعر الشراء القديم</label>
-                        <input
-                          type="number"
-                          value={manualOldBuying}
-                          onChange={(e) => setManualOldBuying(e.target.value)}
-                          placeholder="0.00"
-                          className="h-9 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold"
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-black text-slate-500 block">سعر الشراء الجديد</label>
-                        <input
-                          type="number"
-                          value={manualBuying}
-                          onChange={(e) => setManualBuying(e.target.value)}
-                          placeholder="0.00"
-                          className="h-9 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold"
-                        />
-                      </div>
-                    </>
-                  )}
-
-                  {manualType === 'new_product' && (
-                    <>
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-black text-slate-500 block">سعر البيع</label>
-                        <input
-                          type="number"
-                          value={manualSelling}
-                          onChange={(e) => setManualSelling(e.target.value)}
-                          placeholder="0.00"
-                          className="h-9 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold"
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-black text-slate-500 block">سعر الشراء</label>
-                        <input
-                          type="number"
-                          value={manualBuying}
-                          onChange={(e) => setManualBuying(e.target.value)}
-                          placeholder="0.00"
-                          className="h-9 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold"
-                        />
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                {/* Form Action */}
-                <div className="mt-4 pt-3 border-t border-indigo-100/50 flex justify-between items-center gap-3">
-                  <span className="text-[9px] font-bold text-rose-500">{manualError}</span>
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setShowAddForm(false)}
-                      className="h-9 rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-500 hover:bg-slate-50 transition-all duration-200"
-                    >
-                      إلغاء
-                    </button>
-                    <button
-                      type="button"
-                      onClick={addManualEntry}
-                      className="h-9 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-5 text-xs font-black text-white transition-all duration-200 active:scale-95"
-                    >
-                      إضافة البند للتعميم
-                    </button>
-                  </div>
-                </div>
+                {manualType === 'new_product' && (
+                  <>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-black text-slate-500 block">سعر البيع</label>
+                      <input
+                        type="number"
+                        value={manualSelling}
+                        onChange={(e) => setManualSelling(e.target.value)}
+                        placeholder="0.00"
+                        className="h-9 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-black text-slate-500 block">سعر الشراء</label>
+                      <input
+                        type="number"
+                        value={manualBuying}
+                        onChange={(e) => setManualBuying(e.target.value)}
+                        placeholder="0.00"
+                        className="h-9 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold"
+                      />
+                    </div>
+                  </>
+                )}
               </div>
-            )}
 
-            {/* Changes table */}
-            <div className="flex-1 min-h-[280px] overflow-y-auto rounded-xl border border-slate-200 bg-white">ndigo-100/50 flex justify-between items-center gap-3">
+              {/* Form Action */}
+              <div className="mt-4 pt-3 border-t border-indigo-100/50 flex justify-between items-center gap-3">
                 <span className="text-[9px] font-bold text-rose-500">{manualError}</span>
                 <button
                   type="button"
