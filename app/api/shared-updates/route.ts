@@ -40,3 +40,15 @@ export async function GET() {
   }
 }
 
+export async function DELETE() {
+  try {
+    await connectDB()
+    const result = await SharedUpdate.deleteMany({})
+    return NextResponse.json({ success: true, deleted: result.deletedCount })
+  } catch (err: any) {
+    console.error('[API/SHARED-UPDATES/DELETE] Error:', err)
+    return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 })
+  }
+}
+
+

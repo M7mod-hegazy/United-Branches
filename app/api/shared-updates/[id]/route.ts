@@ -44,3 +44,55 @@ export async function GET(request: Request, context: RouteContext) {
   }
 }
 
+export async function DELETE(request: Request, context: RouteContext) {
+  try {
+    const { id } = await context.params
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ error: 'Invalid update ID' }, { status: 400 })
+    }
+
+    await connectDB()
+    const deleted = await SharedUpdate.findByIdAndDelete(id)
+    if (!deleted) {
+      return NextResponse.json({ error: 'Update not found' }, { status: 404 })
+    }
+
+    return NextResponse.json({ success: true })
+  } catch (err: any) {
+    console.error(`[API/SHARED-UPDATES/[ID]/DELETE] Error for id ${context.params}:`, err)
+    return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 })
+  }
+}
+
+export async function PATCH(request: Request, context: RouteContext) {
+  try {
+    const { id } = await context.params
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ error: 'Invalid update ID' }, { status: 400 })
+    }
+
+    const body = await request.json()
+    const { name } = body
+    if (!name || !name.trim()) {
+      return NextResponse.json({ error: 'Name is required' }, { status: 400 })
+    }
+
+    await connectDB()
+    const updated = await SharedUpdate.findByIdAndUpdate(
+      id,
+      { name: name.trim() },
+      { new: true }
+    )
+
+    if (!updated) {
+      return NextResponse.json({ error: 'Update not found' }, { status: 404 })
+    }
+
+    return NextResponse.json(updated)
+  } catch (err: any) {
+    console.error(`[API/SHARED-UPDATES/[ID]/PATCH] Error for id ${context.params}:`, err)
+    return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 })
+  }
+}
+
+

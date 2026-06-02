@@ -1,4 +1,5 @@
 import { BranchManager } from '@/components/admin/BranchManager'
+import { SharedUpdateManager } from '@/components/admin/SharedUpdateManager'
 
 export default function AdminPage() {
   return (
@@ -12,7 +13,9 @@ export default function AdminPage() {
         <p className="text-sm font-semibold text-slate-400 mt-2">تسجيل الفروع الجديدة، ضبط نسب وقواعد الاحتفاظ بالرفعات التاريخية، وإدارة السجلات الاحتياطية.</p>
       </div>
       <BranchManager />
+      <SharedUpdateManager />
     </div>
   )
 }
+
 
