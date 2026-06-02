@@ -157,11 +157,6 @@ export function UploadDiffEditor({
       }
       setActiveTab('new')
     } else if (manualType === 'price_update') {
-      if (!existing) {
-        setManualError('كود الصنف هذا غير موجود كصنف سابق. يرجى اختيار نوع التعديل "صنف جديد"')
-        return
-      }
-
       const hasSelling = manualSelling !== ''
       const hasOldSelling = manualOldSelling !== ''
       if (hasSelling !== hasOldSelling) {
@@ -181,7 +176,7 @@ export function UploadDiffEditor({
         return
       }
 
-      const oldName = existing.name ?? ''
+      const oldName = existing?.name ?? ''
       const targetName = name || oldName
 
       entry = {
@@ -198,10 +193,6 @@ export function UploadDiffEditor({
       setActiveTab('price')
     } else {
       // name_update
-      if (!existing) {
-        setManualError('كود الصنف هذا غير موجود كصنف سابق. يرجى اختيار نوع التعديل "صنف جديد"')
-        return
-      }
       if (!name) {
         setManualError('يرجى إدخال الاسم الجديد لتعديل الاسم')
         return
@@ -210,7 +201,7 @@ export function UploadDiffEditor({
         code,
         type: 'name_update',
         name,
-        oldName: existing.name ?? '',
+        oldName: existing?.name ?? '',
         isManual: true,
       }
       setActiveTab('name')
