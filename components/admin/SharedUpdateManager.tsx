@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { EditUpdateDetailsModal } from './EditUpdateDetailsModal'
 
 interface SharedUpdateSummary {
   _id: string
@@ -18,6 +19,8 @@ export function SharedUpdateManager() {
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState('')
   const [editingName, setEditingName] = useState('')
+  const [editingDetailsId, setEditingDetailsId] = useState<string | null>(null)
+  const [editingDetailsName, setEditingDetailsName] = useState('')
   const [message, setMessage] = useState('')
 
   async function loadUpdates() {
@@ -170,15 +173,26 @@ export function SharedUpdateManager() {
               {/* Actions */}
               <div className="flex items-center gap-2 shrink-0 self-end md:self-auto">
                 {editingId !== up._id && (
-                  <button
-                    onClick={() => {
-                      setEditingId(up._id)
-                      setEditingName(up.name)
-                    }}
-                    className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-black text-slate-500 hover:border-[#1E6FBF] hover:text-[#1E6FBF] transition-all duration-300 active:scale-95 shadow-sm"
-                  >
-                    تعديل الاسم
-                  </button>
+                  <>
+                    <button
+                      onClick={() => {
+                        setEditingId(up._id)
+                        setEditingName(up.name)
+                      }}
+                      className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-black text-slate-500 hover:border-[#1E6FBF] hover:text-[#1E6FBF] transition-all duration-300 active:scale-95 shadow-sm"
+                    >
+                      تعديل الاسم
+                    </button>
+                    <button
+                      onClick={() => {
+                        setEditingDetailsId(up._id)
+                        setEditingDetailsName(up.name)
+                      }}
+                      className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-black text-indigo-600 hover:border-indigo-600 hover:bg-indigo-50/20 transition-all duration-300 active:scale-95 shadow-sm"
+                    >
+                      تعديل التفاصيل
+                    </button>
+                  </>
                 )}
                 <button
                   onClick={() => deleteUpdate(up._id, up.name)}
@@ -190,6 +204,19 @@ export function SharedUpdateManager() {
             </div>
           ))}
         </div>
+      )}
+
+      {editingDetailsId && (
+        <EditUpdateDetailsModal
+          updateId={editingDetailsId}
+          updateName={editingDetailsName}
+          onClose={() => setEditingDetailsId(null)}
+          onSuccess={() => {
+            setEditingDetailsId(null)
+            loadUpdates()
+            setMessage('تم حفظ وتعميم تعديلات البنود بنجاح')
+          }}
+        />
       )}
     </div>
   )

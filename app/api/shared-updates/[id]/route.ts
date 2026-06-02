@@ -72,15 +72,31 @@ export async function PATCH(request: Request, context: RouteContext) {
     }
 
     const body = await request.json()
-    const { name } = body
-    if (!name || !name.trim()) {
-      return NextResponse.json({ error: 'Name is required' }, { status: 400 })
+    const { name, changes } = body
+
+    const updateData: any = {}
+    if (name !== undefined) {
+      if (!name || !name.trim()) {
+        return NextResponse.json({ error: 'Name is required' }, { status: 400 })
+      }
+      updateData.name = name.trim()
+    }
+
+    if (changes !== undefined) {
+      if (!Array.isArray(changes)) {
+        return NextResponse.json({ error: 'Changes must be an array' }, { status: 400 })
+      }
+      updateData.changes = changes
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json({ error: 'No update data provided' }, { status: 400 })
     }
 
     await connectDB()
     const updated = await SharedUpdate.findByIdAndUpdate(
       id,
-      { name: name.trim() },
+      { $set: updateData },
       { new: true }
     )
 
