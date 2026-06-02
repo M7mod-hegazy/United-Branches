@@ -163,8 +163,8 @@ export function UploadDiffEditor({
           }`}
         >
           <span className="text-[10px] font-black text-amber-700 block uppercase tracking-wide">تعديلات الأسعار المكتشفة</span>
-          <span className="text-2.5xl font-black text-amber-900 tracking-wider mt-1 block tabular-nums">
-            {priceChanges.length.toLocaleString('ar-EG')}
+          <span className="text-4xl font-black text-amber-900 tracking-wider mt-1 block tabular-nums">
+            {priceChanges.length.toLocaleString('en-US')}
           </span>
         </button>
 
@@ -178,8 +178,8 @@ export function UploadDiffEditor({
           }`}
         >
           <span className="text-[10px] font-black text-blue-700 block uppercase tracking-wide">تعديل مسميات الأصناف</span>
-          <span className="text-2.5xl font-black text-blue-900 tracking-wider mt-1 block tabular-nums">
-            {nameChanges.length.toLocaleString('ar-EG')}
+          <span className="text-4xl font-black text-blue-900 tracking-wider mt-1 block tabular-nums">
+            {nameChanges.length.toLocaleString('en-US')}
           </span>
         </button>
 
@@ -193,8 +193,8 @@ export function UploadDiffEditor({
           }`}
         >
           <span className="text-[10px] font-black text-green-700 block uppercase tracking-wide">أصناف جديدة مكتشفة</span>
-          <span className="text-2.5xl font-black text-green-900 tracking-wider mt-1 block tabular-nums">
-            {newChanges.length.toLocaleString('ar-EG')}
+          <span className="text-4xl font-black text-green-900 tracking-wider mt-1 block tabular-nums">
+            {newChanges.length.toLocaleString('en-US')}
           </span>
         </button>
       </div>
@@ -284,7 +284,7 @@ export function UploadDiffEditor({
                     {activeTab === 'price' && (
                       <>
                         <td className="px-6 py-4 text-slate-400 font-mono">
-                          {item.oldSellingPrice != null ? `${item.oldSellingPrice.toLocaleString('ar-EG')} ج.م` : '—'}
+                          {item.oldSellingPrice != null ? `${item.oldSellingPrice.toLocaleString('en-US')} ج.م` : '—'}
                         </td>
                         <td className="px-6 py-4">
                           <input
@@ -296,7 +296,7 @@ export function UploadDiffEditor({
                           />
                         </td>
                         <td className="px-6 py-4 text-slate-400 font-mono">
-                          {item.oldBuyingPrice != null ? `${item.oldBuyingPrice.toLocaleString('ar-EG')} ج.م` : '—'}
+                          {item.oldBuyingPrice != null ? `${item.oldBuyingPrice.toLocaleString('en-US')} ج.م` : '—'}
                         </td>
                         <td className="px-6 py-4">
                           <input

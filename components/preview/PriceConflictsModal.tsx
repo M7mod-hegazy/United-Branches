@@ -86,7 +86,7 @@ export function PriceConflictsModal({ conflicts, onClose }: PriceConflictsModalP
           <div>
             <h2 className="text-lg font-black text-slate-900">أصناف بأسعار بيع/شراء متعارضة</h2>
             <p className="text-xs font-bold text-slate-400 mt-1">
-              العثور على {filtered.length.toLocaleString('ar-EG')} من أصل {conflicts.length.toLocaleString('ar-EG')} منتج متعارض السعر
+              العثور على <span className="text-sm font-black text-violet-650">{filtered.length.toLocaleString('en-US')}</span> من أصل <span className="text-sm font-black text-violet-650">{conflicts.length.toLocaleString('en-US')}</span> منتج متعارض السعر
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -170,12 +170,12 @@ export function PriceConflictsModal({ conflicts, onClose }: PriceConflictsModalP
                           <span className="flex items-center gap-1">
                             <span className="text-[10px] font-bold text-slate-400 shrink-0">بيع:</span>
                             {sellingDiff ? (
-                              <mark className="bg-rose-50 text-rose-700 rounded-lg px-2 py-0.5 font-black not-italic border border-rose-200/60 shadow-sm text-xs">
-                                {variant.sellingPrice.toLocaleString('ar-EG')}
+                              <mark className="bg-rose-50 text-rose-700 rounded-lg px-2 py-0.5 font-black not-italic border border-rose-200/60 shadow-sm text-sm">
+                                {variant.sellingPrice.toLocaleString('en-US')}
                               </mark>
                             ) : (
-                              <span className="bg-slate-100/80 text-slate-600 px-2 py-0.5 rounded-lg border border-slate-200/50 text-xs font-bold">
-                                {variant.sellingPrice.toLocaleString('ar-EG')}
+                              <span className="bg-slate-100/80 text-slate-600 px-2 py-0.5 rounded-lg border border-slate-200/50 text-sm font-black">
+                                {variant.sellingPrice.toLocaleString('en-US')}
                               </span>
                             )}
                             <button
@@ -197,12 +197,12 @@ export function PriceConflictsModal({ conflicts, onClose }: PriceConflictsModalP
                           <span className="flex items-center gap-1">
                             <span className="text-[10px] font-bold text-slate-400 shrink-0">شراء:</span>
                             {buyingDiff ? (
-                              <mark className="bg-amber-50 text-amber-800 rounded-lg px-2 py-0.5 font-black not-italic border border-amber-200/60 shadow-sm text-xs">
-                                {variant.buyingPrice.toLocaleString('ar-EG')}
+                              <mark className="bg-amber-50 text-amber-800 rounded-lg px-2 py-0.5 font-black not-italic border border-amber-200/60 shadow-sm text-sm">
+                                {variant.buyingPrice.toLocaleString('en-US')}
                               </mark>
                             ) : (
-                              <span className="bg-slate-100/80 text-slate-600 px-2 py-0.5 rounded-lg border border-slate-200/50 text-xs font-bold">
-                                {variant.buyingPrice.toLocaleString('ar-EG')}
+                              <span className="bg-slate-100/80 text-slate-600 px-2 py-0.5 rounded-lg border border-slate-200/50 text-sm font-black">
+                                {variant.buyingPrice.toLocaleString('en-US')}
                               </span>
                             )}
                             <button

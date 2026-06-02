@@ -156,7 +156,7 @@ export function SharedUpdatesModal({ onClose }: SharedUpdatesModalProps) {
                     <div className="text-[10px] font-bold text-slate-400 mt-2 flex justify-between items-center">
                       <span>الفرع: {up.branchName}</span>
                       <span className="font-mono text-slate-400">
-                        {new Date(up.createdAt).toLocaleDateString('ar-EG', { month: 'numeric', day: 'numeric' })}
+                        {new Date(up.createdAt).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })}
                       </span>
                     </div>
 
@@ -210,7 +210,7 @@ export function SharedUpdatesModal({ onClose }: SharedUpdatesModalProps) {
                     <div>
                       <h4 className="text-sm font-black text-slate-800">{details.name}</h4>
                       <p className="text-[10px] text-slate-400 font-bold mt-1">
-                        تم التعميم في {new Date(details.createdAt).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' })}
+                        تم التعميم في {new Date(details.createdAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}
                       </p>
                     </div>
 

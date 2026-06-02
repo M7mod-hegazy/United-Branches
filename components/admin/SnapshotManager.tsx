@@ -180,11 +180,11 @@ export function SnapshotManager({ branches, onDeleted }: SnapshotManagerProps) {
                     <div key={snap._id} className="flex items-center gap-4 px-5 py-4">
                       <div className="flex-1 min-w-0">
                         <div className="text-xs font-extrabold text-slate-800">
-                          {new Date(snap.uploadedAt).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' })}
+                          {new Date(snap.uploadedAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}
                         </div>
                         <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                          <span className="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200/30 tabular-nums">
-                            {snap.productsCount.toLocaleString('ar-EG')} صنف
+                          <span className="text-xs font-black text-slate-500 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200/30 tabular-nums">
+                            {snap.productsCount.toLocaleString('en-US')} صنف
                           </span>
                           <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg border ${
                             snap.hasPrices

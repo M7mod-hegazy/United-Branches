@@ -150,7 +150,7 @@ export function InventoryTable({
                           <svg className="h-2 w-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
-                          {new Date(sourceBranch.uploadedAt).toLocaleDateString('ar-EG', { dateStyle: 'short' })}
+                          {new Date(sourceBranch.uploadedAt).toLocaleDateString('en-US', { dateStyle: 'short' })}
                         </span>
                       </div>
                     )
@@ -166,26 +166,26 @@ export function InventoryTable({
                     <td key={branch.id} className="border-l border-slate-100 px-5 py-4 tabular-nums align-middle">
                       <div className="flex flex-col gap-1">
                         {/* Quantity */}
-                        <div className={`text-sm font-extrabold ${qty === 0 ? 'text-slate-300' : 'text-slate-900'}`}>
-                          {qty === 0 ? '—' : qty.toLocaleString('ar-EG')}
+                        <div className={`text-lg font-black ${qty === 0 ? 'text-slate-300' : 'text-slate-900'}`}>
+                          {qty === 0 ? '—' : qty.toLocaleString('en-US')}
                         </div>
 
                         {/* Prices */}
                         {(showSellingPrice || showBuyingPrice) && variant && (
-                          <div className="flex flex-col gap-0.5 border-t border-dashed border-slate-100 pt-1 mt-0.5 text-[10px]">
+                          <div className="flex flex-col gap-0.5 border-t border-dashed border-slate-100 pt-1 mt-0.5 text-xs">
                             {showSellingPrice && variant.sellingPrice != null && (
                               <div className="flex items-center justify-between gap-2">
                                 <span className="text-slate-400 font-semibold">بيع</span>
-                                <span className="font-black text-amber-600">
-                                  {variant.sellingPrice.toLocaleString('ar-EG')}
+                                <span className="font-black text-amber-600 text-xs">
+                                  {variant.sellingPrice.toLocaleString('en-US')}
                                 </span>
                               </div>
                             )}
                             {showBuyingPrice && variant.buyingPrice != null && (
                               <div className="flex items-center justify-between gap-2">
                                 <span className="text-slate-400 font-semibold">شراء</span>
-                                <span className="font-black text-emerald-600">
-                                  {variant.buyingPrice.toLocaleString('ar-EG')}
+                                <span className="font-black text-emerald-600 text-xs">
+                                  {variant.buyingPrice.toLocaleString('en-US')}
                                 </span>
                               </div>
                             )}
@@ -197,8 +197,8 @@ export function InventoryTable({
                 })}
 
                 {/* Total Quantity */}
-                <td className="sticky left-0 z-20 bg-white group-hover:bg-blue-50/30 border-r border-slate-100 px-5 py-4 font-black tabular-nums text-sm text-[#1E6FBF] transition-colors">
-                  {product.total.toLocaleString('ar-EG')}
+                <td className="sticky left-0 z-20 bg-white group-hover:bg-blue-50/30 border-r border-slate-100 px-5 py-4 font-black tabular-nums text-lg text-[#1E6FBF] transition-colors">
+                  {product.total.toLocaleString('en-US')}
                 </td>
               </tr>
             ))}

@@ -97,7 +97,7 @@ export function NameConflictsModal({ conflicts, onClose }: NameConflictsModalPro
           <div>
             <h2 className="text-lg font-black text-slate-900">أصناف بأسماء متعارضة بين الفروع</h2>
             <p className="text-xs font-bold text-slate-400 mt-1">
-              العثور على {filtered.length.toLocaleString('ar-EG')} من أصل {conflicts.length.toLocaleString('ar-EG')} منتج متعارض الاسم
+              العثور على <span className="text-sm font-black text-[#1E6FBF]">{filtered.length.toLocaleString('en-US')}</span> من أصل <span className="text-sm font-black text-[#1E6FBF]">{conflicts.length.toLocaleString('en-US')}</span> منتج متعارض الاسم
             </p>
           </div>
           <button

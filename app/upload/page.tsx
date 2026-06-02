@@ -165,7 +165,7 @@ export default function UploadPage() {
             </div>
             <div className="flex justify-between py-3.5">
               <span className="text-slate-400">عدد الأصناف المستوردة</span>
-              <span className="font-black text-slate-900 text-sm tabular-nums">{successData.count.toLocaleString('ar-EG')} صنف</span>
+              <span className="font-black text-slate-900 text-base tabular-nums">{successData.count.toLocaleString('en-US')} صنف</span>
             </div>
             {successData.isDominant && (
               <>
@@ -173,10 +173,10 @@ export default function UploadPage() {
                   <span className="text-slate-400">اسم قائمة التحديث المعممة</span>
                   <span className="font-extrabold text-[#1E6FBF] text-sm">{successData.updateName}</span>
                 </div>
-                <div className="flex justify-between py-3.5">
+                 <div className="flex justify-between py-3.5">
                   <span className="text-slate-400">التعديلات السعرية النشطة</span>
-                  <span className="font-black text-green-700 text-sm tabular-nums">
-                    {successData.changesCount?.toLocaleString('ar-EG')} تعديل معمّم
+                  <span className="font-black text-green-700 text-base tabular-nums">
+                    {successData.changesCount?.toLocaleString('en-US')} تعديل معمّم
                   </span>
                 </div>
               </>
@@ -202,7 +202,7 @@ export default function UploadPage() {
             </div>
             <div className="flex justify-between py-3.5">
               <span className="text-slate-400">تاريخ المعالجة والأرشفة</span>
-              <span className="font-extrabold text-slate-900">{new Date(successData.uploadedAt).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' })}</span>
+              <span className="font-extrabold text-slate-900">{new Date(successData.uploadedAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}</span>
             </div>
           </div>
           

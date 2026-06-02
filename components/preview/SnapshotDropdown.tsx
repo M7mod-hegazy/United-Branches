@@ -33,7 +33,7 @@ export function SnapshotDropdown({ branchId, selectedSnapshotId, onChange }: Sna
         <option value="">آخر تقرير رفع</option>
         {snapshots.map((snapshot) => (
           <option key={snapshot._id} value={snapshot._id}>
-            {new Date(snapshot.uploadedAt).toLocaleDateString('ar-EG', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+            {new Date(snapshot.uploadedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
           </option>
         ))}
       </select>

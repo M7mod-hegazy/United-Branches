@@ -65,7 +65,7 @@ export async function POST(request: Request) {
   console.log(`[API/UPLOAD/COMPARE] Total changes detected: ${changes.length}`);
 
   // Suggested default name for the update list
-  const formattedDate = new Date().toLocaleDateString('ar-EG', {
+  const formattedDate = new Date().toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

@@ -137,14 +137,14 @@ export default function HomePage() {
           <div className="grid grid-cols-2 gap-4 shrink-0 sm:min-w-[320px]">
             <div className="rounded-2xl border border-slate-200/40 bg-white/80 p-5 shadow-sm hover:border-[#1E6FBF] hover:-translate-y-[2px] transition-all duration-300">
               <div className="text-[10px] font-black text-slate-400 uppercase tracking-wide">المنتجات النشطة</div>
-              <div className="mt-2 text-3xl font-black text-slate-900 tabular-nums">
-                {loading ? '…' : productCount.toLocaleString('ar-EG')}
+              <div className="mt-2 text-5xl font-black text-slate-900 tabular-nums">
+                {loading ? '…' : productCount.toLocaleString('en-US')}
               </div>
             </div>
             <div className="rounded-2xl border border-slate-200/40 bg-white/80 p-5 shadow-sm hover:border-indigo-400 hover:-translate-y-[2px] transition-all duration-300">
               <div className="text-[10px] font-black text-slate-400 uppercase tracking-wide">الفروع النشطة</div>
-              <div className="mt-2 text-3xl font-black text-[#1E6FBF] tabular-nums">
-                {loading ? '…' : data.branches.length.toLocaleString('ar-EG')}
+              <div className="mt-2 text-5xl font-black text-[#1E6FBF] tabular-nums">
+                {loading ? '…' : data.branches.length.toLocaleString('en-US')}
               </div>
             </div>
           </div>
@@ -172,7 +172,7 @@ export default function HomePage() {
               <div className="flex-1 min-w-0">
                 <div className="text-xs font-black text-amber-900">تحديثات أسعار معممة</div>
                 <div className="mt-1 text-[11px] font-bold text-amber-700/80 truncate">
-                  {updatesCount.toLocaleString('ar-EG')} قائمة أسعار جديدة جاهزة للمطابقة
+                  {updatesCount.toLocaleString('en-US')} قائمة أسعار جديدة جاهزة للمطابقة
                 </div>
               </div>
             </button>
@@ -191,7 +191,7 @@ export default function HomePage() {
               <div className="flex-1 min-w-0">
                 <div className="text-xs font-black text-rose-900">تعارض أسماء المنتجات</div>
                 <div className="mt-1 text-[11px] font-bold text-rose-700/80 truncate">
-                  كشف {conflicts.length.toLocaleString('ar-EG')} أصناف تختلف أسماؤها بين الفروع
+                  كشف {conflicts.length.toLocaleString('en-US')} أصناف تختلف أسماؤها بين الفروع
                 </div>
               </div>
             </button>
@@ -210,7 +210,7 @@ export default function HomePage() {
               <div className="flex-1 min-w-0">
                 <div className="text-xs font-black text-violet-900">تعارض أسعار البيع/الشراء</div>
                 <div className="mt-1 text-[11px] font-bold text-violet-700/80 truncate">
-                  كشف {priceConflicts.length.toLocaleString('ar-EG')} أصناف تختلف أسعارها بين الفروع
+                  كشف {priceConflicts.length.toLocaleString('en-US')} أصناف تختلف أسعارها بين الفروع
                 </div>
               </div>
             </button>
@@ -237,7 +237,7 @@ export default function HomePage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
           <div className="flex items-center gap-2.5 text-sm font-bold text-slate-500">
             <span className="h-2 w-2 rounded-full bg-[#1E6FBF]" />
-            <span>العثور على {productCount.toLocaleString('ar-EG')} صنف نشط</span>
+            <span>العثور على {productCount.toLocaleString('en-US')} صنف نشط</span>
           </div>
           
           {data.products.some((p) => p.priceVariants.length > 0) && (
@@ -303,7 +303,7 @@ export default function HomePage() {
               </button>
               
               <div className="rounded-xl bg-slate-100 border border-slate-200/40 px-4 py-2 text-xs font-black text-slate-500 tracking-wider">
-                صفحة {safePage.toLocaleString('ar-EG')} من {totalPages.toLocaleString('ar-EG')}
+                صفحة {safePage.toLocaleString('en-US')} من {totalPages.toLocaleString('en-US')}
               </div>
               
               <button
