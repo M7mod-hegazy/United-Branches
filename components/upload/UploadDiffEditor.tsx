@@ -84,43 +84,85 @@ export function UploadDiffEditor({
     setChanges((prev) => prev.filter((c) => c.code !== code))
   }
 
-  // Add a manual entry with smart type detection
+  // Add a manual entry with smart type detection matching auto-creation logic
   function addManualEntry() {
     const code = manualCode.trim()
     const name = manualName.trim()
     setManualError('')
 
-    if (!code) { setManualError('يرجى إدخال كود الصنف'); return }
-    if (!name) { setManualError('يرجى إدخال اسم الصنف'); return }
+    if (!code) {
+      setManualError('يرجى إدخال كود الصنف')
+      return
+    }
+
     if (changes.some((c) => c.code.toLowerCase() === code.toLowerCase())) {
       setManualError(`الكود "${code}" موجود بالفعل في قائمة التحديثات`)
       return
     }
 
-    const selling = manualSelling ? parseFloat(manualSelling) : undefined
-    const buying = manualBuying ? parseFloat(manualBuying) : undefined
+    const selling = manualSelling !== '' ? parseFloat(manualSelling) : undefined
+    const buying = manualBuying !== '' ? parseFloat(manualBuying) : undefined
 
     // Smart lookup: does this code already exist in the product database?
     const existing = initialAllProducts.find(
       (p: any) => String(p.code).trim().toLowerCase() === code.toLowerCase()
     )
 
+    if (!existing && !name) {
+      setManualError('يرجى إدخال اسم الصنف (مطلوب للأصناف الجديدة)')
+      return
+    }
+
     let entry: ChangeItem
     if (existing) {
-      // Existing product → price_update, pre-fill old prices
-      entry = {
-        code,
-        type: 'price_update',
-        name: existing.name ?? name,
-        oldSellingPrice: existing.sellingPrice ?? undefined,
-        oldBuyingPrice: existing.buyingPrice ?? undefined,
-        sellingPrice: selling,
-        buyingPrice: buying,
-        isManual: true,
+      const oldName = existing.name ?? ''
+      const oldSelling = existing.sellingPrice
+      const oldBuying = existing.buyingPrice
+
+      // If name input is blank, default to the existing name
+      const targetName = name || oldName
+
+      // Check if price inputs are blank. If blank, we assume no change (so keep old prices)
+      const targetSelling = selling !== undefined ? selling : oldSelling
+      const targetBuying = buying !== undefined ? buying : oldBuying
+
+      const nameChanged = targetName.trim() !== oldName.trim()
+      const sellingChanged = targetSelling !== oldSelling
+      const buyingChanged = targetBuying !== oldBuying
+      const hasPriceChange = sellingChanged || buyingChanged
+
+      if (!nameChanged && !hasPriceChange) {
+        setManualError('لم تقم بتغيير أي بيانات (الاسم أو الأسعار) لهذا المنتج')
+        return
       }
-      setActiveTab('price')
+
+      if (hasPriceChange) {
+        // Price update pattern
+        entry = {
+          code,
+          type: 'price_update',
+          name: targetName,
+          oldName: nameChanged ? oldName : undefined,
+          sellingPrice: targetSelling,
+          oldSellingPrice: oldSelling,
+          buyingPrice: targetBuying,
+          oldBuyingPrice: oldBuying,
+          isManual: true,
+        }
+        setActiveTab('price')
+      } else {
+        // Name update pattern
+        entry = {
+          code,
+          type: 'name_update',
+          name: targetName,
+          oldName: oldName,
+          isManual: true,
+        }
+        setActiveTab('name')
+      }
     } else {
-      // Unknown code → new_product
+      // New product pattern
       entry = {
         code,
         type: 'new_product',
