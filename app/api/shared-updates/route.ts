@@ -8,6 +8,11 @@ export const dynamic = 'force-dynamic'
 export async function GET() {
   try {
     await connectDB()
+
+    // Explicitly reference models to prevent Next.js tree-shaking / compilation omission
+    const _forceShared = SharedUpdate.modelName
+    const _forceBranch = Branch.modelName
+
     const updates = await SharedUpdate.find()
       .sort({ createdAt: -1 })
       .populate('branchId', 'name')

@@ -18,6 +18,11 @@ export async function GET(request: Request, context: RouteContext) {
     }
 
     await connectDB()
+
+    // Explicitly reference models to prevent Next.js tree-shaking / compilation omission
+    const _forceShared = SharedUpdate.modelName
+    const _forceBranch = Branch.modelName
+
     const update = await SharedUpdate.findById(id)
       .populate('branchId', 'name')
       .lean()

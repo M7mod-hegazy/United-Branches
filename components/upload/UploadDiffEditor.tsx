@@ -72,6 +72,12 @@ export function UploadDiffEditor({
     )
   }
 
+  function handleCodeFieldChange(oldCode: string, newCode: string) {
+    setChanges((prev) =>
+      prev.map((c) => (c.code === oldCode ? { ...c, code: newCode } : c))
+    )
+  }
+
   // Toggle exclude (auto-detected entries)
   function toggleExclude(code: string) {
     setExcludedCodes((prev) => {
@@ -588,12 +594,21 @@ export function UploadDiffEditor({
                     key={item.code}
                     className={`hover:bg-slate-50/40 transition-colors ${item.isManual ? 'bg-indigo-50/30' : ''}`}
                   >
-                    {/* Code cell with manual badge */}
+                    {/* Code cell with manual badge (editable if manual) */}
                     <td className="px-6 py-4 font-mono text-[11px] text-slate-400">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="rounded-lg bg-slate-100 px-2 py-0.5 border border-slate-200/30">
-                          {item.code}
-                        </span>
+                        {item.isManual ? (
+                          <input
+                            type="text"
+                            value={item.code}
+                            onChange={(e) => handleCodeFieldChange(item.code, e.target.value)}
+                            className="h-9 w-20 rounded-xl border border-indigo-200 bg-white px-2 font-mono text-xs font-bold text-slate-800 focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300"
+                          />
+                        ) : (
+                          <span className="rounded-lg bg-slate-100 px-2 py-0.5 border border-slate-200/30">
+                            {item.code}
+                          </span>
+                        )}
                         {item.isManual && (
                           <span className="rounded-md bg-indigo-100 border border-indigo-200/60 px-1.5 py-0.5 text-[8px] font-black text-indigo-700 uppercase tracking-wide leading-none">
                             يدوي
@@ -602,10 +617,22 @@ export function UploadDiffEditor({
                       </div>
                     </td>
 
-                    {/* Name columns */}
+                    {/* Name columns (editable for all) */}
                     {activeTab === 'name' ? (
                       <>
-                        <td className="px-6 py-4 text-slate-400 max-w-[200px] truncate">{item.oldName}</td>
+                        <td className="px-6 py-4">
+                          {item.isManual ? (
+                            <input
+                              type="text"
+                              value={item.oldName ?? ''}
+                              onChange={(e) => handleFieldChange(item.code, 'oldName', e.target.value)}
+                              placeholder="الاسم القديم..."
+                              className="h-9 w-full rounded-xl border border-indigo-200 bg-white px-3 text-xs font-bold text-slate-800 focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300"
+                            />
+                          ) : (
+                            <span className="text-slate-400 max-w-[200px] truncate block">{item.oldName}</span>
+                          )}
+                        </td>
                         <td className="px-6 py-4">
                           <input
                             type="text"
@@ -626,42 +653,61 @@ export function UploadDiffEditor({
                       </td>
                     ) : (
                       <td className="px-6 py-4">
-                        {item.oldName ? (
-                          <div className="space-y-0.5">
+                        <div className="space-y-1.5">
+                          {item.oldName && (
                             <span className="line-through text-[10px] text-slate-350 block">{item.oldName}</span>
-                            <span className="font-extrabold text-slate-800 text-sm">{item.name}</span>
-                          </div>
-                        ) : (
-                          <span className="max-w-[220px] truncate block text-slate-800 font-extrabold text-sm">{item.name}</span>
-                        )}
+                          )}
+                          <input
+                            type="text"
+                            value={item.name}
+                            onChange={(e) => handleFieldChange(item.code, 'name', e.target.value)}
+                            className="h-9 w-full rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-800 focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300"
+                          />
+                        </div>
                       </td>
                     )}
 
-                    {/* Price editing — price tab */}
+                    {/* Price editing — price tab (editable old and new prices) */}
                     {activeTab === 'price' && (
                       <>
-                        <td className="px-6 py-4 text-slate-400 font-mono">
-                          {item.oldSellingPrice != null ? `${item.oldSellingPrice.toLocaleString('en-US')} ج.م` : '—'}
+                        <td className="px-6 py-4 font-mono">
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={item.oldSellingPrice ?? ''}
+                            onChange={(e) => handleFieldChange(item.code, 'oldSellingPrice', e.target.value !== '' ? parseFloat(e.target.value) : undefined)}
+                            placeholder="—"
+                            className="h-9 w-20 rounded-xl border border-slate-200 bg-white px-2 font-mono text-xs font-bold text-slate-800 focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300"
+                          />
                         </td>
                         <td className="px-6 py-4">
                           <input
                             type="number"
                             step="0.01"
                             value={item.sellingPrice ?? ''}
-                            onChange={(e) => handleFieldChange(item.code, 'sellingPrice', Number(e.target.value) || undefined)}
-                            className="h-9 w-24 rounded-xl border border-slate-200 bg-white px-3 font-mono text-xs font-bold text-slate-800 focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300"
+                            onChange={(e) => handleFieldChange(item.code, 'sellingPrice', e.target.value !== '' ? parseFloat(e.target.value) : undefined)}
+                            placeholder="—"
+                            className="h-9 w-20 rounded-xl border border-slate-200 bg-white px-2 font-mono text-xs font-bold text-slate-805 focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300"
                           />
                         </td>
-                        <td className="px-6 py-4 text-slate-400 font-mono">
-                          {item.oldBuyingPrice != null ? `${item.oldBuyingPrice.toLocaleString('en-US')} ج.م` : '—'}
+                        <td className="px-6 py-4 font-mono">
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={item.oldBuyingPrice ?? ''}
+                            onChange={(e) => handleFieldChange(item.code, 'oldBuyingPrice', e.target.value !== '' ? parseFloat(e.target.value) : undefined)}
+                            placeholder="—"
+                            className="h-9 w-20 rounded-xl border border-slate-200 bg-white px-2 font-mono text-xs font-bold text-slate-800 focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300"
+                          />
                         </td>
                         <td className="px-6 py-4">
                           <input
                             type="number"
                             step="0.01"
                             value={item.buyingPrice ?? ''}
-                            onChange={(e) => handleFieldChange(item.code, 'buyingPrice', Number(e.target.value) || undefined)}
-                            className="h-9 w-24 rounded-xl border border-slate-200 bg-white px-3 font-mono text-xs font-bold text-slate-800 focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300"
+                            onChange={(e) => handleFieldChange(item.code, 'buyingPrice', e.target.value !== '' ? parseFloat(e.target.value) : undefined)}
+                            placeholder="—"
+                            className="h-9 w-20 rounded-xl border border-slate-200 bg-white px-2 font-mono text-xs font-bold text-slate-805 focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300"
                           />
                         </td>
                       </>
