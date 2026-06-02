@@ -42,6 +42,7 @@ export function UploadDiffEditor({
   const [errorMessage, setErrorMessage] = useState('')
 
   // Manual entry form state
+  const [manualType, setManualType] = useState<'price_update' | 'name_update' | 'new_product'>('price_update')
   const [manualCode, setManualCode] = useState('')
   const [manualName, setManualName] = useState('')
   const [manualSelling, setManualSelling] = useState('')
@@ -84,7 +85,7 @@ export function UploadDiffEditor({
     setChanges((prev) => prev.filter((c) => c.code !== code))
   }
 
-  // Add a manual entry with smart type detection matching auto-creation logic
+  // Add a manual entry based on explicitly selected type
   function addManualEntry() {
     const code = manualCode.trim()
     const name = manualName.trim()
@@ -108,61 +109,13 @@ export function UploadDiffEditor({
       (p: any) => String(p.code).trim().toLowerCase() === code.toLowerCase()
     )
 
-    if (!existing && !name) {
-      setManualError('يرجى إدخال اسم الصنف (مطلوب للأصناف الجديدة)')
-      return
-    }
-
     let entry: ChangeItem
-    if (existing) {
-      const oldName = existing.name ?? ''
-      const oldSelling = existing.sellingPrice
-      const oldBuying = existing.buyingPrice
 
-      // If name input is blank, default to the existing name
-      const targetName = name || oldName
-
-      // Check if price inputs are blank. If blank, we assume no change (so keep old prices)
-      const targetSelling = selling !== undefined ? selling : oldSelling
-      const targetBuying = buying !== undefined ? buying : oldBuying
-
-      const nameChanged = targetName.trim() !== oldName.trim()
-      const sellingChanged = targetSelling !== oldSelling
-      const buyingChanged = targetBuying !== oldBuying
-      const hasPriceChange = sellingChanged || buyingChanged
-
-      if (!nameChanged && !hasPriceChange) {
-        setManualError('لم تقم بتغيير أي بيانات (الاسم أو الأسعار) لهذا المنتج')
+    if (manualType === 'new_product') {
+      if (!name) {
+        setManualError('يرجى إدخال اسم الصنف الجديد')
         return
       }
-
-      if (hasPriceChange) {
-        // Price update pattern
-        entry = {
-          code,
-          type: 'price_update',
-          name: targetName,
-          oldName: nameChanged ? oldName : undefined,
-          sellingPrice: targetSelling,
-          oldSellingPrice: oldSelling,
-          buyingPrice: targetBuying,
-          oldBuyingPrice: oldBuying,
-          isManual: true,
-        }
-        setActiveTab('price')
-      } else {
-        // Name update pattern
-        entry = {
-          code,
-          type: 'name_update',
-          name: targetName,
-          oldName: oldName,
-          isManual: true,
-        }
-        setActiveTab('name')
-      }
-    } else {
-      // New product pattern
       entry = {
         code,
         type: 'new_product',
@@ -172,6 +125,49 @@ export function UploadDiffEditor({
         isManual: true,
       }
       setActiveTab('new')
+    } else if (manualType === 'price_update') {
+      if (!existing) {
+        setManualError('كود الصنف هذا غير موجود كصنف سابق. يرجى اختيار نوع التعديل "صنف جديد"')
+        return
+      }
+      const oldName = existing.name ?? ''
+      const oldSelling = existing.sellingPrice
+      const oldBuying = existing.buyingPrice
+
+      const targetName = name || oldName
+      const targetSelling = selling !== undefined ? selling : oldSelling
+      const targetBuying = buying !== undefined ? buying : oldBuying
+
+      entry = {
+        code,
+        type: 'price_update',
+        name: targetName,
+        oldName: targetName.trim() !== oldName.trim() ? oldName : undefined,
+        sellingPrice: targetSelling,
+        oldSellingPrice: oldSelling,
+        buyingPrice: targetBuying,
+        oldBuyingPrice: oldBuying,
+        isManual: true,
+      }
+      setActiveTab('price')
+    } else {
+      // name_update
+      if (!existing) {
+        setManualError('كود الصنف هذا غير موجود كصنف سابق. يرجى اختيار نوع التعديل "صنف جديد"')
+        return
+      }
+      if (!name) {
+        setManualError('يرجى إدخال الاسم الجديد لتعديل الاسم')
+        return
+      }
+      entry = {
+        code,
+        type: 'name_update',
+        name,
+        oldName: existing.name ?? '',
+        isManual: true,
+      }
+      setActiveTab('name')
     }
 
     setChanges((prev) => [entry, ...prev])
@@ -307,18 +303,43 @@ export function UploadDiffEditor({
         <div className="absolute -left-10 -top-10 h-36 w-36 rounded-full bg-indigo-400/5 blur-3xl" />
         <div className="relative">
 
-          {/* Header */}
-          <div className="flex items-center gap-3 mb-5">
-            <div className="rounded-xl bg-indigo-600 p-2 text-white shadow-sm shadow-indigo-500/25">
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-              </svg>
+          {/* Header & Type Selector */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-indigo-100/50 pb-4 mb-5">
+            <div className="flex items-center gap-3">
+              <div className="rounded-xl bg-indigo-600 p-2 text-white shadow-sm shadow-indigo-500/25">
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-sm font-black text-indigo-900">إضافة صنف يدوياً للتعميم</h3>
+                <p className="text-[10px] font-bold text-indigo-600/70 mt-0.5">
+                  اختر نوع التعديل واملأ البيانات المطلوبة لإدراجها يدوياً
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-sm font-black text-indigo-900">إضافة صنف يدوياً للتعميم</h3>
-              <p className="text-[10px] font-bold text-indigo-600/70 mt-0.5">
-                اكتب كود الصنف — سيكتشف النظام تلقائياً إن كان سعراً محدّثاً أو صنفاً جديداً
-              </p>
+
+            {/* Premium segmented control */}
+            <div className="flex gap-1.5 p-1 rounded-xl bg-indigo-100/60 self-start md:self-auto">
+              {(['price_update', 'name_update', 'new_product'] as const).map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => {
+                    setManualType(type)
+                    setManualError('')
+                  }}
+                  className={`py-1.5 px-3.5 rounded-lg text-[10px] font-black transition-all duration-300 text-center ${
+                    manualType === type
+                      ? 'bg-indigo-600 text-white shadow-sm'
+                      : 'text-indigo-700 hover:bg-indigo-200/50'
+                  }`}
+                >
+                  {type === 'price_update' && 'تعديل سعر'}
+                  {type === 'name_update' && 'تعديل اسم'}
+                  {type === 'new_product' && 'صنف جديد'}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -339,59 +360,81 @@ export function UploadDiffEditor({
             </div>
 
             {/* Name */}
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-black text-slate-500 block">اسم الصنف <span className="text-rose-500">*</span></label>
+            <div className={`space-y-1.5 ${manualType === 'name_update' ? 'lg:col-span-2' : ''}`}>
+              <label className="text-[10px] font-black text-slate-500 block">
+                {manualType === 'price_update' && 'اسم الصنف (اختياري لتغيير الاسم)'}
+                {manualType === 'name_update' && 'الاسم الجديد للصنف *'}
+                {manualType === 'new_product' && 'اسم الصنف الجديد *'}
+              </label>
               <input
                 type="text"
                 value={manualName}
                 onChange={(e) => { setManualName(e.target.value); setManualError('') }}
                 onKeyDown={(e) => e.key === 'Enter' && addManualEntry()}
-                placeholder="اسم الصنف..."
+                placeholder={manualType === 'price_update' ? 'اتركه فارغاً للاحتفاظ بالاسم الحالي...' : 'اسم الصنف...'}
                 className="h-10 w-full rounded-xl border border-indigo-200 bg-white px-3 text-xs font-bold text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all duration-300"
               />
             </div>
 
-            {/* Selling Price */}
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-black text-slate-500 block">سعر البيع (ج.م)</label>
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                value={manualSelling}
-                onChange={(e) => setManualSelling(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && addManualEntry()}
-                placeholder="0.00"
-                className="h-10 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all duration-300"
-              />
-            </div>
-
-            {/* Buying Price + Add Button */}
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-black text-slate-500 block">سعر الشراء (ج.م)</label>
-              <div className="flex gap-2">
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={manualBuying}
-                  onChange={(e) => setManualBuying(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && addManualEntry()}
-                  placeholder="0.00"
-                  className="h-10 flex-1 min-w-0 rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all duration-300"
-                />
+            {/* Price fields or Name Update Button */}
+            {manualType === 'name_update' ? (
+              <div className="space-y-1.5">
                 <button
                   type="button"
                   onClick={addManualEntry}
-                  className="h-10 shrink-0 flex items-center gap-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 px-4 text-xs font-black text-white transition-all duration-200 shadow-sm shadow-indigo-500/25"
+                  className="h-10 w-full flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 px-4 text-xs font-black text-white transition-all duration-200 shadow-sm shadow-indigo-500/25"
                 >
                   <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                   </svg>
-                  إضافة
+                  إضافة تعديل الاسم
                 </button>
               </div>
-            </div>
+            ) : (
+              <>
+                {/* Selling Price */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black text-slate-500 block">سعر البيع (ج.م)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={manualSelling}
+                    onChange={(e) => setManualSelling(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && addManualEntry()}
+                    placeholder="0.00"
+                    className="h-10 w-full rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all duration-300"
+                  />
+                </div>
+
+                {/* Buying Price + Add Button */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black text-slate-500 block">سعر الشراء (ج.م)</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={manualBuying}
+                      onChange={(e) => setManualBuying(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && addManualEntry()}
+                      placeholder="0.00"
+                      className="h-10 flex-1 min-w-0 rounded-xl border border-indigo-200 bg-white px-3 font-mono text-xs font-bold text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all duration-300"
+                    />
+                    <button
+                      type="button"
+                      onClick={addManualEntry}
+                      className="h-10 shrink-0 flex items-center gap-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 px-4 text-xs font-black text-white transition-all duration-200 shadow-sm shadow-indigo-500/25"
+                    >
+                      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                      </svg>
+                      إضافة
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Inline validation error */}
