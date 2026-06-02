@@ -37,7 +37,9 @@ export function buildFinalProducts(
     }
   })
 
-  return allProducts
+  const existingCodes = new Set(allProducts.map((p) => p.code.trim().toLowerCase()))
+
+  const mapped = allProducts
     .map((product): Product | null => {
       const codeKey = product.code.trim().toLowerCase()
 
@@ -63,4 +65,22 @@ export function buildFinalProducts(
       return product
     })
     .filter((p): p is Product => p !== null)
+
+  // Append new_product entries (auto-detected or manually added) that aren't
+  // already present in allProducts and haven't been excluded by the user.
+  const newProductEntries: Product[] = confirmedChanges
+    .filter(
+      (c) =>
+        c.type === 'new_product' &&
+        !existingCodes.has(c.code.trim().toLowerCase())
+    )
+    .map((c) => ({
+      code: c.code,
+      name: c.name,
+      quantity: 0,
+      sellingPrice: c.sellingPrice,
+      buyingPrice: c.buyingPrice,
+    }))
+
+  return [...mapped, ...newProductEntries]
 }

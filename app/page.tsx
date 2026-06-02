@@ -32,14 +32,19 @@ export default function HomePage() {
   const PAGE_SIZE = 100
 
   useEffect(() => {
-    fetch('/api/shared-updates')
-      .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setUpdatesCount(data.length)
-        }
-      })
-      .catch(() => {})
+    const fetchCount = () => {
+      fetch('/api/shared-updates')
+        .then((r) => r.json())
+        .then((data) => {
+          if (Array.isArray(data)) {
+            setUpdatesCount(data.length)
+          }
+        })
+        .catch(() => {})
+    }
+    fetchCount()
+    const interval = setInterval(fetchCount, 30_000)
+    return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
@@ -151,32 +156,42 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Notifications & Warning Alerts Section */}
-      {!loading && (conflicts.length > 0 || priceConflicts.length > 0 || updatesCount > 0) && (
+      {/* Notifications & Alerts — Price Updates always visible, conflicts conditional */}
+      {!loading && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {updatesCount > 0 && (
-            <button
-              onClick={() => setShowUpdatesModal(true)}
-              className="relative flex items-center gap-4 rounded-2xl border border-amber-200/60 bg-gradient-to-r from-amber-50/50 to-amber-100/10 p-5 text-right transition-all duration-300 hover:scale-[1.01] hover:shadow-premium group"
-            >
-              {/* Pulse element */}
+          {/* Always-visible price updates button */}
+          <button
+            onClick={() => setShowUpdatesModal(true)}
+            className={`relative flex items-center gap-4 rounded-2xl border p-5 text-right transition-all duration-300 group ${
+              updatesCount > 0
+                ? 'border-amber-200/60 bg-gradient-to-r from-amber-50/50 to-amber-100/10 hover:scale-[1.01] hover:shadow-premium'
+                : 'border-slate-200/40 bg-white/60 hover:border-slate-300 hover:bg-white/80'
+            }`}
+          >
+            {updatesCount > 0 && (
               <span className="absolute left-4 top-4 flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
               </span>
-              <div className="rounded-xl bg-amber-500 p-2.5 text-white shadow-sm shadow-amber-500/20 group-hover:scale-105 transition-transform duration-200">
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                </svg>
+            )}
+            <div className={`rounded-xl p-2.5 text-white shadow-sm group-hover:scale-105 transition-transform duration-200 ${
+              updatesCount > 0 ? 'bg-amber-500 shadow-amber-500/20' : 'bg-slate-300'
+            }`}>
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className={`text-xs font-black ${ updatesCount > 0 ? 'text-amber-900' : 'text-slate-500'}`}>
+                تحديثات أسعار معممة
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-xs font-black text-amber-900">تحديثات أسعار معممة</div>
-                <div className="mt-1 text-[11px] font-bold text-amber-700/80 truncate">
-                  {updatesCount.toLocaleString('en-US')} قائمة أسعار جديدة جاهزة للمطابقة
-                </div>
+              <div className={`mt-1 text-[11px] font-bold truncate ${ updatesCount > 0 ? 'text-amber-700/80' : 'text-slate-400'}`}>
+                {updatesCount > 0
+                  ? `${updatesCount.toLocaleString('en-US')} قائمة أسعار جديدة جاهزة للمطابقة`
+                  : 'لا توجد تحديثات أسعار معممة حالياً'}
               </div>
-            </button>
-          )}
+            </div>
+          </button>
 
           {conflicts.length > 0 && (
             <button

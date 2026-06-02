@@ -48,12 +48,16 @@ export function SharedUpdatesModal({ onClose }: SharedUpdatesModalProps) {
   const [loadingDetails, setLoadingDetails] = useState(false)
   const [detailsTab, setDetailsTab] = useState<DetailsTab>('all')
   const [searchQuery, setSearchQuery] = useState('')
+  const [cardPage, setCardPage] = useState(1)
+
+  const CARDS_PER_PAGE = 10
 
   useEffect(() => {
     fetch('/api/shared-updates')
       .then((r) => r.json())
       .then((data) => {
         setUpdates(Array.isArray(data) ? data : [])
+        setCardPage(1)
         setLoading(false)
       })
       .catch(() => setLoading(false))
@@ -98,6 +102,9 @@ export function SharedUpdatesModal({ onClose }: SharedUpdatesModalProps) {
     })
   }, [details, detailsTab, searchQuery])
 
+  const pagedUpdates = updates.slice((cardPage - 1) * CARDS_PER_PAGE, cardPage * CARDS_PER_PAGE)
+  const totalCardPages = Math.max(1, Math.ceil(updates.length / CARDS_PER_PAGE))
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md">
       <div 
@@ -129,58 +136,97 @@ export function SharedUpdatesModal({ onClose }: SharedUpdatesModalProps) {
         <div className="flex-1 flex overflow-hidden">
           
           {/* List of Card Updates Sidebar */}
-          <div className="w-80 border-l border-slate-100 overflow-y-auto p-5 space-y-3.5 bg-slate-50/30 shrink-0">
-            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">أحدث قوائم التحديثات</span>
-            {loading ? (
-              <div className="text-center py-12 text-sm font-bold text-slate-400">جاري تحميل السجل...</div>
-            ) : updates.length === 0 ? (
-              <div className="text-center py-12 text-sm font-bold text-slate-400">لا توجد تحديثات معممة حالياً.</div>
-            ) : (
-              updates.map((up) => {
-                const selected = selectedUpdateId === up._id
-                return (
-                  <button
-                    key={up._id}
-                    onClick={() => handleSelectUpdate(up._id)}
-                    className={`w-full text-right p-4 rounded-2xl border transition-all duration-300 block shadow-sm relative overflow-hidden ${
-                      selected
-                        ? 'border-[#1E6FBF] bg-blue-50/30 ring-1 ring-[#1E6FBF]'
-                        : 'border-slate-200/60 bg-white hover:border-[#1E6FBF] hover:-translate-y-[1px]'
-                    }`}
-                  >
-                    {/* Glowing highlight indicator */}
-                    {selected && (
-                      <span className="absolute top-0 right-0 h-full w-1.5 bg-[#1E6FBF]" />
-                    )}
-                    <h4 className="text-xs font-black text-slate-800 max-w-[220px] truncate leading-snug">{up.name}</h4>
-                    <div className="text-[10px] font-bold text-slate-400 mt-2 flex justify-between items-center">
-                      <span>الفرع: {up.branchName}</span>
-                      <span className="font-mono text-slate-400">
-                        {new Date(up.createdAt).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })}
-                      </span>
-                    </div>
+          <div className="w-80 border-l border-slate-100 flex flex-col bg-slate-50/30 shrink-0">
+            {/* Sidebar Header */}
+            <div className="px-5 pt-5 pb-3 shrink-0 border-b border-slate-100/60">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">أحدث قوائم التحديثات</span>
+              {!loading && updates.length > 0 && (
+                <span className="text-[10px] font-bold text-slate-400 mt-0.5 block tabular-nums">{updates.length.toLocaleString('en-US')} قائمة مرفوعة</span>
+              )}
+            </div>
 
-                    {/* Summary pills */}
-                    <div className="flex flex-wrap gap-1 mt-3">
-                      {up.newProductsCount > 0 && (
-                        <span className="rounded-lg bg-green-50 border border-green-150 px-2 py-0.5 text-[9px] font-black text-green-700">
-                          +{up.newProductsCount} جديد
-                        </span>
+            {/* Scrollable Cards Area */}
+            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3.5">
+              {loading ? (
+                <div className="text-center py-12 text-sm font-bold text-slate-400">جاري تحميل السجل...</div>
+              ) : updates.length === 0 ? (
+                <div className="text-center py-12 text-sm font-bold text-slate-400">لا توجد تحديثات معممة حالياً.</div>
+              ) : (
+                pagedUpdates.map((up) => {
+                  const selected = selectedUpdateId === up._id
+                  return (
+                    <button
+                      key={up._id}
+                      onClick={() => handleSelectUpdate(up._id)}
+                      className={`w-full text-right p-4 rounded-2xl border transition-all duration-300 block shadow-sm relative overflow-hidden ${
+                        selected
+                          ? 'border-[#1E6FBF] bg-blue-50/30 ring-1 ring-[#1E6FBF]'
+                          : 'border-slate-200/60 bg-white hover:border-[#1E6FBF] hover:-translate-y-[1px]'
+                      }`}
+                    >
+                      {/* Glowing highlight indicator */}
+                      {selected && (
+                        <span className="absolute top-0 right-0 h-full w-1.5 bg-[#1E6FBF]" />
                       )}
-                      {up.priceUpdatesCount > 0 && (
-                        <span className="rounded-lg bg-amber-50 border border-amber-150 px-2 py-0.5 text-[9px] font-black text-amber-700">
-                          ~{up.priceUpdatesCount} أسعار
+                      <h4 className="text-xs font-black text-slate-800 max-w-[220px] truncate leading-snug">{up.name}</h4>
+                      <div className="text-[10px] font-bold text-slate-400 mt-2 flex justify-between items-center">
+                        <span>الفرع: {up.branchName}</span>
+                        <span className="font-mono text-slate-400">
+                          {new Date(up.createdAt).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })}
                         </span>
-                      )}
-                      {up.nameUpdatesCount > 0 && (
-                        <span className="rounded-lg bg-blue-50 border border-blue-150 px-2 py-0.5 text-[9px] font-black text-blue-700">
-                          ~{up.nameUpdatesCount} أسماء
-                        </span>
-                      )}
-                    </div>
-                  </button>
-                )
-              })
+                      </div>
+
+                      {/* Summary pills */}
+                      <div className="flex flex-wrap gap-1 mt-3">
+                        {up.newProductsCount > 0 && (
+                          <span className="rounded-lg bg-green-50 border border-green-150 px-2 py-0.5 text-[9px] font-black text-green-700">
+                            +{up.newProductsCount} جديد
+                          </span>
+                        )}
+                        {up.priceUpdatesCount > 0 && (
+                          <span className="rounded-lg bg-amber-50 border border-amber-150 px-2 py-0.5 text-[9px] font-black text-amber-700">
+                            ~{up.priceUpdatesCount} أسعار
+                          </span>
+                        )}
+                        {up.nameUpdatesCount > 0 && (
+                          <span className="rounded-lg bg-blue-50 border border-blue-150 px-2 py-0.5 text-[9px] font-black text-blue-700">
+                            ~{up.nameUpdatesCount} أسماء
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                  )
+                })
+              )}
+            </div>
+
+            {/* Sidebar Pagination */}
+            {!loading && totalCardPages > 1 && (
+              <div className="shrink-0 border-t border-slate-100 px-5 py-3 flex items-center justify-between gap-2">
+                <button
+                  onClick={() => setCardPage((p) => Math.max(1, p - 1))}
+                  disabled={cardPage === 1}
+                  className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-black text-slate-500 hover:border-[#1E6FBF] hover:text-[#1E6FBF] disabled:opacity-40 disabled:pointer-events-none transition-all duration-200"
+                >
+                  <svg className="h-3 w-3 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                  </svg>
+                  السابق
+                </button>
+                <span className="text-[10px] font-black text-slate-400 tabular-nums">
+                  {cardPage.toLocaleString('en-US')} / {totalCardPages.toLocaleString('en-US')}
+                </span>
+                <button
+                  onClick={() => setCardPage((p) => Math.min(totalCardPages, p + 1))}
+                  disabled={cardPage === totalCardPages}
+                  className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-black text-slate-500 hover:border-[#1E6FBF] hover:text-[#1E6FBF] disabled:opacity-40 disabled:pointer-events-none transition-all duration-200"
+                >
+                  التالي
+                  <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
             )}
           </div>
 
