@@ -5,16 +5,16 @@ import Settings from '@/models/Settings'
 
 export async function GET() {
   await connectDB()
-  const settings = await Settings.findOne().lean() as { retentionLimit?: number | null; dominantBranchId?: mongoose.Types.ObjectId | null } | null
+  const settings = await Settings.findOne().lean() as { retentionLimit?: number | null; dominantBranchIds?: mongoose.Types.ObjectId[] } | null
   return NextResponse.json({
     retentionLimit: settings ? (settings.retentionLimit === undefined ? 10 : settings.retentionLimit) : 10,
-    dominantBranchId: settings?.dominantBranchId ?? null,
+    dominantBranchIds: settings?.dominantBranchIds ?? [],
   })
 }
 
 export async function PUT(request: Request) {
   const body = await request.json()
-  const { retentionLimit, dominantBranchId } = body
+  const { retentionLimit, dominantBranchIds } = body
 
   if (
     retentionLimit !== undefined &&
@@ -27,28 +27,33 @@ export async function PUT(request: Request) {
     )
   }
 
-  if (
-    dominantBranchId !== undefined &&
-    dominantBranchId !== null &&
-    dominantBranchId !== '' &&
-    !mongoose.Types.ObjectId.isValid(dominantBranchId)
-  ) {
-    return NextResponse.json(
-      { error: 'dominantBranchId must be a valid branch ID or null' },
-      { status: 400 }
-    )
+  if (dominantBranchIds !== undefined) {
+    if (!Array.isArray(dominantBranchIds)) {
+      return NextResponse.json(
+        { error: 'dominantBranchIds must be an array of branch IDs' },
+        { status: 400 }
+      )
+    }
+    for (const id of dominantBranchIds) {
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return NextResponse.json(
+          { error: `Invalid branch ID: ${id}` },
+          { status: 400 }
+        )
+      }
+    }
   }
 
   await connectDB()
   
   const updateData: Record<string, any> = {}
   if (retentionLimit !== undefined) updateData.retentionLimit = retentionLimit
-  if (dominantBranchId !== undefined) updateData.dominantBranchId = dominantBranchId || null
+  if (dominantBranchIds !== undefined) updateData.dominantBranchIds = dominantBranchIds
 
   const settings = await Settings.findOneAndUpdate({}, updateData, { upsert: true, new: true })
   
   return NextResponse.json({
     retentionLimit: settings.retentionLimit,
-    dominantBranchId: settings.dominantBranchId,
+    dominantBranchIds: settings.dominantBranchIds,
   })
 }

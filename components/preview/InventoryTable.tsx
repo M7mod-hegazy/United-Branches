@@ -117,10 +117,10 @@ export function InventoryTable({
 
                 {/* Product Code */}
                 <td
-                  className="sticky right-0 z-20 bg-white group-hover:bg-blue-50/30 border-l border-slate-100 px-5 py-4 font-mono text-xs text-[#1E6FBF] font-black transition-colors"
+                  className="sticky right-0 z-20 bg-white group-hover:bg-blue-50/30 border-l border-slate-100 px-5 py-4 font-mono text-sm text-[#1E6FBF] font-black transition-colors"
                   style={{ minWidth: `${CODE_COL_W}px` }}
                 >
-                  <span className="rounded-lg bg-blue-50/60 px-2.5 py-1 border border-blue-100/40">
+                  <span className="rounded-lg bg-blue-50/60 px-2.5 py-1 border border-blue-100/40 text-sm">
                     {product.code}
                   </span>
                 </td>

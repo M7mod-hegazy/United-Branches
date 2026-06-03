@@ -595,17 +595,17 @@ export function UploadDiffEditor({
                     className={`hover:bg-slate-50/40 transition-colors ${item.isManual ? 'bg-indigo-50/30' : ''}`}
                   >
                     {/* Code cell with manual badge (editable if manual) */}
-                    <td className="px-6 py-4 font-mono text-[11px] text-slate-400">
+                    <td className="px-6 py-4 font-mono text-xs font-black text-slate-700">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         {item.isManual ? (
                           <input
                             type="text"
                             value={item.code}
                             onChange={(e) => handleCodeFieldChange(item.code, e.target.value)}
-                            className="h-9 w-20 rounded-xl border border-indigo-200 bg-white px-2 font-mono text-xs font-bold text-slate-800 focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300"
+                            className="h-9 w-20 rounded-xl border border-indigo-200 bg-white px-2 font-mono text-xs font-black text-slate-800 focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300"
                           />
                         ) : (
-                          <span className="rounded-lg bg-slate-100 px-2 py-0.5 border border-slate-200/30">
+                          <span className="rounded-lg bg-slate-100 px-2.5 py-1 border border-slate-200/30 font-black">
                             {item.code}
                           </span>
                         )}

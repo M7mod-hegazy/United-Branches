@@ -25,9 +25,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Branch not found' }, { status: 404 })
   }
 
-  // Check if it is the dominant branch
-  const settingsDoc = await Settings.findOne().lean() as { dominantBranchId?: mongoose.Types.ObjectId | null } | null
-  const isDominant = settingsDoc?.dominantBranchId && String(settingsDoc.dominantBranchId) === branchId
+  // Check if it is a dominant branch
+  const settingsDoc = await Settings.findOne().lean() as { dominantBranchIds?: mongoose.Types.ObjectId[] } | null
+  const dominantIds = (settingsDoc?.dominantBranchIds ?? []).map((id) => String(id))
+  const isDominant = dominantIds.includes(branchId)
 
   const bytes = Buffer.from(await file.arrayBuffer())
   const { products: uploadedProducts, detectedColumns } = parseExcelBuffer(bytes)

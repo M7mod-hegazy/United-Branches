@@ -354,7 +354,7 @@ export function SharedUpdatesModal({ onClose }: SharedUpdatesModalProps) {
                       <tbody className="divide-y divide-slate-100 text-xs font-bold text-slate-800">
                         {filteredChanges.map((c) => (
                           <tr key={c.code} className="hover:bg-slate-50/40 transition-colors">
-                            <td className="px-6 py-4 font-mono text-[11px] text-slate-500">{c.code}</td>
+                            <td className="px-6 py-4 font-mono text-xs font-black text-slate-700">{c.code}</td>
                             <td className="px-6 py-4">
                               {c.type === 'new_product' && (
                                 <span className="rounded-lg bg-green-50 border border-green-200 px-2.5 py-1 text-[10px] font-black text-green-700">صنف جديد</span>
