@@ -468,7 +468,7 @@ export function EditUpdateDetailsModal({
                           <input
                             value={item.code}
                             onChange={(e) => handleCodeFieldChange(item.code, e.target.value)}
-                            className="h-8 w-20 rounded-lg border border-slate-200 bg-white px-2 font-mono text-sm font-black focus:border-indigo-500 outline-none"
+                            className="h-10 w-24 rounded-lg border border-slate-200 bg-white px-2 font-mono text-base font-black focus:border-indigo-500 outline-none"
                           />
                         </td>
 

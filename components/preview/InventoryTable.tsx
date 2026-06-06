@@ -117,10 +117,10 @@ export function InventoryTable({
 
                 {/* Product Code */}
                 <td
-                  className="sticky right-0 z-20 bg-white group-hover:bg-blue-50/30 border-l border-slate-100 px-5 py-4 font-mono text-sm text-[#1E6FBF] font-black transition-colors"
+                  className="sticky right-0 z-20 bg-white group-hover:bg-blue-50/30 border-l border-slate-100 px-5 py-4 font-mono text-base text-[#1E6FBF] font-black transition-colors"
                   style={{ minWidth: `${CODE_COL_W}px` }}
                 >
-                  <span className="rounded-lg bg-blue-50/60 px-2.5 py-1 border border-blue-100/40 text-sm">
+                  <span className="rounded-lg bg-blue-50/60 px-3 py-1.5 border border-blue-100/40 text-base font-black text-slate-900">
                     {product.code}
                   </span>
                 </td>
@@ -146,8 +146,8 @@ export function InventoryTable({
                           {sourceBranch.name}
                         </span>
                         {/* Upload date badge */}
-                        <span className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[9px] font-black bg-slate-50 text-slate-400 border border-slate-200/60 leading-none whitespace-nowrap">
-                          <svg className="h-2 w-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <span className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-black bg-slate-50 text-slate-900 border border-slate-200/60 leading-none whitespace-nowrap">
+                          <svg className="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
                           {new Date(sourceBranch.uploadedAt).toLocaleDateString('en-US', { dateStyle: 'short' })}

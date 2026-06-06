@@ -33,6 +33,7 @@ export default function UploadPage() {
   const [errorMessage, setErrorMessage] = useState('')
 
   const [diffMode, setDiffMode] = useState(false)
+  const [showSkipChoice, setShowSkipChoice] = useState(false)
   const [diffData, setDiffData] = useState<{
     changes: any[]
     allProducts: any[]
@@ -54,6 +55,7 @@ export default function UploadPage() {
     setSuccessData(null)
     setErrorMessage('')
     setDiffMode(false)
+    setShowSkipChoice(false)
     setDiffData(null)
   }
 
@@ -94,7 +96,7 @@ export default function UploadPage() {
           allProducts: compareResult.allProducts,
           defaultUpdateName: compareResult.defaultUpdateName,
         })
-        setDiffMode(true)
+        setShowSkipChoice(true)
         return
       }
 
@@ -114,6 +116,53 @@ export default function UploadPage() {
 
       setProgress(100)
       setStatus('success')
+      setSuccessData({
+        count: result.productsCount,
+        uploadedAt: result.uploadedAt,
+        branchName,
+        detectedColumns: result.detectedColumns ?? [],
+        isDominant: false,
+      })
+    } catch {
+      clearTimeout(t1)
+      clearTimeout(t2)
+      setStatus('error')
+      setErrorMessage('تعذّر الاتصال بالخادم — تأكد من اتصالك بالإنترنت وحاول مرة أخرى')
+    }
+  }
+
+  async function handleSkipAndUpload() {
+    if (!file || !branchId) return
+
+    const branchName = branches.find((b) => b._id === branchId)?.name ?? ''
+    setStatus('uploading')
+    setProgress(15)
+
+    const t1 = setTimeout(() => setProgress(45), 400)
+    const t2 = setTimeout(() => setProgress(75), 900)
+
+    const form = new FormData()
+    form.append('branchId', branchId)
+    form.append('file', file)
+
+    try {
+      const response = await fetch('/api/upload', { method: 'POST', body: form })
+      clearTimeout(t1)
+      clearTimeout(t2)
+      setProgress(90)
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        setStatus('error')
+        setErrorMessage(buildErrorMessage(response.status, result.error))
+        return
+      }
+
+      setProgress(100)
+      setStatus('success')
+      setShowSkipChoice(false)
+      setDiffData(null)
       setSuccessData({
         count: result.productsCount,
         uploadedAt: result.uploadedAt,
@@ -212,6 +261,52 @@ export default function UploadPage() {
             </a>
             <button onClick={reset} className="rounded-xl border border-slate-200 bg-white px-6 py-3.5 text-xs font-black text-slate-500 hover:border-[#1E6FBF] hover:text-[#1E6FBF] transition-all duration-300 active:scale-95">
               رفع ملف فرع آخر
+            </button>
+          </div>
+        </div>
+      ) : showSkipChoice && diffData ? (
+        <div className="rounded-3xl border border-amber-200/60 bg-amber-50/20 p-8 shadow-premium">
+          <div className="flex items-center gap-3 text-amber-900 mb-4">
+            <div className="rounded-xl bg-amber-500 p-2.5 text-white shadow-sm shadow-amber-500/20">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-lg font-black text-slate-900">تم اكتشاف تعديلات سعرية في الملف</h2>
+              <p className="text-xs font-bold text-slate-500 mt-1">الفرع المسيطر يقوم برفع ملف يتضمن أسعار — يمكنك اختيار كيفية المتابعة:</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+            <button
+              onClick={() => { setDiffMode(true); setShowSkipChoice(false) }}
+              className="rounded-2xl border border-[#1E6FBF] bg-white p-6 text-right hover:bg-blue-50/30 hover:-translate-y-[2px] transition-all duration-300 shadow-sm group"
+            >
+              <div className="rounded-xl bg-[#1E6FBF] p-2.5 text-white shadow-sm w-fit group-hover:scale-105 transition-transform">
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                </svg>
+              </div>
+              <h3 className="text-sm font-black text-slate-900 mt-4">مراجعة التعديلات وتعميمها</h3>
+              <p className="text-xs font-bold text-slate-500 mt-1 leading-relaxed">
+                اعرض التغييرات السعرية، عدّلها، أضف تعديلات يدوية، ثم عمّمها على جميع الفروع.
+              </p>
+            </button>
+
+            <button
+              onClick={handleSkipAndUpload}
+              className="rounded-2xl border border-slate-200 bg-white p-6 text-right hover:border-slate-300 hover:-translate-y-[2px] transition-all duration-300 shadow-sm group"
+            >
+              <div className="rounded-xl bg-slate-200 p-2.5 text-slate-600 shadow-sm w-fit group-hover:scale-105 transition-transform">
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-sm font-black text-slate-900 mt-4">تخطي التعديلات ورفع الملف عادياً</h3>
+              <p className="text-xs font-bold text-slate-500 mt-1 leading-relaxed">
+                تجاهل التعديلات السعرية وارفع الملف كتقرير مخزون عادي دون تعميم أي تغييرات.
+              </p>
             </button>
           </div>
         </div>

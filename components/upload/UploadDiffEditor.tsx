@@ -565,11 +565,11 @@ export function UploadDiffEditor({
                   <th className="px-6 py-4">الكود</th>
                   {activeTab === 'name' ? (
                     <>
-                      <th className="px-6 py-4">الاسم القديم</th>
-                      <th className="px-6 py-4">الاسم المقترح الجديد (قابل للتعديل)</th>
+                      <th className="px-6 py-4 min-w-[200px]">الاسم القديم</th>
+                      <th className="px-6 py-4 min-w-[280px]">الاسم المقترح الجديد (قابل للتعديل)</th>
                     </>
                   ) : (
-                    <th className="px-6 py-4">اسم الصنف</th>
+                    <th className="px-6 py-4 min-w-[280px]">اسم الصنف</th>
                   )}
                   {activeTab === 'price' && (
                     <>
@@ -595,17 +595,17 @@ export function UploadDiffEditor({
                     className={`hover:bg-slate-50/40 transition-colors ${item.isManual ? 'bg-indigo-50/30' : ''}`}
                   >
                     {/* Code cell with manual badge (editable if manual) */}
-                    <td className="px-6 py-4 font-mono text-xs font-black text-slate-700">
+                    <td className="px-6 py-4 font-mono text-base font-black text-slate-700">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         {item.isManual ? (
                           <input
                             type="text"
                             value={item.code}
                             onChange={(e) => handleCodeFieldChange(item.code, e.target.value)}
-                            className="h-9 w-20 rounded-xl border border-indigo-200 bg-white px-2 font-mono text-xs font-black text-slate-800 focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300"
+                            className="h-10 w-24 rounded-xl border border-indigo-200 bg-white px-2 font-mono text-base font-black text-slate-800 focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300"
                           />
                         ) : (
-                          <span className="rounded-lg bg-slate-100 px-2.5 py-1 border border-slate-200/30 font-black">
+                          <span className="rounded-lg bg-slate-100 px-3 py-1.5 border border-slate-200/30 font-black">
                             {item.code}
                           </span>
                         )}
@@ -620,7 +620,7 @@ export function UploadDiffEditor({
                     {/* Name columns (editable for all) */}
                     {activeTab === 'name' ? (
                       <>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 min-w-[200px]">
                           {item.isManual ? (
                             <input
                               type="text"
@@ -630,10 +630,10 @@ export function UploadDiffEditor({
                               className="h-9 w-full rounded-xl border border-indigo-200 bg-white px-3 text-xs font-bold text-slate-800 focus:border-[#1E6FBF] focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300"
                             />
                           ) : (
-                            <span className="text-slate-400 max-w-[200px] truncate block">{item.oldName}</span>
+                            <span className="text-slate-400 truncate block">{item.oldName}</span>
                           )}
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 min-w-[280px]">
                           <input
                             type="text"
                             value={item.name}
@@ -643,7 +643,7 @@ export function UploadDiffEditor({
                         </td>
                       </>
                     ) : activeTab === 'new' ? (
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-4 min-w-[280px]">
                         <input
                           type="text"
                           value={item.name}
@@ -652,10 +652,10 @@ export function UploadDiffEditor({
                         />
                       </td>
                     ) : (
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-4 min-w-[280px]">
                         <div className="space-y-1.5">
                           {item.oldName && (
-                            <span className="line-through text-[10px] text-slate-350 block">{item.oldName}</span>
+                            <span className="line-through text-[10px] text-slate-350 block truncate">{item.oldName}</span>
                           )}
                           <input
                             type="text"

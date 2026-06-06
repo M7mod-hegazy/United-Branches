@@ -6,6 +6,7 @@ import { SearchFilters } from '@/components/preview/SearchFilters'
 import { NameConflictsModal } from '@/components/preview/NameConflictsModal'
 import { PriceConflictsModal } from '@/components/preview/PriceConflictsModal'
 import { SharedUpdatesModal } from '@/components/preview/SharedUpdatesModal'
+import { exportToExcel } from '@/lib/export-report'
 
 interface InventoryResponse {
   branches: BranchMeta[]
@@ -139,19 +140,43 @@ export default function HomePage() {
           </div>
           
           {/* Quick Stats Grid */}
-          <div className="grid grid-cols-2 gap-4 shrink-0 sm:min-w-[320px]">
-            <div className="rounded-2xl border border-slate-200/40 bg-white/80 p-5 shadow-sm hover:border-[#1E6FBF] hover:-translate-y-[2px] transition-all duration-300">
-              <div className="text-[10px] font-black text-slate-400 uppercase tracking-wide">المنتجات النشطة</div>
-              <div className="mt-2 text-5xl font-black text-slate-900 tabular-nums">
-                {loading ? '…' : productCount.toLocaleString('en-US')}
+          <div className="flex items-center gap-4 shrink-0">
+            <div className="grid grid-cols-2 gap-4 sm:min-w-[320px] flex-1">
+              <div className="rounded-2xl border border-slate-200/40 bg-white/80 p-5 shadow-sm hover:border-[#1E6FBF] hover:-translate-y-[2px] transition-all duration-300">
+                <div className="text-[10px] font-black text-slate-400 uppercase tracking-wide">المنتجات النشطة</div>
+                <div className="mt-2 text-5xl font-black text-slate-900 tabular-nums">
+                  {loading ? '…' : productCount.toLocaleString('en-US')}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-slate-200/40 bg-white/80 p-5 shadow-sm hover:border-indigo-400 hover:-translate-y-[2px] transition-all duration-300">
+                <div className="text-[10px] font-black text-slate-400 uppercase tracking-wide">الفروع النشطة</div>
+                <div className="mt-2 text-5xl font-black text-[#1E6FBF] tabular-nums">
+                  {loading ? '…' : data.branches.length.toLocaleString('en-US')}
+                </div>
               </div>
             </div>
-            <div className="rounded-2xl border border-slate-200/40 bg-white/80 p-5 shadow-sm hover:border-indigo-400 hover:-translate-y-[2px] transition-all duration-300">
-              <div className="text-[10px] font-black text-slate-400 uppercase tracking-wide">الفروع النشطة</div>
-              <div className="mt-2 text-5xl font-black text-[#1E6FBF] tabular-nums">
-                {loading ? '…' : data.branches.length.toLocaleString('en-US')}
-              </div>
-            </div>
+            {!loading && (
+              <button
+                onClick={() =>
+                  exportToExcel({
+                    branches: data.branches,
+                    products: data.products,
+                    showSellingPrice,
+                    showBuyingPrice,
+                  })
+                }
+                className="rounded-2xl border border-slate-200/40 bg-white/80 p-5 shadow-sm hover:border-green-400 hover:bg-green-50/20 hover:-translate-y-[2px] transition-all duration-300 group shrink-0"
+                title="تصدير التقرير إلى Excel"
+              >
+                <div className="text-[10px] font-black text-slate-400 uppercase tracking-wide group-hover:text-green-700 transition-colors">تصدير</div>
+                <div className="mt-1 flex items-center gap-1.5 text-[#1E6FBF] group-hover:text-green-600 transition-colors">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                  </svg>
+                  <span className="text-xs font-black">Excel</span>
+                </div>
+              </button>
+            )}
           </div>
         </div>
       </div>
